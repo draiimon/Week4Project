@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
@@ -18,7 +18,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin endpoint to toggle AWS calls
   app.post("/api/admin/toggle-aws", async (req, res) => {
     const { disable } = req.body;
-    const username = req.session?.user?.username;
+    const username = (req.user as any)?.username;
     
     if (username === 'msn_clx') { // Only allow the admin to toggle this
       console.log(`Admin user ${username} setting DISABLE_AWS_CALLS to: ${disable}`);

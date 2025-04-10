@@ -468,6 +468,11 @@ export default function HomePage() {
                 </div>
               </div>
               
+              {/* Admin Panel - Only visible to msn_clx */}
+              <div className="mb-6">
+                <AdminPanel />
+              </div>
+              
               {/* System Metrics and Status */}
               <div className="mb-6">
                 <SystemStatus />
