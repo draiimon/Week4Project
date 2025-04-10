@@ -61,7 +61,12 @@ export default function DynamoDBPage() {
         // If the user is admin, fetch actual user data from DynamoDB
         if (isAdmin) {
           try {
-            const userDataResponse = await fetch('/api/dynamodb/users');
+            const userDataResponse = await fetch('/api/dynamodb/users', {
+              credentials: 'include', // Include cookies for session authentication
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
             
             if (!userDataResponse.ok) {
               if (userDataResponse.status === 403) {
@@ -106,6 +111,13 @@ export default function DynamoDBPage() {
             }
           } catch (err) {
             console.error("Error fetching user data:", err);
+            // Show error toast for better debugging
+            toast({
+              title: "Error fetching DynamoDB data",
+              description: err instanceof Error ? err.message : "Unknown error occurred",
+              variant: "destructive"
+            });
+            
             // Show basic table info on error
             setTableData({
               tableName: statusData.services.dynamodb.tableName || "OakTreeUsers",

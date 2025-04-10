@@ -144,8 +144,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Endpoint to fetch all users from DynamoDB - ADMIN ONLY
   app.get("/api/dynamodb/users", async (req, res) => {
+    // Debug session information
+    console.log("Session user:", req.user ? 
+      { username: (req.user as any).username, id: (req.user as any).id } : 
+      "No user in session");
+      
     // Check if user is logged in and is admin
-    if (!req.user || (req.user as any).username !== 'msn_clx') {
+    if (!req.user) {
+      return res.status(403).json({
+        error: "Unauthorized. Please log in first."
+      });
+    }
+    
+    if ((req.user as any).username !== 'msn_clx') {
+      console.log(`User ${(req.user as any).username} attempted to access admin-only endpoint`);
       return res.status(403).json({
         error: "Unauthorized. Admin access required."
       });
