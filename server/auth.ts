@@ -140,11 +140,23 @@ export function setupAuth(app: Express) {
         }
       }
 
-      // Always register locally to maintain session
-      const user = await storage.createUser({
-        ...req.body,
-        password: await hashPassword(req.body.password),
-      });
+      // For local session user - first try to get the user
+      let user;
+      try {
+        // First check if the user exists locally
+        user = await storage.getUserByUsername(req.body.username);
+        
+        // If not found, create a local entry for session management
+        if (!user) {
+          user = await storage.createUser({
+            ...req.body,
+            password: await hashPassword(req.body.password),
+          });
+        }
+      } catch (localError) {
+        console.error("Error with local user registration:", localError);
+        return res.status(500).send("Error creating user in local database");
+      }
 
       // Add a message noting where the user was registered
       const registrationMessage = awsUserCreated

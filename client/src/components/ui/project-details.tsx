@@ -58,7 +58,7 @@ export const AWSInfrastructure: React.FC = () => {
           {/* Resources List */}
           <div className="bg-gray-50 p-4 rounded-md">
             <h4 className="text-sm font-medium text-gray-900 mb-2">
-              AWS Resources:
+              AWS Resources (us-east-1):
             </h4>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center">
@@ -76,7 +76,7 @@ export const AWSInfrastructure: React.FC = () => {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-gray-700">DynamoDB (User Authentication)</span>
+                <span className="text-gray-700">DynamoDB Table: OakTreeUsers</span>
               </li>
               <li className="flex items-center">
                 <svg
