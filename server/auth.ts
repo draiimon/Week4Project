@@ -42,9 +42,15 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Check if AWS is configured
-  awsDb.createUsersTable().catch(err => {
-    console.error("Error setting up DynamoDB table:", err);
+  // Check if AWS is configured and set up table
+  awsDb.createUsersTable().then(tableAvailable => {
+    if (tableAvailable) {
+      console.log("AWS DynamoDB integration is ready for use");
+    } else {
+      console.log("AWS DynamoDB table is not available, using local authentication only");
+    }
+  }).catch(err => {
+    console.log("Error checking DynamoDB table, using local authentication only:", err.message || err);
   });
 
   // Using local auth strategy with AWS DynamoDB integration
@@ -99,24 +105,37 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/register", async (req, res, next) => {
-    const existingUser = await storage.getUserByUsername(req.body.username);
-    if (existingUser) {
-      return res.status(400).send("Username already exists");
-    }
-
     try {
-      // Register with AWS DynamoDB if configured
-      const isAWSConfigured = await awsDb.isAWSConfigured();
-      if (isAWSConfigured) {
+      // Check if user already exists in local DB
+      const existingUser = await storage.getUserByUsername(req.body.username);
+      if (existingUser) {
+        return res.status(400).send("Username already exists");
+      }
+
+      let awsUserCreated = false;
+      
+      // Try to register with AWS DynamoDB if configured
+      if (await awsDb.isAWSConfigured()) {
         try {
-          await awsDb.createUser({
+          const awsUser = await awsDb.createUser({
             username: req.body.username,
             password: req.body.password,
-            email: req.body.email
+            email: req.body.email || ""
           });
-          console.log("User registered in AWS DynamoDB successfully");
-        } catch (awsError) {
-          console.error("Error registering with AWS DynamoDB:", awsError);
+          
+          if (awsUser) {
+            console.log("User registered in AWS DynamoDB successfully");
+            awsUserCreated = true;
+          } else {
+            console.log("AWS registration skipped - table may not exist");
+          }
+        } catch (awsError: any) {
+          if (awsError.name === "ConditionalCheckFailedException" || 
+              (awsError.__type && awsError.__type.includes("ConditionalCheckFailedException"))) {
+            console.log("AWS registration failed - username already exists in DynamoDB");
+          } else {
+            console.log("Error registering with AWS DynamoDB:", awsError?.message || awsError);
+          }
           // Continue with local registration if AWS fails
         }
       }
@@ -127,13 +146,21 @@ export function setupAuth(app: Express) {
         password: await hashPassword(req.body.password),
       });
 
+      // Add a message noting where the user was registered
+      const registrationMessage = awsUserCreated
+        ? "User registered successfully in both AWS DynamoDB and local database"
+        : "User registered in local database";
+      
       req.login(user, (err) => {
         if (err) return next(err);
-        res.status(201).json(user);
+        res.status(201).json({
+          ...user,
+          message: registrationMessage
+        });
       });
-    } catch (error) {
-      console.error("Registration error:", error);
-      res.status(500).send("Error creating user");
+    } catch (error: any) {
+      console.error("Registration error:", error?.message || error);
+      res.status(500).send("Error creating user: " + (error?.message || "Unknown error"));
     }
   });
 

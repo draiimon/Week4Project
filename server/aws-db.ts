@@ -78,10 +78,9 @@ export async function createUsersTable(): Promise<boolean> {
   
   try {
     // This would typically use the DynamoDB client directly with CreateTableCommand
-    // This is a simplified version for the demo
-    // In a real implementation, we would check if the table exists and create it if needed
+    // This is a simplified version for demo purposes
     
-    // For now, we'll just check if we can query the table
+    // For now, we'll just check if we can query the table and silently handle the error
     try {
       const command = new ScanCommand({
         TableName: USER_TABLE,
@@ -92,15 +91,20 @@ export async function createUsersTable(): Promise<boolean> {
       console.log(`DynamoDB table '${USER_TABLE}' is ready for use.`);
       return true;
     } catch (error: any) {
-      if (error.name === "ResourceNotFoundException") {
-        console.log(`DynamoDB table '${USER_TABLE}' does not exist.`);
-        // Here we would create the table in a real implementation
+      if (error.name === "ResourceNotFoundException" || 
+          (error.__type && error.__type.includes("ResourceNotFoundException"))) {
+        console.log(`DynamoDB table '${USER_TABLE}' does not exist. Using local authentication only.`);
+        // In a production environment, we would create the table here 
+        // but for this demo we'll just use local authentication
+        return false;
       }
-      console.error("Error accessing DynamoDB table:", error);
+      
+      // For other errors, log but don't crash
+      console.log("Error accessing DynamoDB table, using local authentication:", error.message || error);
       return false;
     }
   } catch (error) {
-    console.error("Error setting up DynamoDB table:", error);
+    console.log("Error setting up DynamoDB table, using local authentication only:", error);
     return false;
   }
 }
@@ -137,34 +141,56 @@ export async function getUserByUsername(username: string) {
 export async function createUser(user: { username: string, password: string, email: string }) {
   const client = getDynamoClient();
   if (!client) {
-    throw new Error("AWS DynamoDB is not available. Cannot create user.");
+    console.log("AWS DynamoDB is not available. Skipping AWS user creation.");
+    return null; // Return null to indicate we couldn't create in AWS
   }
   
   try {
     // Hash the password before storing
     const hashedPassword = await hashPassword(user.password);
     
-    const command = new PutCommand({
-      TableName: USER_TABLE,
-      Item: {
+    try {
+      const command = new PutCommand({
+        TableName: USER_TABLE,
+        Item: {
+          username: user.username,
+          password: hashedPassword,
+          email: user.email,
+          createdAt: new Date().toISOString()
+        },
+        // Only add if username doesn't already exist
+        ConditionExpression: "attribute_not_exists(username)"
+      });
+  
+      await client.send(command);
+      
+      console.log(`User '${user.username}' successfully created in AWS DynamoDB`);
+      return {
         username: user.username,
-        password: hashedPassword,
-        email: user.email,
-        createdAt: new Date().toISOString()
-      },
-      // Only add if username doesn't already exist
-      ConditionExpression: "attribute_not_exists(username)"
-    });
-
-    await client.send(command);
-    
-    return {
-      username: user.username,
-      email: user.email
-    };
+        email: user.email
+      };
+    } catch (error: any) {
+      // Check for ResourceNotFoundException or table doesn't exist
+      if (error.name === "ResourceNotFoundException" || 
+          (error.__type && error.__type.includes("ResourceNotFoundException"))) {
+        console.log(`Cannot create user in DynamoDB - table '${USER_TABLE}' does not exist.`);
+        return null;
+      }
+      
+      // For conditional check failure (username exists)
+      if (error.name === "ConditionalCheckFailedException" || 
+          (error.__type && error.__type.includes("ConditionalCheckFailedException"))) {
+        console.log(`User '${user.username}' already exists in DynamoDB.`);
+        return null;
+      }
+      
+      // Other errors
+      console.log("Error creating user in DynamoDB:", error.message || error);
+      return null;
+    }
   } catch (error) {
-    console.error("Error creating user in DynamoDB:", error);
-    throw error;
+    console.log("Unexpected error creating user in AWS DynamoDB:", error);
+    return null;
   }
 }
 
