@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -13,14 +13,8 @@ interface DynamoDBService {
   tableName: string;
 }
 
-interface CognitoService {
-  enabled: boolean;
-  userPoolId: string | null;
-}
-
 interface AWSServices {
   dynamodb: DynamoDBService;
-  cognito: CognitoService;
 }
 
 interface AWSStatusResponse {
@@ -29,24 +23,6 @@ interface AWSStatusResponse {
   services: AWSServices;
   environment: string;
   timestamp: string;
-}
-
-// Type definitions for AWS resources response
-interface VPCInfo {
-  id: string;
-  region: string;
-}
-
-interface DatabaseInfo {
-  type: string;
-  name: string;
-  status: string;
-}
-
-interface AWSResourcesResponse {
-  vpc: VPCInfo;
-  databases: DatabaseInfo[];
-  lastUpdated: string;
 }
 
 export const AWSStatusPanel: React.FC = () => {
@@ -63,23 +39,11 @@ export const AWSStatusPanel: React.FC = () => {
     queryFn: getQueryFn({ on401: 'throw' })
   });
   
-  // Fetch AWS resources
-  const { 
-    data: awsResources,
-    isLoading: resourcesLoading,
-    error: resourcesError,
-    refetch: refetchResources
-  } = useQuery<AWSResourcesResponse>({
-    queryKey: ['/api/aws/resources'],
-    queryFn: getQueryFn({ on401: 'throw' })
-  });
-  
-  const isLoading = statusLoading || resourcesLoading;
-  const hasError = statusError || resourcesError;
+  const isLoading = statusLoading;
+  const hasError = statusError;
   
   const handleRefresh = () => {
     refetchStatus();
-    refetchResources();
     toast({
       title: "Refreshing AWS Status",
       description: "Fetching the latest AWS connection information"
@@ -167,54 +131,6 @@ export const AWSStatusPanel: React.FC = () => {
                   {awsStatus?.services.dynamodb.enabled ? 'Active' : 'Inactive'}
                 </Badge>
               </div>
-              
-              {/* Cognito */}
-              <div className="flex items-center justify-between bg-muted/50 p-2 rounded-md">
-                <div>
-                  <p className="font-medium">Cognito</p>
-                  <p className="text-xs text-muted-foreground">
-                    {awsStatus?.services.cognito.userPoolId || 'Not configured'}
-                  </p>
-                </div>
-                <Badge variant={awsStatus?.services.cognito.enabled ? 'default' : 'outline'}>
-                  {awsStatus?.services.cognito.enabled ? 'Active' : 'Inactive'}
-                </Badge>
-              </div>
-            </div>
-          </div>
-          
-          <Separator />
-          
-          {/* Infrastructure Section */}
-          <div>
-            <h3 className="font-medium mb-3">Infrastructure</h3>
-            <div className="space-y-3">
-              {/* VPC */}
-              <div className="bg-muted/50 p-2 rounded-md">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Virtual Private Cloud (VPC)</p>
-                  <Badge variant="outline">Active</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  ID: {awsResources?.vpc.id || 'Unknown'}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Region: {awsResources?.vpc.region || 'Unknown'}
-                </p>
-              </div>
-              
-              {/* Databases */}
-              {awsResources?.databases.map((db, idx) => (
-                <div key={idx} className="bg-muted/50 p-2 rounded-md">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium capitalize">{db.type}</p>
-                    <Badge variant="outline" className="capitalize">{db.status}</Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Name: {db.name}
-                  </p>
-                </div>
-              ))}
             </div>
           </div>
           
