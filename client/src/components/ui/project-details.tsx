@@ -62,7 +62,7 @@ export const AWSInfrastructure: React.FC = () => {
             </div>
             <p className={`mt-1 text-sm ${isAWSConfigured ? 'text-green-700' : 'text-yellow-700'}`}>
               {isAWSConfigured 
-                ? `Connected to AWS Region: us-east-1` 
+                ? `Connected to AWS Region: ${awsRegion}` 
                 : 'Application will use local database for authentication and storage.'}
             </p>
           </div>
@@ -70,7 +70,7 @@ export const AWSInfrastructure: React.FC = () => {
           {/* Resources List */}
           <div className="bg-gray-50 p-4 rounded-md">
             <h4 className="text-sm font-medium text-gray-900 mb-2">
-              AWS Resources (us-east-1):
+              AWS Resources ({awsRegion || 'ap-southeast-1'}):
             </h4>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center">
