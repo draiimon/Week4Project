@@ -6,7 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
-import { registerUser, authenticateUser, getUserAttributes } from "./aws";
+import * as awsDb from "./aws-db";
 
 declare global {
   namespace Express {
@@ -42,31 +42,40 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Using local auth strategy with AWS Cognito fallback
+  // Check if AWS is configured
+  awsDb.createUsersTable().catch(err => {
+    console.error("Error setting up DynamoDB table:", err);
+  });
+
+  // Using local auth strategy with AWS DynamoDB integration
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        // First try to authenticate with AWS Cognito
-        if (process.env.AWS_COGNITO_CLIENT_ID && process.env.AWS_COGNITO_USER_POOL_ID) {
+        const isAWSConfigured = await awsDb.isAWSConfigured();
+        
+        // First try to authenticate with AWS DynamoDB if configured
+        if (isAWSConfigured) {
           try {
-            const cognitoUser = await authenticateUser(username, password);
+            const awsUser = await awsDb.authenticateUser(username, password);
             
-            // Check if user exists in local DB
-            let user = await storage.getUserByUsername(username);
-            
-            // If not, create the user in our database to maintain session
-            if (!user) {
-              user = await storage.createUser({
-                username: username,
-                password: await hashPassword(password), // Store hashed password locally
-                email: `${username}@example.com`, // Default email, this would be from Cognito
-              });
+            if (awsUser) {
+              // Check if user exists in local DB
+              let user = await storage.getUserByUsername(username);
+              
+              // If not, create the user in our database to maintain session
+              if (!user) {
+                user = await storage.createUser({
+                  username: username,
+                  password: await hashPassword(password), // Store hashed password locally
+                  email: awsUser.email || `${username}@example.com`,
+                });
+              }
+              
+              console.log("AWS DynamoDB authentication successful");
+              return done(null, user);
             }
-            
-            return done(null, user);
-          } catch (cognitoError) {
-            // If Cognito auth fails, fall back to local auth
-            console.log("Cognito auth failed, falling back to local:", cognitoError);
+          } catch (awsError) {
+            console.log("AWS DynamoDB auth failed, falling back to local:", awsError);
           }
         }
         
@@ -96,14 +105,19 @@ export function setupAuth(app: Express) {
     }
 
     try {
-      // Register with AWS Cognito if configured
-      if (process.env.AWS_COGNITO_CLIENT_ID && process.env.AWS_COGNITO_USER_POOL_ID) {
+      // Register with AWS DynamoDB if configured
+      const isAWSConfigured = await awsDb.isAWSConfigured();
+      if (isAWSConfigured) {
         try {
-          await registerUser(req.body.username, req.body.password, req.body.email);
-          console.log("User registered in Cognito successfully");
-        } catch (cognitoError) {
-          console.error("Error registering with Cognito:", cognitoError);
-          // Continue with local registration if Cognito fails
+          await awsDb.createUser({
+            username: req.body.username,
+            password: req.body.password,
+            email: req.body.email
+          });
+          console.log("User registered in AWS DynamoDB successfully");
+        } catch (awsError) {
+          console.error("Error registering with AWS DynamoDB:", awsError);
+          // Continue with local registration if AWS fails
         }
       }
 
@@ -139,19 +153,14 @@ export function setupAuth(app: Express) {
     res.json(req.user);
   });
 
-  app.get("/api/aws-status", (req, res) => {
-    const isConfigured = !!(process.env.AWS_COGNITO_CLIENT_ID && 
-                         process.env.AWS_COGNITO_USER_POOL_ID && 
-                         process.env.AWS_ACCESS_KEY_ID && 
-                         process.env.AWS_SECRET_ACCESS_KEY && 
-                         process.env.AWS_REGION);
+  app.get("/api/aws-status", async (req, res) => {
+    const isAWSConfigured = await awsDb.isAWSConfigured();
     
     res.json({
-      isConfigured,
+      isConfigured: isAWSConfigured,
       region: process.env.AWS_REGION,
-      cognito: {
-        configured: !!(process.env.AWS_COGNITO_CLIENT_ID && process.env.AWS_COGNITO_USER_POOL_ID)
-      }
+      integration: "DynamoDB",
+      features: ["User Authentication", "Data Storage"]
     });
   });
 }
