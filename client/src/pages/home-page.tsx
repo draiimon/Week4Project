@@ -54,7 +54,7 @@ export default function HomePage() {
           </button>
           <div className="flex-1 px-4 flex justify-between">
             <div className="flex-1 flex">
-              <p className="text-white self-center font-bold text-lg">AWS DevOps Platform</p>
+              <p className="text-white self-center font-bold text-lg">DevOps Project Dashboard</p>
             </div>
             {/* Sign-in button removed - handled by sidebar user panel */}
             <div className="ml-4 flex items-center space-x-3 md:ml-6">
@@ -77,14 +77,14 @@ export default function HomePage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
               <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-lg shadow-lg px-6 py-4">
                 <h1 className="text-2xl font-bold text-white">
-                  AWS DevOps Dashboard
+                  DevOps Final Project Dashboard
                 </h1>
                 <p className="mt-1 text-sm text-gray-200">
-                  Cloud Infrastructure Management & Deployment Platform
+                  End-to-End Cloud Deployment Pipeline
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
                   <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-800 text-white">
-                    AWS DynamoDB
+                    Code Repository
                   </span>
                   <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-purple-800 text-white">
                     Docker Container
@@ -104,10 +104,10 @@ export default function HomePage() {
               <div className="mb-6 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden border border-orange-500/20">
                 <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
                   <h3 className="text-lg leading-6 font-bold text-white">
-                    Week 4 DevOps Requirements Status
+                    DevOps Project Requirements
                   </h3>
                   <p className="mt-1 max-w-2xl text-sm text-gray-200">
-                    End-to-End DevOps Project Progress
+                    End-to-End Implementation Status
                   </p>
                 </div>
                 <div className="p-6 text-white">
