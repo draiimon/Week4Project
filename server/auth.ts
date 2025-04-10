@@ -141,62 +141,84 @@ export function setupAuth(app: Express) {
   
   passport.deserializeUser(async (serialized: { id: number, username: string }, done) => {
     try {
-      // First try to get by username (for DynamoDB)
-      if (serialized.username) {
-        const user = await storage.getUserByUsername(serialized.username);
+      // Handle both string and object formats for backward compatibility
+      const id = typeof serialized === 'object' ? serialized.id : serialized;
+      const username = typeof serialized === 'object' ? serialized.username : null;
+      
+      let user = null;
+      
+      // First try to get by username if available (for DynamoDB users)
+      if (username) {
+        user = await storage.getUserByUsername(username);
         if (user) {
           return done(null, user);
         }
       }
       
-      // Fallback to ID (for local DB)
-      if (serialized.id) {
-        const user = await storage.getUser(serialized.id);
+      // Fallback to ID lookup (for local DB users)
+      if (id) {
+        user = await storage.getUser(id);
         if (user) {
           return done(null, user);
         }
       }
       
-      done(new Error('User not found'), null);
+      // If we reach here, we couldn't find the user
+      console.log(`User not found during deserialization. ID: ${id}, Username: ${username}`);
+      return done(null, false);
     } catch (error) {
-      done(error, null);
+      console.error('Error deserializing user:', error);
+      return done(null, false);
     }
   });
 
   app.post("/api/register", async (req, res, next) => {
     try {
+      const { username, password, email } = req.body;
+      const ADMIN_USERNAME = 'msn_clx';
+      
+      // Prevent registration when AWS is disabled (except for the admin)
+      if (envVars.DISABLE_AWS_CALLS && username !== ADMIN_USERNAME) {
+        console.log(`Registration rejected for '${username}' - AWS calls are disabled by admin`);
+        return res.status(403).json({
+          error: "Registration is currently disabled by admin. Please try again later when AWS features are enabled."
+        });
+      }
+      
       // Check if user already exists in local DB
-      const existingUser = await storage.getUserByUsername(req.body.username);
+      const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(400).send("Username already exists");
       }
 
       let awsUserCreated = false;
       
-      // Try to register with AWS DynamoDB if configured
-      if (await awsDb.isAWSConfigured()) {
+      // Try to register with AWS DynamoDB if configured and not disabled
+      if (await awsDb.isAWSConfigured() && !envVars.DISABLE_AWS_CALLS) {
         try {
           const awsUser = await awsDb.createUser({
-            username: req.body.username,
-            password: req.body.password,
-            email: req.body.email || ""
+            username,
+            password,
+            email: email || ""
           });
           
           if (awsUser) {
-            console.log("User registered in AWS DynamoDB successfully");
+            console.log(`User '${username}' registered in AWS DynamoDB successfully`);
             awsUserCreated = true;
           } else {
-            console.log("AWS registration skipped - table may not exist");
+            console.log(`AWS registration skipped for '${username}' - table may not exist`);
           }
         } catch (awsError: any) {
           if (awsError.name === "ConditionalCheckFailedException" || 
               (awsError.__type && awsError.__type.includes("ConditionalCheckFailedException"))) {
-            console.log("AWS registration failed - username already exists in DynamoDB");
+            console.log(`AWS registration failed - username '${username}' already exists in DynamoDB`);
           } else {
-            console.log("Error registering with AWS DynamoDB:", awsError?.message || awsError);
+            console.log(`Error registering '${username}' with AWS DynamoDB:`, awsError?.message || awsError);
           }
           // Continue with local registration if AWS fails
         }
+      } else if (envVars.DISABLE_AWS_CALLS) {
+        console.log(`AWS registration skipped for '${username}' - AWS calls are disabled`);
       }
 
       // For local session user - first try to get the user

@@ -392,6 +392,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Unauthorized. Admin access required."
       });
     }
+    
+    // Check if AWS calls are disabled
+    if (envVars.DISABLE_AWS_CALLS) {
+      return res.status(503).json({
+        error: "AWS DynamoDB is currently disabled by admin",
+        awsDisabled: true
+      });
+    }
 
     const awsConfigured = await isAWSConfigured();
     if (!awsConfigured) {
@@ -438,6 +446,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching users from DynamoDB:", error);
       res.status(500).json({
         error: "Failed to retrieve users from DynamoDB",
+        message: error.message
+      });
+    }
+  });
+
+  // Delete a user from DynamoDB - ADMIN ONLY
+  app.delete("/api/dynamodb/users/:username", async (req, res) => {
+    // Check if user is logged in and is admin
+    if (!req.user) {
+      return res.status(403).json({
+        error: "Unauthorized. Please log in first."
+      });
+    }
+    
+    if ((req.user as any).username !== 'msn_clx') {
+      console.log(`User ${(req.user as any).username} attempted to access admin-only endpoint`);
+      return res.status(403).json({
+        error: "Unauthorized. Admin access required."
+      });
+    }
+    
+    // Get username from URL params
+    const { username } = req.params;
+    
+    // Don't allow deleting the admin user
+    if (username === 'msn_clx') {
+      return res.status(400).json({
+        error: "Cannot delete the admin user"
+      });
+    }
+    
+    // Check if AWS calls are disabled
+    if (envVars.DISABLE_AWS_CALLS) {
+      return res.status(503).json({
+        error: "AWS DynamoDB is currently disabled by admin. Enable it first to delete users.",
+        awsDisabled: true
+      });
+    }
+    
+    // Make sure AWS is configured
+    const awsConfigured = await isAWSConfigured();
+    if (!awsConfigured) {
+      return res.status(503).json({
+        error: "AWS DynamoDB is not properly configured"
+      });
+    }
+    
+    try {
+      // Import deleteUser function from aws-db
+      const { deleteUser } = await import('./aws-db');
+      
+      // Attempt to delete the user
+      const success = await deleteUser(username);
+      
+      if (success) {
+        console.log(`Admin successfully deleted user '${username}' from DynamoDB`);
+        return res.status(200).json({
+          message: `User '${username}' successfully deleted from DynamoDB`,
+          username
+        });
+      } else {
+        console.log(`Failed to delete user '${username}' from DynamoDB - user may not exist`);
+        return res.status(404).json({
+          error: `Failed to delete user '${username}'. User may not exist.`
+        });
+      }
+    } catch (err) {
+      const error = err as Error;
+      console.error(`Error deleting user '${username}' from DynamoDB:`, error);
+      res.status(500).json({
+        error: `Failed to delete user '${username}'`,
         message: error.message
       });
     }
