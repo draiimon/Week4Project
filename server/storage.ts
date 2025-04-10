@@ -3,6 +3,7 @@ import * as expressSession from "express-session";
 import memorystore from "memorystore";
 import { 
   getUserByUsername as awsGetUserByUsername, 
+  getUserById as awsGetUserById,
   createUser as awsCreateUser 
 } from "./aws-db";
 
@@ -28,8 +29,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    // In AWS DynamoDB, we don't use numeric IDs
-    console.log("AWS DynamoDB: getUser by ID not implemented");
+    // Try to get user by ID from AWS DynamoDB
+    const awsUser = await awsGetUserById(id);
+    
+    if (awsUser) {
+      // Convert AWS user to our app's User type
+      return {
+        id: id,
+        username: awsUser.username,
+        password: awsUser.password,
+        email: awsUser.email || ''
+      };
+    }
+    
+    // If not found in AWS, return undefined
     return undefined;
   }
 

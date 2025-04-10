@@ -243,6 +243,39 @@ export async function createUser(user: { username: string, password: string, ema
   }
 }
 
+// Get user by ID
+export async function getUserById(id: number) {
+  const client = getDynamoClient();
+  if (!client) return null;
+  
+  try {
+    console.log(`Looking up user with ID ${id} in AWS DynamoDB`);
+    
+    // DynamoDB doesn't support querying by non-primary key without a GSI (Global Secondary Index)
+    // We can scan the table and filter by ID, but this is inefficient for large datasets
+    // In a production environment, we would create a GSI for the id field
+    
+    const command = new ScanCommand({
+      TableName: USER_TABLE,
+      FilterExpression: "id = :id",
+      ExpressionAttributeValues: {
+        ":id": id
+      }
+    });
+    
+    const response = await client.send(command);
+    
+    if (response.Items && response.Items.length > 0) {
+      return response.Items[0];
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error getting user by ID from AWS DynamoDB:", error);
+    return null;
+  }
+}
+
 // Authenticate a user
 export async function authenticateUser(username: string, password: string) {
   const client = getDynamoClient();
@@ -258,7 +291,10 @@ export async function authenticateUser(username: string, password: string) {
       return null;
     }
     
+    console.log("AWS DynamoDB authentication successful");
+    
     return {
+      id: user.id || 0, // Use 0 as default for local DB compatibility
       username: user.username,
       email: user.email
     };
