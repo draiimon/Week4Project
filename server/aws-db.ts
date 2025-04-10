@@ -75,10 +75,7 @@ export async function createUsersTable(): Promise<boolean> {
   }
   
   try {
-    // This would typically use the DynamoDB client directly with CreateTableCommand
-    // This is a simplified version for demo purposes
-    
-    // For now, we'll just check if we can query the table and silently handle the error
+    // First, let's check if the table exists
     try {
       const command = new ScanCommand({
         TableName: USER_TABLE,
@@ -89,12 +86,66 @@ export async function createUsersTable(): Promise<boolean> {
       console.log(`DynamoDB table '${USER_TABLE}' is ready for use.`);
       return true;
     } catch (error: any) {
+      // If table doesn't exist, we'll create it
       if (error.name === "ResourceNotFoundException" || 
           (error.__type && error.__type.includes("ResourceNotFoundException"))) {
-        console.log(`DynamoDB table '${USER_TABLE}' does not exist. Using local authentication only.`);
-        // In a production environment, we would create the table here 
-        // but for this demo we'll just use local authentication
-        return false;
+        console.log(`DynamoDB table '${USER_TABLE}' does not exist. Creating it now...`);
+        
+        // We need to import the CreateTableCommand from the DynamoDB client
+        const { CreateTableCommand } = await import("@aws-sdk/client-dynamodb");
+        
+        try {
+          // This command will create a new table with username as the primary key
+          const createTableCommand = new CreateTableCommand({
+            TableName: USER_TABLE,
+            AttributeDefinitions: [
+              {
+                AttributeName: "username",
+                AttributeType: "S" // String type
+              }
+            ],
+            KeySchema: [
+              {
+                AttributeName: "username",
+                KeyType: "HASH" // Partition key
+              }
+            ],
+            BillingMode: "PAY_PER_REQUEST" // On-demand capacity mode (no need to specify provisioned capacity)
+          });
+          
+          // Send the command to create the table
+          const dbClient = new DynamoDBClient({
+            region: envVars.AWS_REGION,
+            credentials: {
+              accessKeyId: envVars.AWS_ACCESS_KEY_ID || "",
+              secretAccessKey: envVars.AWS_SECRET_ACCESS_KEY || ""
+            }
+          });
+          
+          try {
+            await dbClient.send(createTableCommand);
+            console.log(`DynamoDB table '${USER_TABLE}' created successfully.`);
+            
+            // Wait a few seconds for the table to be active
+            console.log("Waiting for table to be active...");
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            
+            return true;
+          } catch (tableError: any) {
+            // Handle the case where the table is already being created or exists
+            if (tableError.name === "ResourceInUseException" || 
+                (tableError.message && tableError.message.includes("being created")) ||
+                (tableError.message && tableError.message.includes("already exists"))) {
+              console.log("Table is already being created or already exists. Waiting for it to be active...");
+              await new Promise(resolve => setTimeout(resolve, 5000));
+              return true;
+            }
+            throw tableError;
+          }
+        } catch (createError: any) {
+          console.error("Error creating DynamoDB table:", createError?.message || createError);
+          return false;
+        }
       }
       
       // For other errors, log but don't crash
