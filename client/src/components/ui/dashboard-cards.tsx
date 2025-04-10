@@ -83,7 +83,7 @@ export const ProjectStatusOverview: React.FC = () => {
     <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden mb-8 border border-orange-500/20">
       <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
         <h3 className="text-lg leading-6 font-bold text-white">
-          Week 4 Final Project Status
+          Cloud Services Status
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-gray-200">
           Real-time connection status to AWS services
@@ -273,10 +273,10 @@ export const ContainerMetrics: React.FC = () => {
           <svg className="w-5 h-5 mr-2 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
-          AWS DynamoDB Cloud Metrics
+          System Performance Metrics
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-gray-200">
-          Live monitoring data from {awsRegion} region
+          Live monitoring data for cloud resources
         </p>
       </div>
       <div className="bg-gray-900 bg-opacity-90 p-6">
@@ -295,7 +295,7 @@ export const ContainerMetrics: React.FC = () => {
             </div>
             
             <div className="mt-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-orange-500/20 rounded-md">
-              <h4 className="text-sm font-medium text-orange-400 mb-2">AWS Cloud Service Status:</h4>
+              <h4 className="text-sm font-medium text-orange-400 mb-2">Cloud Service Status:</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
@@ -303,15 +303,15 @@ export const ContainerMetrics: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-xs text-gray-300">IAM Authentication: Active</span>
+                  <span className="text-xs text-gray-300">Data Storage: Active</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-xs text-gray-300">CloudWatch: Monitoring</span>
+                  <span className="text-xs text-gray-300">API Service: Operational</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-xs text-gray-300">SDK Integration: Operational</span>
+                  <span className="text-xs text-gray-300">SDK Integration: Connected</span>
                 </div>
               </div>
             </div>
