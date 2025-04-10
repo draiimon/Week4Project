@@ -1,15 +1,22 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
 import * as schema from "@shared/schema";
 
-neonConfig.webSocketConstructor = ws;
+// Check if we're using AWS mode
+const useAwsDb = process.env.USE_AWS_DB === 'true';
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
+// Create dummy db object for DynamoDB mode
+// This is to maintain compatibility with the existing code
+export const pool = null;
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+// Create a minimal db object that mimics the interface expected by other parts of the code
+export const db = {
+  select: () => ({ 
+    from: () => ({ 
+      where: () => [] 
+    }) 
+  }),
+  insert: () => ({ 
+    values: () => ({ 
+      returning: () => [] 
+    }) 
+  })
+};

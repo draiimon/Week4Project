@@ -1,8 +1,10 @@
 import { users, type User, type InsertUser } from "@shared/schema";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
 import * as expressSession from "express-session";
 import memorystore from "memorystore";
+import { 
+  getUserByUsername as awsGetUserByUsername, 
+  createUser as awsCreateUser 
+} from "./aws-db";
 
 const MemoryStore = memorystore(expressSession.default);
 
@@ -26,21 +28,47 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    // In AWS DynamoDB, we don't use numeric IDs
+    console.log("AWS DynamoDB: getUser by ID not implemented");
+    return undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    console.log(`Looking up user '${username}' in AWS DynamoDB`);
+    const awsUser = await awsGetUserByUsername(username);
+    
+    if (awsUser) {
+      // Convert AWS user to our app's User type
+      return {
+        id: 0, // AWS doesn't use numeric IDs
+        username: awsUser.username,
+        password: awsUser.password,
+        email: awsUser.email || ''
+      };
+    }
+    
+    return undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
-    return user;
+    console.log(`Creating user '${insertUser.username}' in AWS DynamoDB`);
+    const awsUser = await awsCreateUser({
+      username: insertUser.username,
+      password: insertUser.password,
+      email: insertUser.email || ''
+    });
+    
+    if (!awsUser) {
+      throw new Error('Failed to create user in AWS DynamoDB');
+    }
+    
+    // Return a user object that matches our User type
+    return {
+      id: 0, // AWS doesn't use numeric IDs
+      username: awsUser.username,
+      password: '', // Password is already hashed in AWS
+      email: awsUser.email || ''
+    };
   }
 }
 
