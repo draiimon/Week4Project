@@ -166,6 +166,12 @@ export async function createUsersTable(): Promise<boolean> {
 
 // Get user by username
 export async function getUserByUsername(username: string) {
+  // First check if AWS calls are disabled globally
+  if (envVars.DISABLE_AWS_CALLS) {
+    console.log(`AWS calls are disabled. Cannot lookup user '${username}' in DynamoDB.`);
+    return null;
+  }
+  
   const client = getDynamoClient();
   if (!client) return null;
   
@@ -194,6 +200,12 @@ export async function getUserByUsername(username: string) {
 
 // Create a new user
 export async function createUser(user: { username: string, password: string, email: string }) {
+  // First check if AWS calls are disabled globally
+  if (envVars.DISABLE_AWS_CALLS) {
+    console.log(`AWS calls are disabled. Cannot create user '${user.username}' in DynamoDB.`);
+    return null; // Return null when AWS is disabled
+  }
+  
   const client = getDynamoClient();
   if (!client) {
     console.log("AWS DynamoDB is not available. Skipping AWS user creation.");
@@ -284,6 +296,12 @@ export async function getUserById(id: number) {
 
 // Authenticate a user
 export async function authenticateUser(username: string, password: string) {
+  // First check if AWS calls are disabled globally
+  if (envVars.DISABLE_AWS_CALLS) {
+    console.log(`AWS calls are disabled. Cannot authenticate user '${username}' with DynamoDB.`);
+    return null;
+  }
+  
   const client = getDynamoClient();
   if (!client) {
     console.log("AWS DynamoDB is not available for authentication.");
@@ -307,5 +325,46 @@ export async function authenticateUser(username: string, password: string) {
   } catch (error) {
     console.error("Error authenticating user with DynamoDB:", error);
     return null;
+  }
+}
+
+// Delete a user by username
+export async function deleteUser(username: string) {
+  // First check if AWS calls are disabled globally
+  if (envVars.DISABLE_AWS_CALLS) {
+    console.log(`AWS calls are disabled. Cannot delete user '${username}' from DynamoDB.`);
+    return false;
+  }
+  
+  const client = getDynamoClient();
+  if (!client) {
+    console.log("AWS DynamoDB is not available. Cannot delete user.");
+    return false;
+  }
+  
+  try {
+    // Delete command
+    const command = new DeleteCommand({
+      TableName: USER_TABLE,
+      Key: {
+        username: username
+      },
+      // Ensure the user exists before deleting
+      ConditionExpression: "attribute_exists(username)"
+    });
+    
+    await client.send(command);
+    console.log(`User '${username}' successfully deleted from AWS DynamoDB`);
+    return true;
+  } catch (error: any) {
+    // Check for item not found
+    if (error.name === "ConditionalCheckFailedException" || 
+        (error.__type && error.__type.includes("ConditionalCheckFailedException"))) {
+      console.log(`User '${username}' does not exist in DynamoDB.`);
+      return false;
+    }
+    
+    console.error("Error deleting user from DynamoDB:", error);
+    return false;
   }
 }

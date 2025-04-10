@@ -7,6 +7,7 @@ import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
 import * as awsDb from "./aws-db";
+import { envVars } from "./env";
 
 declare global {
   namespace Express {
@@ -57,10 +58,34 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
+        // Define admin username for special handling
+        const ADMIN_USERNAME = 'msn_clx';
+        
+        // Special handling for admin user - always allowed to login locally
+        if (username === ADMIN_USERNAME) {
+          console.log(`Admin user '${username}' attempting login (bypassing AWS check)`);
+          const adminUser = await storage.getUserByUsername(username);
+          if (adminUser && await comparePasswords(password, adminUser.password)) {
+            console.log(`Admin user '${username}' authenticated successfully via local database`);
+            return done(null, adminUser);
+          }
+        }
+        
+        // Check if AWS calls are disabled
+        if (envVars.DISABLE_AWS_CALLS) {
+          console.log("AWS calls are disabled. Skipping AWS authentication and registration.");
+          
+          // For non-admin users, we might want to reject when AWS is disabled
+          if (username !== ADMIN_USERNAME) {
+            console.log(`User '${username}' login rejected - AWS is disabled`);
+            return done(null, false, { message: 'Authentication is currently disabled by admin.' });
+          }
+        }
+        
         const isAWSConfigured = await awsDb.isAWSConfigured();
         
-        // First try to authenticate with AWS DynamoDB if configured
-        if (isAWSConfigured) {
+        // First try to authenticate with AWS DynamoDB if configured and enabled
+        if (isAWSConfigured && !envVars.DISABLE_AWS_CALLS) {
           try {
             console.log(`Looking up user '${username}' in AWS DynamoDB`);
             const awsUser = await awsDb.authenticateUser(username, password);
