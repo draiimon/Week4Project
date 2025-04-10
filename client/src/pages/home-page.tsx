@@ -21,14 +21,21 @@ export default function HomePage() {
       });
   }, []);
 
-  // Start the automatic tab rotation
+  // Track if user is hovering over the tabs content
+  const [isHovering, setIsHovering] = useState<boolean>(false);
+  
+  // Start the automatic tab rotation, but pause it when hovering
   useEffect(() => {
+    if (isHovering) {
+      return; // Don't set interval if hovering
+    }
+    
     const interval = setInterval(() => {
       setActiveTab((prevTab) => (prevTab + 1) % 4);
     }, 8000); // Change tab every 8 seconds
     
     return () => clearInterval(interval);
-  }, []);
+  }, [isHovering]); // Re-run effect when hover state changes
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -118,7 +125,9 @@ export default function HomePage() {
                 </div>
                 
                 {/* Single Improved Container Design */}
-                <div className="p-6 text-white">
+                <div className="p-6 text-white"
+                  onMouseEnter={() => setIsHovering(true)}
+                  onMouseLeave={() => setIsHovering(false)}>
                   {/* Tab content using useState */}
                   <div className="flex space-x-2 border-b border-gray-700 mb-4 flex-wrap">
                     <button
@@ -463,10 +472,7 @@ export default function HomePage() {
                 <SystemStatus />
               </div>
               
-              {/* Footer */}
-              <div className="text-center border-t border-gray-200 pt-4 pb-8 text-gray-500 text-sm">
-                © 2025 DevOps Final Project Dashboard. Created by Mark Andrei Castillo for Week 4 Project.
-              </div>
+              {/* No footer needed here anymore as we have global footer */}
             </div>
           </div>
         </main>
