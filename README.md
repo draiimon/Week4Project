@@ -56,9 +56,7 @@ A comprehensive AWS cloud infrastructure management and deployment platform with
 
 5. **Access the dashboard**
    - Open http://localhost:5000
-   - Login with admin credentials:
-     - Username: `msn_clx`
-     - Password: `Mason@0905`
+
 
 ## 🛠️ Architecture Overview
 
