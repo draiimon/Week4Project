@@ -28,8 +28,8 @@ A comprehensive AWS cloud infrastructure management and deployment platform with
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/oaktree-cloud-platform.git
-   cd oaktree-cloud-platform
+   git clone -b Week-4 https://github.com/draiimon/Oaktree.git
+   cd Oaktree
    ```
 
 2. **Install dependencies**
