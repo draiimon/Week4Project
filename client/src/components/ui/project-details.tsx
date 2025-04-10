@@ -1,10 +1,20 @@
 import React from "react";
 
 export const AWSInfrastructure: React.FC = () => {
-  const isAWSConfigured = 
-    typeof process.env.AWS_ACCESS_KEY_ID !== 'undefined' && 
-    typeof process.env.AWS_SECRET_ACCESS_KEY !== 'undefined' &&
-    typeof process.env.AWS_REGION !== 'undefined';
+  // In the frontend we can't access process.env directly, we'll use API status instead
+  const [isAWSConfigured, setIsAWSConfigured] = React.useState(true);
+  
+  React.useEffect(() => {
+    // Optionally check AWS connection status from the API
+    fetch('/api/aws/status')
+      .then(res => res.json())
+      .then(data => {
+        setIsAWSConfigured(data.status === 'connected');
+      })
+      .catch(() => {
+        setIsAWSConfigured(false);
+      });
+  }, []);
   
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
@@ -50,7 +60,7 @@ export const AWSInfrastructure: React.FC = () => {
             </div>
             <p className={`mt-1 text-sm ${isAWSConfigured ? 'text-green-700' : 'text-yellow-700'}`}>
               {isAWSConfigured 
-                ? `Connected to AWS Region: ${process.env.AWS_REGION}` 
+                ? `Connected to AWS Region: us-east-1` 
                 : 'Application will use local database for authentication and storage.'}
             </p>
           </div>

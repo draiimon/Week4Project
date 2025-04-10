@@ -131,7 +131,7 @@ export default function HomePage() {
                       <div className="bg-gray-50 p-3 rounded-md font-mono text-xs">
                         <pre className="whitespace-pre-wrap text-gray-700">
 {`# AWS DynamoDB Configuration
-REGION: ${process.env.AWS_REGION || 'us-east-1'}
+REGION: us-east-1
 TABLE: OakTreeUsers
 FEATURES: User Authentication, Data Storage
 AWS_ACCESS_KEY_ID: [CREDENTIAL HIDDEN]

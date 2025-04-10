@@ -98,10 +98,33 @@ export function setupAuth(app: Express) {
     }),
   );
 
-  passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser(async (id: number, done) => {
-    const user = await storage.getUser(id);
-    done(null, user);
+  passport.serializeUser((user, done) => {
+    // For DynamoDB users, we'll store username instead of ID
+    done(null, { id: user.id, username: user.username });
+  });
+  
+  passport.deserializeUser(async (serialized: { id: number, username: string }, done) => {
+    try {
+      // First try to get by username (for DynamoDB)
+      if (serialized.username) {
+        const user = await storage.getUserByUsername(serialized.username);
+        if (user) {
+          return done(null, user);
+        }
+      }
+      
+      // Fallback to ID (for local DB)
+      if (serialized.id) {
+        const user = await storage.getUser(serialized.id);
+        if (user) {
+          return done(null, user);
+        }
+      }
+      
+      done(new Error('User not found'), null);
+    } catch (error) {
+      done(error, null);
+    }
   });
 
   app.post("/api/register", async (req, res, next) => {
