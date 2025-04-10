@@ -141,30 +141,7 @@ export const AdminPanel: React.FC = () => {
             )}
           </p>
           
-          <div className="mt-3">
-            <Button
-              onClick={toggleAwsCalls}
-              disabled={isLoading}
-              variant={awsCallsDisabled ? "outline" : "destructive"}
-              size="sm"
-              className="w-full"
-            >
-              {isLoading ? (
-                <span className="flex items-center">
-                  <span className="mr-2 inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                  Processing...
-                </span>
-              ) : (
-                <span className="flex items-center justify-center">
-                  {awsCallsDisabled ? (
-                    <><ToggleRight className="w-4 h-4 mr-2" /> Enable AWS Calls</>
-                  ) : (
-                    <><ToggleLeft className="w-4 h-4 mr-2" /> Disable AWS Calls</>
-                  )}
-                </span>
-              )}
-            </Button>
-          </div>
+          {/* Button removed to avoid redundancy with the toggle switch */}
         </div>
       </div>
     </div>
