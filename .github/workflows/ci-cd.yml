@@ -40,47 +40,160 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build Docker image
-        run: docker build -t draiimon112/oaktree-app:week4 .
-
-      - name: Push Docker image
-        run: |
-          docker tag draiimon112/oaktree-app:week4 draiimon112/oaktree-app:latest
-          docker push draiimon112/oaktree-app:week4
-          docker push draiimon112/oaktree-app:latest
-          
-  deploy:
-    needs: build-docker
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/Week-4' || github.ref == 'refs/heads/main'
-    
-    steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Deploy to AWS
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: oaktree-app-dev
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          echo "Deploying application to AWS environment"
-          echo "Setting up DynamoDB tables for user authentication"
-          echo "Configuring AWS IAM permissions"
-          echo "Deployment completed at $(date)"
+          # Build a docker container and push it to ECR
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      # Also push to Docker Hub for backup
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG draiimon112/oaktree-app:week4
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG draiimon112/oaktree-app:latest
+          docker push draiimon112/oaktree-app:week4
+          docker push draiimon112/oaktree-app:latest
           
+  terraform:
+    needs: build-docker
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/Week-4' || github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init
+      
+      - name: Terraform Format
+        run: |
+          cd terraform
+          terraform fmt -check
+      
+      - name: Terraform Plan
+        run: |
+          cd terraform
+          terraform plan -var="aws_region=${{ secrets.AWS_REGION }}"
+      
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          cd terraform
+          terraform apply -auto-approve -var="aws_region=${{ secrets.AWS_REGION }}"
+          
+      - name: Export Terraform Outputs
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: terraform-outputs
+        run: |
+          cd terraform
+          echo "::set-output name=cognito_user_pool_id::$(terraform output -raw cognito_user_pool_id)"
+          echo "::set-output name=cognito_client_id::$(terraform output -raw cognito_client_id)"
+          echo "::set-output name=dynamodb_table_name::$(terraform output -raw dynamodb_table_name)"
+          echo "::set-output name=ecs_cluster_name::$(terraform output -raw ecs_cluster_name)"
+          echo "::set-output name=ecs_service_name::$(terraform output -raw ecs_service_name)"
+          
+  deploy:
+    needs: terraform
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Update ECS service
+        run: |
+          aws ecs update-service --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
+            --service ${{ needs.terraform.outputs.ecs_service_name }} \
+            --force-new-deployment
+          
+      - name: Wait for ECS deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
+            --services ${{ needs.terraform.outputs.ecs_service_name }}
+
       - name: Verify AWS deployment
         run: |
           echo "Running AWS deployment verification checks"
           echo "Checking DynamoDB table status"
-          echo "Verifying IAM role permissions"
-          echo "Confirming API endpoint accessibility"
+          aws dynamodb describe-table --table-name ${{ needs.terraform.outputs.dynamodb_table_name }} \
+            --query "Table.TableStatus" --output text
+            
+          echo "Verifying Cognito User Pool"
+          aws cognito-idp describe-user-pool --user-pool-id ${{ needs.terraform.outputs.cognito_user_pool_id }} \
+            --query "UserPool.Status" --output text
+            
+          echo "Confirming ECS service is running"
+          aws ecs describe-services --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
+            --services ${{ needs.terraform.outputs.ecs_service_name }} \
+            --query "services[0].status" --output text
+            
           echo "✅ All AWS checks passed"
+      
+      - name: Create deployment summary
+        id: deployment-summary
+        run: |
+          echo "### OakTree v4.0 Deployment Summary" > deployment-summary.md
+          echo "- **Environment**: Production" >> deployment-summary.md
+          echo "- **Deployed at**: $(date)" >> deployment-summary.md
+          echo "- **Deployment ID**: ${{ github.sha }}" >> deployment-summary.md
+          echo "- **AWS Region**: ${{ secrets.AWS_REGION }}" >> deployment-summary.md
+          echo "- **Status**: ✅ Successful" >> deployment-summary.md
 
       - name: Send deployment notification
-        run: |
-          echo "AWS deployment notification would be sent here"
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('./deployment-summary.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            })
+          
           echo "📧 Notification sent: OakTree v4.0 successfully deployed to AWS"
