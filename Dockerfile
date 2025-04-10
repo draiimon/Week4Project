@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Update npm and install dependencies
-RUN npm install -g npm@latest && npm install
+# Install dependencies using the npm version that comes with Node.js 18
+RUN npm install
 
 # Copy the rest of the application
 COPY . .
@@ -19,7 +19,7 @@ RUN npm run build
 # Set environment variables
 ENV NODE_ENV=production
 ENV PORT=5000
-ENV AWS_REGION=us-east-1
+ENV AWS_REGION=ap-southeast-1
 # The following environment variables will be provided at runtime:
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
