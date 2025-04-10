@@ -1,0 +1,92 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ Week-4 ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Create landing page 🔧
+        run: |
+          mkdir -p dist
+          cat > dist/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>OakTree AWS DevOps Platform</title>
+            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+          </head>
+          <body class="bg-gray-900 text-white">
+            <div class="container mx-auto px-4 py-12">
+              <header class="text-center mb-12">
+                <h1 class="text-5xl font-bold text-orange-500 mb-4">OakTree</h1>
+                <p class="text-xl text-gray-300">AWS DevOps Platform</p>
+              </header>
+              
+              <div class="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-lg p-6 mb-12">
+                <h2 class="text-3xl font-bold text-orange-400 mb-4">Project Overview</h2>
+                <p class="mb-4">An advanced DevOps platform specializing in AWS cloud infrastructure management and deployment automation, with enhanced tooling for infrastructure configuration and optimization.</p>
+                <h3 class="text-2xl font-bold text-orange-300 mb-2">Technology Stack:</h3>
+                <ul class="list-disc list-inside space-y-1 ml-4 mb-6">
+                  <li>React frontend with TypeScript</li>
+                  <li>AWS cloud services integration (DynamoDB, Cognito)</li>
+                  <li>Containerization with Docker</li>
+                  <li>Automated CI/CD pipeline with GitHub Actions</li>
+                  <li>Infrastructure as Code (IaC) with Terraform</li>
+                </ul>
+                
+                <div class="flex flex-wrap justify-center gap-4 mt-6">
+                  <a href="https://github.com/draiimon/Oaktree/tree/Week-4" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded">
+                    GitHub Repository
+                  </a>
+                  <a href="https://github.com/draiimon/Oaktree/actions" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    CI/CD Pipelines
+                  </a>
+                </div>
+              </div>
+              
+              <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <div class="bg-gray-800 rounded-lg p-6">
+                  <h3 class="text-2xl font-bold text-orange-400 mb-4">Features</h3>
+                  <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Real-time AWS service monitoring</li>
+                    <li>DynamoDB management interface</li>
+                    <li>User authentication with AWS Cognito</li>
+                    <li>Resource deployment automation</li>
+                    <li>Cross-region resource management</li>
+                  </ul>
+                </div>
+                
+                <div class="bg-gray-800 rounded-lg p-6">
+                  <h3 class="text-2xl font-bold text-orange-400 mb-4">DevOps Workflow</h3>
+                  <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Automated testing on code changes</li>
+                    <li>Docker container building and testing</li>
+                    <li>Infrastructure provisioning with Terraform</li>
+                    <li>Secure credentials management</li>
+                    <li>AWS deployment automation</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <footer class="text-center mt-16 text-gray-400">
+                <p>OakTree AWS DevOps Platform - Week 4 Final Project</p>
+                <p class="mt-2">© 2025 All rights reserved</p>
+              </footer>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
