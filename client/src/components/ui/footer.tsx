@@ -2,7 +2,7 @@ import React from 'react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="w-full py-3 mt-auto bg-gradient-to-r from-orange-100 to-white border-t border-orange-300/30">
+    <footer className="w-full py-3 bg-gradient-to-r from-orange-100 to-white border-t border-orange-300/30 sticky bottom-0">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <span className="font-medium text-gray-800">AWS DevOps Platform</span>

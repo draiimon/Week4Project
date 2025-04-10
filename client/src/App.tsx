@@ -38,10 +38,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <div className="flex flex-col min-h-screen overflow-hidden">
-          <main className="flex-1">
-            <Router />
-          </main>
+        <div className="flex flex-col min-h-screen">
+          <Router />
           <Footer />
           <Toaster />
         </div>
