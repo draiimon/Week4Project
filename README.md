@@ -74,20 +74,18 @@ A comprehensive AWS cloud infrastructure management and deployment platform with
 
 ### Multi-Environment Support
 
-#### Local Development
+#### Local Development (Simple Setup)
 
 For running on local machines (Windows, Linux, WSL):
 ```bash
-# First, set up the local development scripts
-npm pkg set scripts.local:dev="node local-dev.js"
-npm pkg set scripts.local:build="vite --config vite.config.local.ts build"
-npm pkg set scripts.local:start="NODE_ENV=production node local-dev.js"
+# Fix the local environment issues with one command
+node fix.js
 
-# Run the local-compatible development server
-npm run local:dev
+# Then run the app normally
+npm run dev
 ```
 
-> **Note for WSL/Linux users**: If you encounter path resolution errors with the default setup, always use the local scripts that are compatible with your environment.
+> **Note for WSL/Linux users**: If you still encounter issues, try installing tsx globally with `npm install -g tsx` and run `tsx server/index.ts` directly.
 
 #### Docker Container
 ```bash

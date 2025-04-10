@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'client')));
 
 // Import routes dynamically
-import('./server/routes.js')
+import('./server/routes.ts')
   .then(({ registerRoutes }) => {
     // Register API routes
     registerRoutes(app, server)
@@ -48,7 +48,28 @@ import('./server/routes.js')
   })
   .catch(error => {
     console.error("Failed to load routes:", error);
-    startBasicServer();
+    console.log("Trying TypeScript extension...");
+    
+    // Try with .ts extension as fallback
+    import('./server/routes.ts')
+      .then(({ registerRoutes }) => {
+        registerRoutes(app, server)
+          .then(() => {
+            const PORT = process.env.PORT || 5000;
+            server.listen(PORT, '0.0.0.0', () => {
+              console.log(`✅ Server is running successfully on http://localhost:${PORT}`);
+              console.log(`Access the application at: http://localhost:${PORT}`);
+            });
+          })
+          .catch(err => {
+            console.error('Failed to register routes:', err);
+            startBasicServer();
+          });
+      })
+      .catch(err => {
+        console.error("Failed to load routes with TypeScript:", err);
+        startBasicServer();
+      });
   });
 
 // Fallback server if routes fail to load

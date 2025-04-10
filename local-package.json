@@ -4,8 +4,8 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "local:dev": "node local-dev.js",
+    "local:dev": "node local-dev.cjs",
     "local:build": "vite --config vite.config.local.ts build",
-    "local:start": "NODE_ENV=production node local-dev.js"
+    "local:start": "NODE_ENV=production node local-dev.cjs"
   }
 }
