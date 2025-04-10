@@ -1,0 +1,63 @@
+Microsoft Windows [Version 10.0.19045.4529]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\KHARDZ>cd desktop
+
+C:\Users\KHARDZ\Desktop>cd Week 4
+
+C:\Users\KHARDZ\Desktop\Week 4>wsl
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ gitclone https://github.com/draiimon/Oaktree/tree/Week-4
+gitclone: command not found
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ git clone --branch Week-4 https://github.com/draiimon/Oaktree.git
+Cloning into 'Oaktree'...
+remote: Enumerating objects: 2887, done.
+remote: Counting objects: 100% (1666/1666), done.
+remote: Compressing objects: 100% (988/988), done.
+remote: Total 2887 (delta 649), reused 1574 (delta 566), pack-reused 1221 (from 1)
+Receiving objects: 100% (2887/2887), 6.32 MiB | 6.48 MiB/s, done.
+Resolving deltas: 100% (820/820), done.
+Updating files: 100% (104/104), done.
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ cd Oaktree
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ npm install
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+
+added 561 packages, and audited 562 packages in 7m
+
+64 packages are looking for funding
+  run `npm fund` for details
+
+8 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ nano .env
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ npm run db:push
+
+> rest-express@1.0.0 db:push
+> drizzle-kit push
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/drizzle.config.ts'
+Using 'pg' driver for database querying
+[⣷] Pulling schema from database...
+Error: connect ECONNREFUSED 127.0.0.1:5432
+    at /mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Object.query (/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/node_modules/drizzle-kit/bin.cjs:66575:26)
+    at async fromDatabase2 (/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/node_modules/drizzle-kit/bin.cjs:18700:25) {
+  errno: -111,
+  code: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 5432
+}
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ npm run dev
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts

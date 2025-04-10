@@ -19,15 +19,14 @@ This repository contains the Week 4 final implementation of the OakTree DevOps p
 
 - Node.js (v18 or later)
 - npm (v8 or later)
-- PostgreSQL (for local development)
 - Docker (optional, for containerized deployment)
-- AWS Account with DynamoDB access (optional)
+- AWS Account (optional, for full functionality)
 
-### Local Development Setup
+### Quick Setup (No Database Required)
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/draiimon/Oaktree.git
+   git clone --branch Week-4 https://github.com/draiimon/Oaktree.git
    cd Oaktree
    ```
 
@@ -39,47 +38,77 @@ This repository contains the Week 4 final implementation of the OakTree DevOps p
 3. **Configure environment variables**
    Create a `.env` file in the root directory with:
    ```
-   DATABASE_URL=postgresql://[username]:[password]@localhost:5432/oaktree
-   # Optional AWS configuration
-   AWS_ACCESS_KEY_ID=your_access_key
-   AWS_SECRET_ACCESS_KEY=your_secret_key
-   AWS_REGION=your_region
+   # Enable AWS Mode (no PostgreSQL needed)
+   USE_AWS_DB=true
+   
+   # AWS Configuration (for full functionality)
+   AWS_REGION=ap-southeast-1
+   AWS_ACCESS_KEY_ID=your_access_key_here
+   AWS_SECRET_ACCESS_KEY=your_secret_key_here
+   
+   # If you don't have AWS credentials, the app will run with limited functionality
    ```
 
-4. **Set up the database**
-   ```bash
-   npm run db:push
-   ```
-
-5. **Start the development server**
+4. **Start the development server**
    ```bash
    npm run dev
    ```
 
-6. **Access the application**
+5. **Access the application**
    Open your browser and navigate to http://localhost:5000
 
 ### Running in Windows WSL
 
-1. Follow the same steps as Local Development Setup
-2. Ensure PostgreSQL is installed and running in your WSL environment
-3. Make sure to update your `.env` file with the correct DATABASE_URL for your WSL PostgreSQL instance
-4. Run the application using `npm run dev`
+1. **Clone the repository in WSL**
+   ```bash
+   git clone --branch Week-4 https://github.com/draiimon/Oaktree.git
+   cd Oaktree
+   ```
 
-### Docker Deployment
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure .env file**
+   ```
+   # Enable AWS Mode (no PostgreSQL needed)
+   USE_AWS_DB=true
+   
+   # Add AWS credentials if available
+   AWS_REGION=ap-southeast-1
+   AWS_ACCESS_KEY_ID=your_access_key_here
+   AWS_SECRET_ACCESS_KEY=your_secret_key_here
+   ```
+
+4. **Run the application**
+   ```bash
+   npm run dev
+   ```
+
+### Docker Deployment (No Database Required)
 
 1. **Build the Docker image**
    ```bash
    docker build -t oaktree-app:latest .
    ```
 
-2. **Run the container**
+2. **Run the container with AWS mode enabled**
    ```bash
    docker run -d -p 5000:5000 \
-     -e DATABASE_URL=postgresql://[username]:[password]@host.docker.internal:5432/oaktree \
+     -e USE_AWS_DB=true \
+     -e AWS_REGION=ap-southeast-1 \
      -e AWS_ACCESS_KEY_ID=your_access_key \
      -e AWS_SECRET_ACCESS_KEY=your_secret_key \
-     -e AWS_REGION=your_region \
+     --name oaktree-container \
+     oaktree-app:latest
+   ```
+
+   If you don't have AWS credentials, you can still run with limited functionality:
+   ```bash
+   docker run -d -p 5000:5000 \
+     -e USE_AWS_DB=true \
+     -e AWS_REGION=ap-southeast-1 \
      --name oaktree-container \
      oaktree-app:latest
    ```
