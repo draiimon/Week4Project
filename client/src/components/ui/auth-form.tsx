@@ -49,7 +49,7 @@ export const LoginForm: React.FC = () => {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-orange-400">Username</FormLabel>
+              <FormLabel className="text-gray-700">Username</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -69,7 +69,7 @@ export const LoginForm: React.FC = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-orange-400">Password</FormLabel>
+              <FormLabel className="text-gray-700">Password</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -137,7 +137,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-orange-400">Email address</FormLabel>
+              <FormLabel className="text-gray-700">Email address</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -158,7 +158,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-orange-400">Username</FormLabel>
+              <FormLabel className="text-gray-700">Username</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -178,7 +178,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-orange-400">Password</FormLabel>
+              <FormLabel className="text-gray-700">Password</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -186,7 +186,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
                   placeholder="Create a password" 
                   autoComplete="new-password"
                   disabled={registerMutation.isPending}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                  className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
               <FormMessage className="text-orange-300" />
@@ -207,7 +207,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
                   placeholder="Confirm your password" 
                   autoComplete="new-password"
                   disabled={registerMutation.isPending}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                  className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
               <FormMessage className="text-orange-300" />
@@ -225,7 +225,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
           />
           <label
             htmlFor="terms"
-            className="text-sm font-medium leading-none text-gray-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-sm font-medium leading-none text-gray-600 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             I agree to the Terms and Conditions
           </label>
