@@ -1,8 +1,12 @@
+// Load environment variables first
+import './env';
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { setupAuth } from "./auth";
 import { createUsersTable, isAWSConfigured } from "./aws-db";
+import { logAwsConfig } from './env';
 
 // Initialize AWS DynamoDB
 const checkAwsConfig = async () => {

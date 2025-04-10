@@ -9,6 +9,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
+import { envVars, logAwsConfig } from './env';
 
 // Table name for users
 const USER_TABLE = "OakTreeUsers";
@@ -16,11 +17,7 @@ const scryptAsync = promisify(scrypt);
 
 // Check if AWS is properly configured
 export function isAWSConfigured(): boolean {
-  return !!(
-    process.env.AWS_ACCESS_KEY_ID && 
-    process.env.AWS_SECRET_ACCESS_KEY && 
-    process.env.AWS_REGION
-  );
+  return logAwsConfig();
 }
 
 // Initialize DynamoDB client with error handling
@@ -35,11 +32,12 @@ function getDynamoClient(): DynamoDBDocumentClient | null {
   }
   
   try {
+    console.log(`Initializing DynamoDB client with region: ${envVars.AWS_REGION}`);
     const client = new DynamoDBClient({
-      region: process.env.AWS_REGION,
+      region: envVars.AWS_REGION,
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ""
+        accessKeyId: envVars.AWS_ACCESS_KEY_ID || "",
+        secretAccessKey: envVars.AWS_SECRET_ACCESS_KEY || ""
       }
     });
     
