@@ -219,7 +219,7 @@ EXPOSE 5000
 
 # Allow environment variables to be passed
 ENV NODE_ENV=production
-ENV DATABASE_URL=
+ENV USE_AWS_DB=true
 ENV AWS_ACCESS_KEY_ID=
 ENV AWS_SECRET_ACCESS_KEY=
 ENV AWS_REGION=
@@ -239,17 +239,18 @@ docker build -t oaktree-app:latest .
 # Run with AWS cloud integration
 docker run -d \\
   -p 5000:5000 \\
-  -e DATABASE_URL=postgresql://[user]:[password]@host.docker.internal:5432/oaktree \\
+  -e USE_AWS_DB=true \\
   -e AWS_ACCESS_KEY_ID=your_access_key \\
   -e AWS_SECRET_ACCESS_KEY=your_secret_key \\
   -e AWS_REGION=your_region \\
   --name oaktree-container \\
   oaktree-app:latest
 
-# For local development without AWS, omit AWS variables:
+# For local development without AWS credentials:
 docker run -d \\
   -p 5000:5000 \\
-  -e DATABASE_URL=postgresql://[user]:[password]@host.docker.internal:5432/oaktree \\
+  -e USE_AWS_DB=true \\
+  -e AWS_REGION=ap-southeast-1 \\
   --name oaktree-container \\
   oaktree-app:latest`}
               </pre>

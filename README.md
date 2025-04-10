@@ -138,11 +138,53 @@ The platform provides comprehensive real-time monitoring:
 ## 🌟 Deployment Options
 
 ### Docker Deployment
-Build and deploy as a container for maximum portability.
+Build and deploy as a container for maximum portability:
 
-### AWS Cloud Deployment
-1. Configure your AWS credentials
-2. Use the platform's Terraform integration for Infrastructure as Code
+```bash
+# Build the Docker image
+docker build -t oaktree-platform:latest .
+
+# Run with AWS cloud integration
+docker run -d -p 5000:5000 \
+  -e USE_AWS_DB=true \
+  -e AWS_ACCESS_KEY_ID=your_access_key \
+  -e AWS_SECRET_ACCESS_KEY=your_secret_key \
+  -e AWS_REGION=your_region \
+  --name oaktree-container \
+  oaktree-platform:latest
+```
+
+### AWS Cloud Deployment with Terraform
+
+The platform includes complete Terraform configuration for deploying to AWS:
+
+```bash
+# Navigate to the terraform directory
+cd terraform
+
+# Initialize Terraform to download providers
+terraform init
+
+# Plan your deployment to see what resources will be created
+terraform plan
+
+# Apply the configuration to create the AWS resources
+terraform apply -auto-approve
+```
+
+The Terraform configuration will create:
+1. **DynamoDB Table**: For user storage and authentication
+2. **IAM Roles**: With proper permissions for your application
+3. **EC2 Instance**: For hosting the application
+4. **CloudWatch Alarms**: For monitoring
+
+#### How to customize AWS deployment:
+
+Edit the `terraform/variables.tf` file to customize:
+- AWS Region
+- Instance type
+- Storage capacity
+- Resource naming
 
 ## 🤝 Contributing
 
