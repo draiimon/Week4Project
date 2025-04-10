@@ -2,8 +2,10 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { isAWSConfigured } from './aws-db';
+import { isAWSConfigured, createUsersTable } from './aws-db';
 import { envVars } from './env';
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes
@@ -138,6 +140,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
       message: "API is running",
       timestamp: new Date().toISOString()
     });
+  });
+
+  // Endpoint to fetch all users from DynamoDB - ADMIN ONLY
+  app.get("/api/dynamodb/users", async (req, res) => {
+    // Check if user is logged in and is admin
+    if (!req.user || (req.user as any).username !== 'msn_clx') {
+      return res.status(403).json({
+        error: "Unauthorized. Admin access required."
+      });
+    }
+
+    const awsConfigured = await isAWSConfigured();
+    if (!awsConfigured) {
+      return res.status(503).json({
+        error: "AWS DynamoDB is not properly configured"
+      });
+    }
+
+    try {
+      // Initialize DynamoDB client
+      const client = new DynamoDBClient({
+        region: envVars.AWS_REGION,
+        credentials: {
+          accessKeyId: envVars.AWS_ACCESS_KEY_ID || "",
+          secretAccessKey: envVars.AWS_SECRET_ACCESS_KEY || ""
+        }
+      });
+      const docClient = DynamoDBDocumentClient.from(client);
+
+      // Ensure table exists
+      await createUsersTable();
+
+      // Scan command to get all users from DynamoDB
+      const command = new ScanCommand({
+        TableName: "OakTreeUsers",
+        // Protect sensitive data
+        ProjectionExpression: "username, email, createdAt",
+      });
+
+      const response = await docClient.send(command);
+      
+      // Return items with count and size statistics
+      res.json({
+        tableName: "OakTreeUsers",
+        region: envVars.AWS_REGION,
+        itemCount: response.Items?.length || 0,
+        items: response.Items || [],
+        sizeBytes: JSON.stringify(response.Items || []).length,
+        scannedCount: response.ScannedCount || 0,
+        lastUpdated: new Date().toISOString()
+      });
+    } catch (err) {
+      const error = err as Error;
+      console.error("Error fetching users from DynamoDB:", error);
+      res.status(500).json({
+        error: "Failed to retrieve users from DynamoDB",
+        message: error.message
+      });
+    }
   });
 
   const httpServer = createServer(app);

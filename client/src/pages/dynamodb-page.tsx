@@ -1,38 +1,134 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+
+interface DynamoDBUserData {
+  username: string;
+  email: string;
+  createdAt: string;
+}
+
+interface DynamoDBTableData {
+  tableName: string;
+  name?: string; // For backward compatibility
+  status: string;
+  itemCount: number;
+  items: DynamoDBUserData[];
+  sizeBytes: number;
+  region: string;
+  lastUpdated?: string;
+}
 
 export default function DynamoDBPage() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
-  const [tableData, setTableData] = useState<any>({
-    name: "",
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [tableData, setTableData] = useState<DynamoDBTableData>({
+    tableName: "",
     status: "",
     itemCount: 0,
+    items: [],
     sizeBytes: 0,
     region: ""
   });
   const [error, setError] = useState<string | null>(null);
 
+  // Check if user is admin (mason_clx)
+  useEffect(() => {
+    if (user && user.username === 'msn_clx') {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
+
   useEffect(() => {
     // Fetch real AWS status and DynamoDB info
     async function fetchDynamoDBData() {
       try {
-        const response = await fetch('/api/aws/status');
-        const statusData = await response.json();
+        // First get AWS connection status
+        const statusResponse = await fetch('/api/aws/status');
+        const statusData = await statusResponse.json();
         
-        if (statusData.status === 'connected') {
+        if (statusData.status !== 'connected') {
+          setError("AWS DynamoDB is not connected. Please check your AWS credentials.");
+          setIsLoading(false);
+          return;
+        }
+        
+        // If the user is admin, fetch actual user data from DynamoDB
+        if (isAdmin) {
+          try {
+            const userDataResponse = await fetch('/api/dynamodb/users');
+            
+            if (!userDataResponse.ok) {
+              if (userDataResponse.status === 403) {
+                toast({
+                  title: "Admin access required",
+                  description: "You need to be logged in as admin to view all users.",
+                  variant: "destructive"
+                });
+              } else {
+                const errorData = await userDataResponse.json();
+                setError(errorData.error || "Error fetching user data");
+              }
+              
+              // Still show basic table info even if user fetch fails
+              setTableData({
+                tableName: statusData.services.dynamodb.tableName || "OakTreeUsers",
+                status: "Active",
+                itemCount: 1, // Assume at least one user
+                items: [],
+                sizeBytes: 1024,
+                region: statusData.region || "ap-southeast-1"
+              });
+            } else {
+              // Successfully retrieved user data
+              const userData = await userDataResponse.json();
+              
+              setTableData({
+                tableName: userData.tableName,
+                status: "Active",
+                itemCount: userData.itemCount,
+                items: userData.items || [],
+                sizeBytes: userData.sizeBytes,
+                region: userData.region || statusData.region,
+                lastUpdated: userData.lastUpdated
+              });
+              
+              toast({
+                title: "Admin access granted",
+                description: `Showing ${userData.itemCount} users from DynamoDB`,
+                variant: "default"
+              });
+            }
+          } catch (err) {
+            console.error("Error fetching user data:", err);
+            // Show basic table info on error
+            setTableData({
+              tableName: statusData.services.dynamodb.tableName || "OakTreeUsers",
+              status: "Active",
+              itemCount: 1,
+              items: [],
+              sizeBytes: 1024,
+              region: statusData.region || "ap-southeast-1"
+            });
+          }
+        } else {
+          // Non-admin users just see table info without actual user data
           setTableData({
-            name: "UsersTable", 
+            tableName: statusData.services.dynamodb.tableName || "OakTreeUsers",
             status: "Active",
             itemCount: user ? 1 : 0, // At least 1 item if user is logged in
+            items: [],
             sizeBytes: 1024, // 1KB baseline size
             region: statusData.region || "ap-southeast-1"
           });
-        } else {
-          setError("AWS DynamoDB is not connected. Please check your AWS credentials.");
         }
       } catch (err) {
+        console.error("Error in DynamoDB page:", err);
         setError("Error fetching DynamoDB data. Please try again.");
       } finally {
         setIsLoading(false);
@@ -40,7 +136,7 @@ export default function DynamoDBPage() {
     }
 
     fetchDynamoDBData();
-  }, [user]);
+  }, [user, isAdmin, toast]);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -157,7 +253,7 @@ export default function DynamoDBPage() {
                               </div>
                               <div className="ml-4">
                                 <div className="text-sm font-medium text-white">
-                                  {tableData.name}
+                                  {tableData.tableName}
                                 </div>
                               </div>
                             </div>
@@ -246,6 +342,62 @@ Created: ${new Date().toLocaleDateString()}`}
                       <p className="mt-1 text-xs text-gray-400">2.5ms average response time</p>
                     </div>
                   </div>
+                  
+                  {/* User Data Display for Admin */}
+                  {isAdmin && tableData.items && tableData.items.length > 0 && (
+                    <div className="mt-6 border-t border-gray-700 pt-4">
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="text-base font-medium text-orange-400">
+                          User Data (Admin View)
+                        </h4>
+                        <span className="bg-orange-600 px-2 py-0.5 rounded-full text-xs text-white">
+                          {tableData.items.length} Users
+                        </span>
+                      </div>
+                      
+                      <div className="bg-gray-800 rounded-md overflow-hidden border border-gray-700">
+                        <table className="min-w-full divide-y divide-gray-700">
+                          <thead className="bg-gradient-to-r from-gray-800 to-gray-900">
+                            <tr>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-orange-400 uppercase tracking-wider">
+                                Username
+                              </th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-orange-400 uppercase tracking-wider">
+                                Email
+                              </th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-orange-400 uppercase tracking-wider">
+                                Created At
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-700">
+                            {tableData.items.map((user, index) => (
+                              <tr key={index} className={index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-850'}>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-white">
+                                  {user.username}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+                                  {user.email}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+                                  {new Date(user.createdAt).toLocaleString()}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      
+                      <div className="mt-2 text-xs text-orange-300">
+                        <span className="inline-flex items-center">
+                          <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Real user data from DynamoDB table. Last updated: {tableData.lastUpdated ? new Date(tableData.lastUpdated).toLocaleTimeString() : 'Unknown'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="mt-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-orange-500/20 rounded-md">
                     <h4 className="text-sm font-medium text-orange-400 mb-2">
