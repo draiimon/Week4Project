@@ -163,9 +163,11 @@ export default function HomePage() {
                     </button>
                   </div>
                   
+                  {/* CSS animations sa loob na ng code */}
+                  
                   {/* First Tab: AWS Infrastructure */}
-                  <div className={activeTab === 0 ? "block" : "hidden"}>
-                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg">
+                  <div className={`${activeTab === 0 ? "block tab-content tab-content-active" : "hidden"}`}>
+                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg transform transition-all duration-500">
                       <h4 className="text-orange-400 text-lg font-semibold mb-3 flex items-center">
                         <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -228,8 +230,8 @@ export default function HomePage() {
                   </div>
                   
                   {/* Second Tab: Authentication and Data Management */}
-                  <div className={activeTab === 1 ? "block" : "hidden"}>
-                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg">
+                  <div className={`${activeTab === 1 ? "block tab-content tab-content-active" : "hidden"}`}>
+                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg transform transition-all duration-500">
                       <h4 className="text-orange-400 text-lg font-semibold mb-3 flex items-center">
                         <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -301,8 +303,8 @@ export default function HomePage() {
                   </div>
                   
                   {/* Third Tab: Cross-Environment Deployment */}
-                  <div className={activeTab === 2 ? "block" : "hidden"}>
-                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg">
+                  <div className={`${activeTab === 2 ? "block tab-content tab-content-active" : "hidden"}`}>
+                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg transform transition-all duration-500">
                       <h4 className="text-orange-400 text-lg font-semibold mb-3 flex items-center">
                         <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -390,8 +392,8 @@ export default function HomePage() {
                   </div>
                   
                   {/* Fourth Tab: Docker & WSL Configuration */}
-                  <div className={activeTab === 3 ? "block" : "hidden"}>
-                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg">
+                  <div className={`${activeTab === 3 ? "block tab-content tab-content-active" : "hidden"}`}>
+                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg transform transition-all duration-500">
                       <h4 className="text-orange-400 text-lg font-semibold mb-3 flex items-center">
                         <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
