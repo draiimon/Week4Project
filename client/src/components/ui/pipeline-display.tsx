@@ -49,10 +49,10 @@ export const PipelineDisplay: React.FC = () => {
     <div className="bg-white shadow rounded-lg overflow-hidden mb-8">
       <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
         <h3 className="text-lg leading-6 font-medium text-gray-900">
-          End-to-End DevOps Pipeline
+          AWS DevOps Pipeline
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-gray-500">
-          Current status of your complete DevOps workflow
+          Current status of your AWS integration workflow
         </p>
       </div>
 
@@ -73,8 +73,8 @@ export const PipelineDisplay: React.FC = () => {
           {/* Pipeline Steps */}
           <div className="flex flex-col md:flex-row justify-between">
             <PipelineStep
-              title="Code"
-              subtitle="Git Repository"
+              title="Source"
+              subtitle="AWS CodeCommit"
               status="completed"
               icon={
                 <svg
@@ -96,7 +96,7 @@ export const PipelineDisplay: React.FC = () => {
 
             <PipelineStep
               title="Build"
-              subtitle="Docker Image"
+              subtitle="AWS CodeBuild"
               status="completed"
               icon={
                 <svg
@@ -118,7 +118,7 @@ export const PipelineDisplay: React.FC = () => {
 
             <PipelineStep
               title="Test"
-              subtitle="Automated Tests"
+              subtitle="AWS CodePipeline"
               status="completed"
               icon={
                 <svg
@@ -140,7 +140,7 @@ export const PipelineDisplay: React.FC = () => {
 
             <PipelineStep
               title="Deploy"
-              subtitle="AWS Cloud"
+              subtitle="AWS DynamoDB"
               status="active"
               icon={
                 <svg
@@ -162,7 +162,7 @@ export const PipelineDisplay: React.FC = () => {
 
             <PipelineStep
               title="Monitor"
-              subtitle="Application Metrics"
+              subtitle="AWS CloudWatch"
               status="pending"
               icon={
                 <svg

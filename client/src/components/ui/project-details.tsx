@@ -80,7 +80,7 @@ export const AWSInfrastructure: React.FC = () => {
               </li>
               <li className="flex items-center">
                 <svg
-                  className="h-5 w-5 text-gray-400 mr-2"
+                  className="h-5 w-5 text-green-500 mr-2"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -90,10 +90,10 @@ export const AWSInfrastructure: React.FC = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-gray-400">Local PostgreSQL Database (Fallback)</span>
+                <span className="text-gray-700">AWS Cognito (User Authentication)</span>
               </li>
               <li className="flex items-center">
                 <svg
@@ -139,13 +139,14 @@ export const AWSInfrastructure: React.FC = () => {
             </h4>
             <div className="bg-gray-50 p-3 rounded-md text-xs text-gray-700 font-mono">
               <pre className="whitespace-pre-wrap">
-{`# System Architecture
-- Frontend: React.js with shadcn/ui components
-- Backend: Express.js API with session authentication
-- Database: Primary: AWS DynamoDB, Fallback: PostgreSQL
-- Authentication: Dual-layer with AWS credentials fallback
-- Deployment: Containerized for cross-environment operation
-- Local Support: Full functionality in WSL environment`}
+{`# AWS Architecture
+- Authentication: AWS Cognito User Pools
+- Database: AWS DynamoDB for user data storage
+- Identity: AWS IAM Roles and Policies
+- Deployment: AWS CodeDeploy with CI/CD pipeline
+- Monitoring: AWS CloudWatch for metrics and logs
+- Storage: AWS S3 for static assets and configuration
+- Networking: AWS VPC for secure environment isolation`}
               </pre>
             </div>
           </div>
@@ -322,66 +323,66 @@ export const ProjectDocumentation: React.FC = () => {
 
           <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
             <li>
-              <strong>Linux Environment:</strong> Application configured to run
-              on Ubuntu 20.04 LTS and Windows WSL
+              <strong>AWS DynamoDB:</strong> NoSQL database for secure user
+              authentication and data storage
             </li>
             <li>
-              <strong>Version Control:</strong> Complete Git workflow with
-              feature branches and code reviews
+              <strong>AWS IAM:</strong> Identity and Access Management for
+              secure access control to AWS resources
             </li>
             <li>
-              <strong>Containerization:</strong> Application designed for container 
-              deployment with environment variables
+              <strong>AWS SDK for JavaScript:</strong> Comprehensive toolkit for
+              interacting with AWS services
             </li>
             <li>
-              <strong>CI/CD Pipeline:</strong> Automated deployment pipeline
-              with environment segregation
+              <strong>AWS CodeCommit:</strong> Git repository service with
+              fully managed source control
             </li>
             <li>
-              <strong>AWS Integration:</strong> DynamoDB for robust user 
-              management with authentication
+              <strong>AWS CodeBuild:</strong> Continuous integration service
+              for compiling and testing code
             </li>
             <li>
-              <strong>Cross-Environment:</strong> Seamless operation between
-              cloud and local development
+              <strong>AWS CodeDeploy:</strong> Automated deployment service to
+              EC2 instances and other compute platforms
             </li>
             <li>
-              <strong>Fallback Mechanisms:</strong> Graceful degradation to local 
-              database when cloud is unavailable
+              <strong>AWS CloudWatch:</strong> Monitoring and observability
+              service for metrics and logs
             </li>
           </ul>
 
           <h5 className="text-sm font-medium text-gray-900 mt-4">
-            Project Architecture
+            AWS Architecture Integration
           </h5>
           <p className="text-sm text-gray-700">
-            The application follows a modern web application architecture with:
+            The application leverages multiple AWS services:
           </p>
 
           <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
             <li>
-              <strong>Front-end:</strong> React.js with TailwindCSS and shadcn/ui 
-              components for a modern UI
+              <strong>Authentication Flow:</strong> DynamoDB for secure user 
+              credential storage and verification
             </li>
             <li>
-              <strong>Back-end:</strong> Express.js API with robust error handling 
-              and secure authentication
+              <strong>Data Storage:</strong> DynamoDB Tables with appropriate
+              access patterns and indexing
             </li>
             <li>
-              <strong>Database:</strong> Dual-layer with AWS DynamoDB primary and 
-              PostgreSQL fallback
+              <strong>Security:</strong> AWS IAM with fine-grained access control
+              and least privilege principles
             </li>
             <li>
-              <strong>Authentication:</strong> Passport.js with secure password 
-              hashing and session management
+              <strong>Deployment:</strong> AWS CodePipeline to orchestrate the
+              entire CI/CD workflow
             </li>
             <li>
-              <strong>AWS Integration:</strong> AWS SDK for JavaScript with 
-              environment variable configuration
+              <strong>Client Integration:</strong> AWS SDK for JavaScript with
+              proper credential management
             </li>
             <li>
-              <strong>Containerization:</strong> Environment-agnostic deployment 
-              with Docker capabilities
+              <strong>Environment Management:</strong> Cross-region deployment
+              with consistent configuration
             </li>
           </ul>
         </div>
