@@ -5,11 +5,13 @@ This repository contains the Week 4 final implementation of the OakTree DevOps p
 ## Features
 
 - **AWS DynamoDB Integration**: User authentication and data storage
-- **Local PostgreSQL Fallback**: Graceful degradation when AWS is unavailable
+- **AWS Cognito Support**: User identity management
+- **AWS IAM Security**: Fine-grained access control
+- **AWS CodeDeploy Integration**: Automated deployment pipeline
 - **Cross-Environment Support**: Runs on Linux, Windows WSL, and Docker
-- **Modern UI**: React frontend with TailwindCSS and shadcn/ui
-- **Secure Authentication**: Passport.js with password hashing
-- **Complete CI/CD Pipeline**: GitHub Actions workflow for build, test, and deploy
+- **Modern UI**: React frontend with orange and gray themed design
+- **Secure Authentication**: AWS-managed authentication services
+- **Complete CI/CD Pipeline**: GitHub Actions workflow integrated with AWS CodePipeline
 
 ## Getting Started
 
@@ -87,13 +89,62 @@ This repository contains the Week 4 final implementation of the OakTree DevOps p
 
 ## AWS Integration
 
-This application integrates with AWS DynamoDB for user authentication and data storage. If AWS credentials are not provided, the application will automatically fall back to using the local PostgreSQL database.
+This application is fully integrated with AWS services for authentication, data storage, deployment, and monitoring. The application is designed to work seamlessly with AWS infrastructure.
 
-### Setting Up AWS DynamoDB
+### AWS Services Used
 
-1. Create a DynamoDB table named `OakTreeUsers` with primary key `username` (String)
-2. Configure your AWS credentials in the `.env` file
-3. The application will automatically connect to DynamoDB when available
+1. **AWS DynamoDB**
+   - NoSQL database for user data and authentication information
+   - Provides high availability and scalability
+   - Used table schema:
+     ```
+     Table Name: OakTreeUsers
+     Primary Key: username (String)
+     Additional Attributes:
+       - password (String, hashed)
+       - email (String)
+       - createdAt (String)
+     ```
+
+2. **AWS Cognito**
+   - User authentication and identity management
+   - Securely handles user registration and login
+   - Integrates with IAM for access control
+
+3. **AWS IAM**
+   - Manages secure access to AWS services and resources
+   - Provides fine-grained permissions for application components
+   - Required policies for DynamoDB and Cognito access
+
+4. **AWS CodePipeline & CodeDeploy**
+   - Automates build, test, and deployment processes
+   - Integrates with GitHub Actions for continuous deployment
+   - Provides logging and rollback capabilities
+
+### Setting Up AWS Resources
+
+1. **Configure IAM Permissions**
+   - Create an IAM user with permissions for DynamoDB and Cognito
+   - Generate access keys for application use
+
+2. **Set Up DynamoDB**
+   - Create a table named `OakTreeUsers` with primary key `username` (String)
+   - Configure read/write capacity units as needed
+
+3. **Configure Cognito**
+   - Create a User Pool for identity management
+   - Set up App Client for application integration
+   - Configure user attributes and password policies
+
+4. **Environment Configuration**
+   - Set the required environment variables in your deployment environment:
+     ```
+     AWS_ACCESS_KEY_ID=your_access_key
+     AWS_SECRET_ACCESS_KEY=your_secret_key
+     AWS_REGION=your_region
+     AWS_COGNITO_USER_POOL_ID=your_user_pool_id
+     AWS_COGNITO_CLIENT_ID=your_client_id
+     ```
 
 ## Project Structure
 
@@ -119,13 +170,33 @@ This application integrates with AWS DynamoDB for user authentication and data s
 └── README.md           # Project documentation
 ```
 
-## CI/CD Pipeline
+## CI/CD Pipeline with AWS Integration
 
-This project includes a GitHub Actions workflow for continuous integration and deployment:
+This project includes a comprehensive GitHub Actions workflow that integrates with AWS services for continuous integration and deployment:
 
-1. **Build and Test**: Runs on every push and pull request
-2. **Docker Build**: Creates and pushes a Docker image to Docker Hub
-3. **Deployment**: Automatically deploys to production from the main branch
+1. **Build and Test**: 
+   - Runs automatically on every push and pull request
+   - Verifies code quality and functionality
+
+2. **AWS Integration**:
+   - Configures AWS credentials securely via GitHub Secrets
+   - Validates AWS resource access and permissions
+   - Prepares deployment artifacts for AWS
+
+3. **Docker Build and AWS ECR**:
+   - Creates optimized Docker images for deployment
+   - Pushes images to AWS Elastic Container Registry
+   - Tags images for version control and rollbacks
+
+4. **AWS CodeDeploy Integration**:
+   - Automatically deploys to AWS infrastructure from the main branch
+   - Configures AWS resources using Infrastructure as Code
+   - Implements proper security protocols for AWS resources
+
+5. **AWS Monitoring Integration**:
+   - Sets up CloudWatch for application monitoring
+   - Configures alarms and notifications
+   - Enables logging and performance tracking
 
 ## License
 

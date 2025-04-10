@@ -19,6 +19,12 @@ RUN npm run build
 # Set environment variables
 ENV NODE_ENV=production
 ENV PORT=5000
+ENV AWS_REGION=us-east-1
+# The following environment variables will be provided at runtime:
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
+# AWS_COGNITO_USER_POOL_ID
+# AWS_COGNITO_CLIENT_ID
 
 # Expose the port the app runs on
 EXPOSE 5000
