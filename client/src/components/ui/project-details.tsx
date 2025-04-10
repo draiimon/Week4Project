@@ -83,7 +83,7 @@ export const AWSInfrastructure: React.FC = () => {
               </div>
               <div className="flex items-center p-2 bg-gray-800 rounded">
                 <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                <span className="text-sm text-gray-300">Cognito: <span className="font-medium">Authentication</span></span>
+                <span className="text-sm text-gray-300">EC2: <span className="font-medium">Compute</span></span>
               </div>
               <div className="flex items-center p-2 bg-gray-800 rounded">
                 <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
@@ -107,14 +107,14 @@ export const AWSInfrastructure: React.FC = () => {
           {/* Implementation Details */}
           <div>
             <h4 className="text-sm font-medium text-orange-400 mb-2">
-              Week 4 AWS Architecture:
+              AWS Architecture Overview:
             </h4>
             <div className="bg-gray-800 bg-opacity-50 p-4 rounded-md text-xs text-gray-300 font-mono border border-gray-700">
               <pre className="whitespace-pre-wrap">
 {`# AWS Cloud Services Integration
-- Authentication: AWS Cognito User Pools
 - Database: AWS DynamoDB for user data storage
 - Identity: AWS IAM Roles and Policies
+- Compute: AWS EC2 for application hosting
 - Deployment: AWS CodeDeploy with CI/CD pipeline
 - Monitoring: AWS CloudWatch for metrics and logs
 - Storage: AWS S3 for static assets and configuration
@@ -198,7 +198,7 @@ npm run dev
           {/* Docker Configuration */}
           <div>
             <h4 className="text-sm font-medium text-orange-400 mb-3">
-              Docker Integration (Week 1):
+              Docker Integration:
             </h4>
             <div className="bg-gray-800 rounded-md p-4 font-mono overflow-auto max-h-40 border border-gray-700">
               <pre className="text-xs text-green-400">
@@ -229,7 +229,7 @@ CMD ["npm", "start"]`}
             </div>
             
             <h4 className="text-sm font-medium text-orange-400 mt-4 mb-3">
-              Docker Deployment (Week 3):
+              Docker Deployment:
             </h4>
             <div className="bg-gray-800 rounded-md p-4 font-mono overflow-auto max-h-40 border border-gray-700">
               <pre className="text-xs text-green-400">
@@ -259,7 +259,7 @@ docker run -d \\
         
         <div className="mt-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-orange-500/20 rounded-md">
           <h4 className="text-sm font-medium text-orange-400 mb-3">
-            Week 4 DevOps Integration Status:
+            DevOps Integration Status:
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex items-center p-2 bg-gray-800 rounded">
@@ -307,7 +307,7 @@ export const ProjectDocumentation: React.FC = () => {
       <div className="p-6 text-white">
         <div className="bg-gray-800 bg-opacity-50 rounded-md border border-gray-700 p-4 mb-4">
           <h4 className="text-sm font-medium text-orange-400 mb-3">
-            Week 4 Final Requirements Completed
+            Project Requirements Status
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex items-center p-2 bg-gray-800 rounded">

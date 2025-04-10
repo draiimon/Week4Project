@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 const navItems = [
   {
-    name: "AWS Dashboard",
+    name: "Dashboard",
     href: "/",
     icon: (
       <svg
@@ -44,7 +44,7 @@ const navItems = [
     ),
   },
   {
-    name: "AWS Regions",
+    name: "Cloud Regions",
     href: "/regions",
     icon: (
       <svg
@@ -64,7 +64,7 @@ const navItems = [
     ),
   },
   {
-    name: "AWS User Services",
+    name: "User Services",
     href: "/user-services",
     icon: (
       <svg
