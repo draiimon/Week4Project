@@ -14,7 +14,7 @@ export const StatusCard: React.FC<StatusCardProps> = ({
   isActive = false,
 }) => {
   return (
-    <div className="bg-gray-50 overflow-hidden shadow rounded-lg">
+    <div className="bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden shadow rounded-lg border border-gray-700">
       <div className="px-4 py-5 sm:p-6">
         <div className="flex items-center">
           <div className={`flex-shrink-0 ${isActive ? "bg-orange-500" : "bg-green-500"} rounded-md p-3`}>
@@ -44,14 +44,14 @@ export const StatusCard: React.FC<StatusCardProps> = ({
           </div>
           <div className="ml-5 w-0 flex-1">
             <dl>
-              <dt className="text-sm font-medium text-gray-500 truncate">{title}</dt>
+              <dt className="text-sm font-medium text-orange-400 truncate">{title}</dt>
               <dd>
-                <div className="text-lg font-medium text-gray-900">{status}</div>
+                <div className="text-lg font-medium text-white">{status}</div>
               </dd>
             </dl>
           </div>
         </div>
-        <div className="mt-2 text-sm text-gray-500">{description}</div>
+        <div className="mt-2 text-sm text-gray-300">{description}</div>
       </div>
     </div>
   );
@@ -80,40 +80,91 @@ export const ProjectStatusOverview: React.FC = () => {
   }, []);
   
   return (
-    <div className="bg-white shadow rounded-lg overflow-hidden mb-8">
-      <div className="p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-2">Week 4 Final Project Status</h2>
+    <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden mb-8 border border-orange-500/20">
+      <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
+        <h3 className="text-lg leading-6 font-bold text-white">
+          Week 4 Final Project Status
+        </h3>
+        <p className="mt-1 max-w-2xl text-sm text-gray-200">
+          Real-time connection status to AWS services
+        </p>
+      </div>
+      <div className="p-6 text-white">
         {isLoading ? (
-          <p className="text-sm text-gray-500">Loading project status...</p>
+          <p className="text-sm text-gray-300">Loading project status...</p>
         ) : (
           <>
-            <div className="mt-3 grid grid-cols-1 gap-5 mb-4">
-              <StatusCard
-                title="AWS DevOps Project"
-                status={awsStatus === 'Connected' ? 'Live on AWS Cloud' : 'Local Development Mode'}
-                description={`AWS DynamoDB Status: ${awsStatus}`}
-                isActive={awsStatus !== 'Connected'}
-              />
-            </div>
-            
-            <div className="bg-blue-50 p-4 rounded-md border border-blue-100">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 mt-1">
-                  <svg className="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
+            <div className="p-4 bg-gray-800 bg-opacity-50 rounded-md border border-gray-700">
+              <div className="flex items-center">
+                <div className={`flex-shrink-0 ${awsStatus !== 'Connected' ? "bg-orange-500" : "bg-green-500"} rounded-full p-2 mr-3`}>
+                  <svg
+                    className="h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    {awsStatus !== 'Connected' ? (
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    ) : (
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    )}
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">Project Connection Information</h3>
-                  <div className="mt-2 text-sm text-blue-700">
-                    <ul className="list-disc space-y-1 pl-5">
-                      <li>Environment: <span className="font-medium">{awsStatus === 'Connected' ? 'AWS Cloud' : 'Local Development'}</span></li>
-                      <li>Region: <span className="font-medium">{awsRegion}</span></li>
-                      <li>AWS DynamoDB Status: <span className="font-medium">{awsStatus}</span></li>
-                      <li>Authentication: <span className="font-medium">{awsStatus === 'Connected' ? 'Using AWS DynamoDB' : 'Using Local Database'}</span></li>
-                      <li>Data Storage: <span className="font-medium">{awsStatus === 'Connected' ? 'AWS DynamoDB Tables' : 'Local Database'}</span></li>
-                    </ul>
-                  </div>
+                  <h4 className="text-lg font-medium text-white">
+                    Project Environment: 
+                    <span className={awsStatus === 'Connected' ? 'text-green-400 ml-2' : 'text-orange-400 ml-2'}>
+                      {awsStatus === 'Connected' ? 'Live on AWS Cloud' : 'Local Development Mode'}
+                    </span>
+                  </h4>
+                  <p className="text-sm text-gray-300 mt-1">
+                    {awsStatus === 'Connected' 
+                      ? 'Your application is successfully connected to AWS DynamoDB and displaying real-time metrics from your cloud account.' 
+                      : 'Your application is running in local development mode. Connect to AWS to see real cloud metrics.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-orange-500/20 rounded-md">
+              <h4 className="text-sm font-medium text-orange-400 mb-2">
+                Project Connection Information
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center p-2 bg-gray-800 rounded">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-xs text-gray-300">Environment: <span className="text-white font-medium ml-1">{awsStatus === 'Connected' ? 'AWS Cloud' : 'Local Development'}</span></span>
+                </div>
+                <div className="flex items-center p-2 bg-gray-800 rounded">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-xs text-gray-300">Region: <span className="text-white font-medium ml-1">{awsRegion}</span></span>
+                </div>
+                <div className="flex items-center p-2 bg-gray-800 rounded">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-xs text-gray-300">DynamoDB Status: <span className="text-white font-medium ml-1">{awsStatus}</span></span>
+                </div>
+                <div className="flex items-center p-2 bg-gray-800 rounded">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-xs text-gray-300">Authentication: <span className="text-white font-medium ml-1">{awsStatus === 'Connected' ? 'AWS DynamoDB' : 'Local Database'}</span></span>
+                </div>
+                <div className="flex items-center p-2 bg-gray-800 rounded">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-xs text-gray-300">Storage: <span className="text-white font-medium ml-1">{awsStatus === 'Connected' ? 'AWS DynamoDB Tables' : 'Local Database'}</span></span>
+                </div>
+                <div className="flex items-center p-2 bg-gray-800 rounded">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-xs text-gray-300">Connection Type: <span className="text-white font-medium ml-1">{awsStatus === 'Connected' ? 'Live Production' : 'Development'}</span></span>
                 </div>
               </div>
             </div>
@@ -132,12 +183,12 @@ interface MetricCardProps {
 
 export const MetricCard: React.FC<MetricCardProps> = ({ title, value, percentage }) => {
   return (
-    <div className="bg-white p-3 rounded shadow-sm">
-      <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{title}</div>
-      <div className="text-lg font-semibold text-gray-900">{value}</div>
-      <div className="mt-1 h-2 bg-gray-200 rounded">
+    <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-3 rounded shadow-sm border border-gray-700">
+      <div className="text-xs font-medium text-orange-400 uppercase tracking-wider mb-1">{title}</div>
+      <div className="text-lg font-semibold text-white">{value}</div>
+      <div className="mt-1 h-2 bg-gray-700 rounded">
         <div
-          className="h-2 bg-orange-500 rounded"
+          className="h-2 bg-gradient-to-r from-orange-500 to-orange-400 rounded"
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
@@ -216,16 +267,21 @@ export const ContainerMetrics: React.FC = () => {
   }, []);
 
   return (
-    <div className="mt-6">
-      <h4 className="text-sm font-medium text-gray-900 mb-2">
-        AWS DynamoDB Cloud Metrics:
-        <span className="text-xs ml-2 text-gray-500">
-          Region: {awsRegion}
-        </span>
-      </h4>
-      <div className="bg-gray-50 p-4 rounded-md">
+    <div className="mt-8 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden border border-orange-500/20">
+      <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
+        <h3 className="text-lg leading-6 font-bold text-white flex items-center">
+          <svg className="w-5 h-5 mr-2 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          AWS DynamoDB Cloud Metrics
+        </h3>
+        <p className="mt-1 max-w-2xl text-sm text-gray-200">
+          Live monitoring data from {awsRegion} region
+        </p>
+      </div>
+      <div className="bg-gray-900 bg-opacity-90 p-6">
         {isLoading ? (
-          <p className="text-sm text-center text-gray-500 py-4">Loading AWS cloud metrics...</p>
+          <p className="text-sm text-center text-gray-300 py-4">Loading AWS cloud metrics...</p>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -238,24 +294,24 @@ export const ContainerMetrics: React.FC = () => {
               <MetricCard title="API Requests" value={metrics.requests.value} percentage={metrics.requests.percentage} />
             </div>
             
-            <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
-              <h5 className="text-sm font-medium text-blue-800 mb-2">AWS Cloud Service Status:</h5>
+            <div className="mt-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-orange-500/20 rounded-md">
+              <h4 className="text-sm font-medium text-orange-400 mb-2">AWS Cloud Service Status:</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-xs text-gray-700">DynamoDB: Online</span>
+                  <span className="text-xs text-gray-300">DynamoDB: Online</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-xs text-gray-700">IAM Authentication: Active</span>
+                  <span className="text-xs text-gray-300">IAM Authentication: Active</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-xs text-gray-700">CloudWatch: Monitoring</span>
+                  <span className="text-xs text-gray-300">CloudWatch: Monitoring</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-xs text-gray-700">SDK Integration: Operational</span>
+                  <span className="text-xs text-gray-300">SDK Integration: Operational</span>
                 </div>
               </div>
             </div>

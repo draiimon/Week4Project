@@ -90,22 +90,22 @@ export default function HomePage() {
                 <AWSInfrastructure />
 
                 {/* AWS DynamoDB Authentication Integration */}
-                <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-orange-200">
-                  <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden border border-orange-500/20">
+                  <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
+                    <h3 className="text-lg leading-6 font-bold text-white">
                       AWS Authentication Integration
                     </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    <p className="mt-1 max-w-2xl text-sm text-gray-200">
                       AWS DynamoDB User Management
                     </p>
                   </div>
-                  <div className="p-6">
-                    <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
-                      <h4 className="text-sm font-medium text-orange-600 mb-2">
+                  <div className="p-6 text-white">
+                    <div className="bg-gray-800 bg-opacity-50 p-4 rounded-md border border-gray-700">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">
                         AWS Live Configuration:
                       </h4>
-                      <div className="bg-gray-100 p-3 rounded-md font-mono text-xs border border-gray-300">
-                        <pre className="whitespace-pre-wrap text-gray-700">
+                      <div className="bg-gray-900 p-3 rounded-md font-mono text-xs border border-gray-700">
+                        <pre className="whitespace-pre-wrap text-gray-300">
 {`# AWS DynamoDB Configuration
 REGION: ${awsRegion}
 TABLE: OakTreeUsers
@@ -118,21 +118,21 @@ AWS_SECRET_ACCESS_KEY: [CREDENTIAL HIDDEN]`}
                     </div>
                     
                     <div className="mt-4">
-                      <div className="p-4 bg-green-50 rounded-md border border-green-200">
+                      <div className="p-4 bg-gray-800 rounded-md border border-orange-500/20">
                         <div className="flex">
-                          <svg className="h-5 w-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <svg className="h-5 w-5 text-orange-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
-                          <p className="text-gray-700">User authentication system successfully integrated with AWS DynamoDB</p>
+                          <p className="text-gray-200">User authentication system successfully integrated with AWS DynamoDB</p>
                         </div>
                       </div>
                     </div>
                     
                     <div className="mt-4">
-                      <p className="text-sm text-orange-600 mb-2 font-semibold">
+                      <p className="text-sm text-orange-300 mb-2 font-semibold">
                         This integration provides:
                       </p>
-                      <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                      <ul className="list-disc pl-5 text-sm text-gray-300 space-y-1">
                         <li>Secure user registration with AWS DynamoDB storage</li>
                         <li>Password encryption with crypto library</li>
                         <li>Real-time AWS authentication in {awsRegion} region</li>
@@ -140,24 +140,26 @@ AWS_SECRET_ACCESS_KEY: [CREDENTIAL HIDDEN]`}
                       </ul>
                     </div>
                     
-                    <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
-                      <h5 className="text-sm font-medium text-blue-800 mb-2">Real-Time AWS Integration Status:</h5>
+                    <div className="mt-4 p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-orange-500/20 rounded-md">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">
+                        Live AWS Connection Status
+                      </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div className="flex items-center">
                           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                          <span className="text-xs text-gray-700">Connection: Established</span>
+                          <span className="text-xs text-gray-300">Connection: Established</span>
                         </div>
                         <div className="flex items-center">
                           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                          <span className="text-xs text-gray-700">Authentication: Working</span>
+                          <span className="text-xs text-gray-300">Authentication: Working</span>
                         </div>
                         <div className="flex items-center">
                           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                          <span className="text-xs text-gray-700">Data Storage: Active</span>
+                          <span className="text-xs text-gray-300">Data Storage: Active</span>
                         </div>
                         <div className="flex items-center">
                           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                          <span className="text-xs text-gray-700">SDK Integration: Connected</span>
+                          <span className="text-xs text-gray-300">SDK Integration: Connected</span>
                         </div>
                       </div>
                     </div>
