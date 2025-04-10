@@ -4,6 +4,8 @@ import { ProjectStatusOverview } from "@/components/ui/dashboard-cards";
 import { PipelineDisplay } from "@/components/ui/pipeline-display";
 import { AWSInfrastructure, ContainerizedApp, ProjectDocumentation } from "@/components/ui/project-details";
 import { ContainerMetrics } from "@/components/ui/dashboard-cards";
+import { DeploymentStatus } from "@/components/ui/deployment-status";
+import { SystemStatus } from "@/components/ui/system-status";
 
 export default function HomePage() {
   const [awsRegion, setAwsRegion] = useState<string>('ap-southeast-1');
@@ -75,15 +77,39 @@ export default function HomePage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
               <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-lg shadow-lg px-6 py-4">
                 <h1 className="text-2xl font-bold text-white">
-                  Week 4: AWS Integration Dashboard
+                  Week 4: End-to-End DevOps Project
                 </h1>
                 <p className="mt-1 text-sm text-gray-200">
-                  End-to-End AWS DevOps Pipeline Implementation with Real-Time Metrics
+                  Cross-Environment Deployment: Local, WSL, Docker Container & AWS Cloud
                 </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-800 text-white">
+                    AWS DynamoDB
+                  </span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-purple-800 text-white">
+                    Docker Container
+                  </span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-800 text-white">
+                    Terraform IaC
+                  </span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-800 text-white">
+                    GitHub Actions CI/CD
+                  </span>
+                </div>
               </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4">
+              {/* Week 4 Deployment Status - Environment Info */}
+              <div className="mb-6">
+                <DeploymentStatus />
+              </div>
+              
+              {/* System Status with Real-time Metrics */}
+              <div className="mb-6">
+                <SystemStatus />
+              </div>
+
               {/* Project Status Overview */}
               <ProjectStatusOverview />
 
