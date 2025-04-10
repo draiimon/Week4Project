@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Week 4 Project
 
 on:
   push:
