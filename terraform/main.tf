@@ -282,17 +282,21 @@ resource "aws_ecs_service" "oaktree_service" {
   name            = "oaktree-service"
   cluster         = aws_ecs_cluster.oaktree_cluster.id
   task_definition = aws_ecs_task_definition.oaktree_task.arn
-  desired_count   = 1
+  desired_count   = 2  # Running 2 instances for high availability
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = var.subnet_ids
+    subnets          = var.subnet_ids  # Using the real subnet IDs from your account
     security_groups  = [aws_security_group.ecs_tasks.id]
     assign_public_ip = true
   }
 
+  # Auto-scaling configurations could be added here in the future
+
   tags = {
     Environment = var.environment
     Project     = "OakTree"
+    ManagedBy   = "Terraform"
+    Owner       = "DevOps"
   }
 }

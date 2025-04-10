@@ -56,12 +56,16 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: oaktree-app-dev
           IMAGE_TAG: ${{ github.sha }}
+          VPC_ID: "vpc-08c05f6fe25301574"
+          SUBNET_ID_1: "subnet-0e73b48f3a4fdf622"
+          SUBNET_ID_2: "subnet-0b61cb00a422a00c0"
         run: |
           # Build a docker container and push it to ECR
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          echo "Using VPC: $VPC_ID with subnets: $SUBNET_ID_1 and $SUBNET_ID_2"
 
       # Also push to Docker Hub for backup
       - name: Log in to Docker Hub
@@ -108,13 +112,19 @@ jobs:
       - name: Terraform Plan
         run: |
           cd terraform
-          terraform plan -var="aws_region=${{ secrets.AWS_REGION }}"
+          terraform plan \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="vpc_id=vpc-08c05f6fe25301574" \
+            -var='subnet_ids=["subnet-0e73b48f3a4fdf622", "subnet-0b61cb00a422a00c0"]'
       
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           cd terraform
-          terraform apply -auto-approve -var="aws_region=${{ secrets.AWS_REGION }}"
+          terraform apply -auto-approve \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="vpc_id=vpc-08c05f6fe25301574" \
+            -var='subnet_ids=["subnet-0e73b48f3a4fdf622", "subnet-0b61cb00a422a00c0"]'
           
       - name: Export Terraform Outputs
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -181,6 +191,10 @@ jobs:
           echo "- **Deployed at**: $(date)" >> deployment-summary.md
           echo "- **Deployment ID**: ${{ github.sha }}" >> deployment-summary.md
           echo "- **AWS Region**: ${{ secrets.AWS_REGION }}" >> deployment-summary.md
+          echo "- **VPC ID**: vpc-08c05f6fe25301574" >> deployment-summary.md
+          echo "- **Subnets**: subnet-0e73b48f3a4fdf622, subnet-0b61cb00a422a00c0" >> deployment-summary.md
+          echo "- **Cognito User Pool ID**: ${{ needs.terraform.outputs.cognito_user_pool_id }}" >> deployment-summary.md
+          echo "- **DynamoDB Table**: ${{ needs.terraform.outputs.dynamodb_table_name }}" >> deployment-summary.md
           echo "- **Status**: ✅ Successful" >> deployment-summary.md
 
       - name: Send deployment notification

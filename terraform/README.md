@@ -22,17 +22,20 @@ The Terraform configuration provisions the following AWS resources:
 
 ## Configuration
 
-Before deploying, you need to update the `terraform.tfvars` file with your specific AWS account details:
+The `terraform.tfvars` file is already configured with your specific AWS account details:
 
 ```hcl
-aws_region = "us-east-1"  # Change to your preferred region
-environment = "dev"        # Change to "staging" or "prod" as needed
+aws_region = "us-east-1"  # North Virginia region
+environment = "dev"       # Development environment
 
-# Replace these with your actual VPC and subnet IDs
-vpc_id     = "vpc-0123456789abcdef0"
-subnet_ids = ["subnet-0123456789abcdef0", "subnet-0123456789abcdef1"]
+# Using real VPC and subnet IDs from your AWS account
+vpc_id     = "vpc-08c05f6fe25301574"  # dev-vpc
+subnet_ids = [
+  "subnet-0e73b48f3a4fdf622",  # dev-public-subnet-1
+  "subnet-0b61cb00a422a00c0"   # dev-public-subnet-2
+]
 
-allowed_cidr_blocks = ["0.0.0.0/0"]  # Restrict this in production
+allowed_cidr_blocks = ["0.0.0.0/0"]  # Note: Restrict this in production
 ```
 
 ## Usage
