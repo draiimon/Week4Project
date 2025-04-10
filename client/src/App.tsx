@@ -9,11 +9,8 @@ import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
 import { Footer } from "@/components/ui/footer";
 
-// Import the new pages
+// Only keep the DynamoDB page
 import DynamoDBPage from "@/pages/dynamodb-page";
-import RegionsPage from "@/pages/regions-page";
-import UserServicesPage from "@/pages/user-services-page";
-import InfrastructureDiagramPage from "@/pages/infrastructure-diagram-page";
 
 function Router() {
   const [location] = useLocation();
@@ -25,9 +22,6 @@ function Router() {
         <Switch>
           <ProtectedRoute path="/" component={HomePage} />
           <ProtectedRoute path="/dynamodb" component={DynamoDBPage} />
-          <ProtectedRoute path="/regions" component={RegionsPage} />
-          <ProtectedRoute path="/user-services" component={UserServicesPage} />
-          <ProtectedRoute path="/infrastructure" component={InfrastructureDiagramPage} />
           <Route component={NotFound} />
         </Switch>
         {/* Footer only on non-auth pages, but outside main content flow */}
