@@ -26,6 +26,7 @@ export default function DynamoDBPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [tableData, setTableData] = useState<DynamoDBTableData>({
@@ -46,6 +47,173 @@ export default function DynamoDBPage() {
       setIsAdmin(false);
     }
   }, [user]);
+  
+  // Handle deleting a user from DynamoDB
+  const handleDeleteUser = async (username: string) => {
+    if (!isAdmin || username === 'msn_clx') {
+      toast({
+        title: "Action not allowed",
+        description: "You cannot delete the admin user or you don't have admin privileges.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Confirm before deleting
+    if (!window.confirm(`Are you sure you want to delete user "${username}"? This action cannot be undone.`)) {
+      return;
+    }
+    
+    setIsDeleting(username);
+    
+    try {
+      const response = await fetch(`/api/dynamodb/users/${username}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast({
+          title: "User deleted",
+          description: `User "${username}" has been successfully deleted.`,
+          variant: "default"
+        });
+        
+        // Update the table data by filtering out the deleted user
+        setTableData(prev => ({
+          ...prev,
+          itemCount: prev.itemCount - 1,
+          items: prev.items.filter(user => user.username !== username)
+        }));
+      } else {
+        toast({
+          title: "Error deleting user",
+          description: data.error || "Something went wrong. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      toast({
+        title: "Error",
+        description: "Failed to delete user. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
+  // Function to refresh user data
+  const refreshDynamoDBData = async () => {
+    if (isRefreshing) return;
+    
+    setIsRefreshing(true);
+    setError(null);
+    
+    try {
+      // First get AWS connection status
+      const statusResponse = await fetch('/api/aws/status');
+      const statusData = await statusResponse.json();
+      
+      if (statusData.status !== 'connected') {
+        setError("AWS DynamoDB is not connected. Please check your AWS credentials or enable AWS calls in admin panel.");
+        return;
+      }
+      
+      // If the user is admin, fetch actual user data from DynamoDB
+      if (isAdmin) {
+        try {
+          const userDataResponse = await fetch('/api/dynamodb/users', {
+            credentials: 'include', // Include cookies for session authentication
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (!userDataResponse.ok) {
+            if (userDataResponse.status === 403) {
+              toast({
+                title: "Admin access required",
+                description: "You need to be logged in as admin to view all users.",
+                variant: "destructive"
+              });
+            } else {
+              const errorData = await userDataResponse.json();
+              setError(errorData.error || "Error fetching user data");
+            }
+            
+            // Still show basic table info even if user fetch fails
+            setTableData({
+              tableName: statusData.services.dynamodb.tableName || "OakTreeUsers",
+              status: "Active",
+              itemCount: 1, // Assume at least one user
+              items: [],
+              sizeBytes: 1024,
+              region: statusData.region || "ap-southeast-1"
+            });
+          } else {
+            // Successfully retrieved user data
+            const userData = await userDataResponse.json();
+            
+            setTableData({
+              tableName: userData.tableName,
+              status: "Active",
+              itemCount: userData.itemCount,
+              items: userData.items || [],
+              sizeBytes: userData.sizeBytes,
+              region: userData.region || statusData.region,
+              lastUpdated: userData.lastUpdated
+            });
+            
+            toast({
+              title: "Data refreshed",
+              description: `Showing ${userData.itemCount} users from DynamoDB`,
+              variant: "default"
+            });
+          }
+        } catch (err) {
+          console.error("Error fetching user data:", err);
+          // Show error toast for better debugging
+          toast({
+            title: "Error fetching DynamoDB data",
+            description: err instanceof Error ? err.message : "Unknown error occurred",
+            variant: "destructive"
+          });
+          
+          // Show basic table info on error
+          setTableData({
+            tableName: statusData.services.dynamodb.tableName || "OakTreeUsers",
+            status: "Active",
+            itemCount: 1,
+            items: [],
+            sizeBytes: 1024,
+            region: statusData.region || "ap-southeast-1"
+          });
+        }
+      } else {
+        // Non-admin users just see table info without actual user data
+        setTableData({
+          tableName: statusData.services.dynamodb.tableName || "OakTreeUsers",
+          status: "Active",
+          itemCount: user ? 1 : 0, // At least 1 item if user is logged in
+          items: [],
+          sizeBytes: 1024, // 1KB baseline size
+          region: statusData.region || "ap-southeast-1"
+        });
+      }
+    } catch (err) {
+      console.error("Error in DynamoDB page:", err);
+      setError("Error fetching DynamoDB data. Please try again.");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     // Fetch real AWS status and DynamoDB info
@@ -365,9 +533,30 @@ Created: ${new Date().toLocaleDateString()}`}
                         <h4 className="text-base font-medium text-orange-400">
                           User Data (Admin View)
                         </h4>
-                        <span className="bg-orange-600 px-2 py-0.5 rounded-full text-xs text-white">
-                          {tableData.items.length} Users
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={refreshDynamoDBData}
+                            disabled={isRefreshing}
+                            className="flex items-center text-white border-gray-600 hover:bg-gray-700"
+                          >
+                            {isRefreshing ? (
+                              <>
+                                <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
+                                Refreshing...
+                              </>
+                            ) : (
+                              <>
+                                <RefreshCw className="h-4 w-4 mr-1" />
+                                Refresh Data
+                              </>
+                            )}
+                          </Button>
+                          <span className="bg-orange-600 px-2 py-0.5 rounded-full text-xs text-white">
+                            {tableData.items.length} Users
+                          </span>
+                        </div>
                       </div>
                       
                       <div className="bg-gray-800 rounded-md overflow-hidden border border-gray-700">
@@ -406,10 +595,19 @@ Created: ${new Date().toLocaleDateString()}`}
                                     size="sm" 
                                     className="flex items-center"
                                     onClick={() => handleDeleteUser(user.username)}
-                                    disabled={user.username === 'msn_clx'}
+                                    disabled={user.username === 'msn_clx' || isDeleting === user.username}
                                   >
-                                    <Trash2 className="h-4 w-4 mr-1" />
-                                    Delete
+                                    {isDeleting === user.username ? (
+                                      <>
+                                        <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
+                                        Deleting...
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Trash2 className="h-4 w-4 mr-1" />
+                                        Delete
+                                      </>
+                                    )}
                                   </Button>
                                 </td>
                               </tr>
