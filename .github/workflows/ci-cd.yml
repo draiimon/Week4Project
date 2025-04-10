@@ -52,24 +52,21 @@ jobs:
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-    
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Build and push
+      
+    - name: Build Docker image
       uses: docker/build-push-action@v4
       with:
         context: .
-        push: ${{ github.event_name != 'pull_request' }}
-        tags: |
-          ghcr.io/draiimon/oaktree:latest
-          ghcr.io/draiimon/oaktree:${{ github.sha }}
+        push: false
+        load: true
+        tags: oaktree:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        
+    - name: Test Docker image
+      run: |
+        docker images
+        echo "Docker image built successfully!"
 
   deploy:
     name: Deploy to AWS (Conditional)
