@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Trash2, AlertTriangle, RefreshCw } from "lucide-react";
 
 interface DynamoDBUserData {
   username: string;
