@@ -15,7 +15,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <div className="bg-gradient-to-r from-gray-700 via-gray-800 to-orange-600 p-3 rounded-full shadow-lg">
@@ -50,13 +50,13 @@ export default function AuthPage() {
           </div>
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-orange-300 bg-clip-text text-transparent">AWS DevOps Platform</h2>
-        <p className="mt-2 text-center text-sm text-gray-300">
+        <p className="mt-2 text-center text-sm text-gray-600">
           The complete solution for AWS DevOps workflow management
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-5xl">
-        <div className="flex flex-col lg:flex-row bg-gradient-to-br from-gray-800 to-gray-900 py-8 px-4 shadow-lg border border-orange-500/20 sm:rounded-lg sm:px-10">
+        <div className="flex flex-col lg:flex-row bg-white py-8 px-4 shadow-lg border border-orange-500/20 sm:rounded-lg sm:px-10">
           {/* Left side - Auth forms */}
           <div className="flex-1 lg:pr-8 lg:border-r border-gray-700">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -65,7 +65,7 @@ export default function AuthPage() {
                 <TabsTrigger value="register" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-500 data-[state=active]:text-white">Sign Up</TabsTrigger>
               </TabsList>
               <TabsContent value="login">
-                <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/20">
+                <Card className="bg-white border border-orange-500/20">
                   <CardHeader className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-t-lg">
                     <CardTitle className="text-white">Sign in to your account</CardTitle>
                     <CardDescription className="text-gray-200">
@@ -78,7 +78,7 @@ export default function AuthPage() {
                 </Card>
               </TabsContent>
               <TabsContent value="register">
-                <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/20">
+                <Card className="bg-white border border-orange-500/20">
                   <CardHeader className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-t-lg">
                     <CardTitle className="text-white">Create a new account</CardTitle>
                     <CardDescription className="text-gray-200">
@@ -97,7 +97,7 @@ export default function AuthPage() {
           <div className="flex-1 mt-8 lg:mt-0 lg:pl-8">
             <div className="text-center lg:text-left">
               <h3 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-300 bg-clip-text text-transparent">Your AWS DevOps solution</h3>
-              <p className="mt-2 text-sm text-gray-300">
+              <p className="mt-2 text-sm text-gray-600">
                 Manage your complete AWS DevOps workflow from a single platform
               </p>
             </div>
@@ -113,8 +113,8 @@ export default function AuthPage() {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h4 className="text-lg font-medium text-orange-400">Linux & Container Management</h4>
-                    <p className="mt-2 text-base text-gray-300">
+                    <h4 className="text-lg font-medium text-orange-600">Linux & Container Management</h4>
+                    <p className="mt-2 text-base text-gray-600">
                       Manage Linux environments and Docker containers from a unified interface.
                     </p>
                   </div>
@@ -129,8 +129,8 @@ export default function AuthPage() {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h4 className="text-lg font-medium text-orange-400">Automated CI/CD Pipelines</h4>
-                    <p className="mt-2 text-base text-gray-300">
+                    <h4 className="text-lg font-medium text-orange-600">Automated CI/CD Pipelines</h4>
+                    <p className="mt-2 text-base text-gray-600">
                       Build, test, and deploy your applications automatically with our integrated CI/CD tools.
                     </p>
                   </div>
@@ -145,8 +145,8 @@ export default function AuthPage() {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h4 className="text-lg font-medium text-orange-400">AWS Integration & IaC</h4>
-                    <p className="mt-2 text-base text-gray-300">
+                    <h4 className="text-lg font-medium text-orange-600">AWS Integration & IaC</h4>
+                    <p className="mt-2 text-base text-gray-600">
                       Full AWS infrastructure integration with Infrastructure as Code to provision your resources.
                     </p>
                   </div>

@@ -56,7 +56,7 @@ export const LoginForm: React.FC = () => {
                   placeholder="Enter your username" 
                   autoComplete="username"
                   disabled={loginMutation.isPending}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                  className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
               <FormMessage className="text-orange-300" />
@@ -77,7 +77,7 @@ export const LoginForm: React.FC = () => {
                   placeholder="Enter your password" 
                   autoComplete="current-password"
                   disabled={loginMutation.isPending}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                  className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
               <FormMessage className="text-orange-300" />
@@ -145,7 +145,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
                   placeholder="Enter your email" 
                   autoComplete="email"
                   disabled={registerMutation.isPending}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                  className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
               <FormMessage className="text-orange-300" />
@@ -165,7 +165,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
                   placeholder="Choose a username" 
                   autoComplete="username"
                   disabled={registerMutation.isPending}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
+                  className="bg-white border-gray-300 text-gray-800 placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
               <FormMessage className="text-orange-300" />
