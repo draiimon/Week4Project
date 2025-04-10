@@ -75,10 +75,19 @@ A comprehensive AWS cloud infrastructure management and deployment platform with
 ### Multi-Environment Support
 
 #### Local Development
+
+For running on local machines (Windows, Linux, WSL):
 ```bash
-# Just run the standard development server
-npm run dev
+# First, set up the local development scripts
+npm pkg set scripts.local:dev="node local-dev.js"
+npm pkg set scripts.local:build="vite --config vite.config.local.ts build"
+npm pkg set scripts.local:start="NODE_ENV=production node local-dev.js"
+
+# Run the local-compatible development server
+npm run local:dev
 ```
+
+> **Note for WSL/Linux users**: If you encounter path resolution errors with the default setup, always use the local scripts that are compatible with your environment.
 
 #### Docker Container
 ```bash
@@ -132,6 +141,14 @@ The platform provides comprehensive real-time monitoring:
 - **Admin Panel**: Located at `client/src/components/ui/admin-panel.tsx`
 - **AWS Status**: Located at `client/src/components/ui/aws-status.tsx`
 - **DynamoDB Integration**: Located at `server/aws-db.ts`
+
+### Local Compatibility Files
+
+These files make the project compatible with local development environments:
+
+- **local-dev.js**: Modified server startup script for local environments
+- **vite.config.local.ts**: Compatible Vite configuration for local development
+- **local-setup.md**: Comprehensive guide for local setup
 
 ## 🌟 Deployment Options
 
