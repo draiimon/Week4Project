@@ -6,6 +6,7 @@ import { isAWSConfigured, createUsersTable } from './aws-db';
 import { envVars } from './env';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import * as os from 'os';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes
@@ -158,8 +159,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const memPercent = (memUsed / memTotal) * 100;
     
     // CPU information
-    const cpuCores = require('os').cpus().length;
-    const cpuModel = require('os').cpus()[0].model;
+    const cpuCores = os.cpus().length;
+    const cpuModel = os.cpus()[0].model;
     
     // Uptime calculation
     const uptimeSeconds = process.uptime();
@@ -256,8 +257,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const memPercent = (memUsed / memTotal) * 100;
     
     // CPU information
-    const cpuCores = require('os').cpus().length;
-    const cpuModel = require('os').cpus()[0].model;
+    const cpuCores = os.cpus().length;
+    const cpuModel = os.cpus()[0].model;
     
     // Uptime calculation
     const uptimeSeconds = process.uptime();
@@ -286,7 +287,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       },
       network: {
-        interfaces: Object.keys(require('os').networkInterfaces())
+        interfaces: Object.keys(os.networkInterfaces())
       },
       timestamp: new Date().toISOString()
     });
