@@ -252,6 +252,68 @@ export const SystemStatus: React.FC = () => {
         </p>
       </div>
       <div className="p-6 text-white">
+        {/* Add User Information section */}
+        <div className="mb-5 bg-gradient-to-br from-orange-800/40 to-orange-600/30 rounded-md border border-orange-500/30 p-4">
+          <h4 className="font-medium mb-3 flex items-center gap-1 text-white">
+            <LuUser className="h-4 w-4" />
+            User Information
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-black/20 rounded-md p-3 backdrop-blur-sm">
+              <div className="flex items-center mb-2">
+                <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center text-white">
+                  {user?.username ? user.username.charAt(0).toUpperCase() : "?"}
+                </div>
+                <div className="ml-2">
+                  <p className="text-white text-sm font-medium">{user?.username || "Not logged in"}</p>
+                  <p className="text-xs text-gray-400">Active Session</p>
+                </div>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-gray-400">Status</span>
+                <Badge className={user ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}>
+                  {user ? "Active" : "Guest"}
+                </Badge>
+              </div>
+            </div>
+            
+            <div className="bg-black/20 rounded-md p-3 backdrop-blur-sm">
+              <h5 className="text-xs uppercase text-gray-400 mb-2 flex items-center gap-1">
+                <LuShield className="h-3 w-3" /> 
+                Access Level
+              </h5>
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-white text-sm">DevOps Administrator</span>
+                <Badge className="bg-orange-100 text-orange-800">
+                  Full Access
+                </Badge>
+              </div>
+              <div className="text-xs text-gray-400">
+                Terraform, AWS, and CI/CD Pipeline management capabilities
+              </div>
+            </div>
+            
+            <div className="bg-black/20 rounded-md p-3 backdrop-blur-sm">
+              <h5 className="text-xs uppercase text-gray-400 mb-1">Session Information</h5>
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Authentication</span>
+                  <span className="text-white">{user ? "Active" : "Inactive"}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">IP Address</span>
+                  <span className="text-white">Local Session</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Last Activity</span>
+                  <span className="text-white">{new Date().toLocaleTimeString()}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* System Information and AWS Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
             <div>
