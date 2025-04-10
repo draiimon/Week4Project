@@ -49,7 +49,7 @@ export default function AuthPage() {
             </svg>
           </div>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-orange-300 bg-clip-text text-transparent">OakTree DevOps Platform</h2>
+        <h2 className="mt-6 text-center text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-orange-300 bg-clip-text text-transparent">AWS DevOps Platform</h2>
         <p className="mt-2 text-center text-sm text-gray-300">
           The complete solution for AWS DevOps workflow management
         </p>

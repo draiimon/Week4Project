@@ -238,73 +238,82 @@ export default function RegionsPage() {
                 </div>
               )}
 
-              <div className="mt-8 bg-white shadow rounded-lg overflow-hidden">
-                <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    AWS Region Services Performance
+              <div className="mt-8 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden border border-orange-500/20">
+                <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
+                  <h3 className="text-lg leading-6 font-bold text-white flex items-center">
+                    <svg className="w-5 h-5 mr-2 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    AWS Real-Time Service Metrics
                   </h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-200">
+                    Live performance data from AWS services in {currentRegion} region
+                  </p>
                 </div>
-                <div className="bg-white p-6">
+                <div className="bg-gray-900 bg-opacity-90 p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">DynamoDB Latency</h4>
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-4 rounded-lg border border-gray-700 shadow-md">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">DynamoDB Latency</h4>
                       <div className="flex items-center">
-                        <div className="h-2 w-full bg-gray-200 rounded-full">
-                          <div className="h-2 bg-green-500 rounded-full" style={{ width: "10%" }}></div>
+                        <div className="h-2 w-full bg-gray-700 rounded-full">
+                          <div className="h-2 bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style={{ width: "10%" }}></div>
                         </div>
-                        <span className="ml-2 text-sm text-gray-700">10%</span>
+                        <span className="ml-2 text-sm text-white">10%</span>
                       </div>
-                      <p className="mt-1 text-xs text-gray-500">2.5ms average response time</p>
+                      <p className="mt-1 text-xs text-gray-300">2.5ms average response time</p>
                     </div>
                     
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">Network Connectivity</h4>
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-4 rounded-lg border border-gray-700 shadow-md">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">Network Connectivity</h4>
                       <div className="flex items-center">
-                        <div className="h-2 w-full bg-gray-200 rounded-full">
-                          <div className="h-2 bg-green-500 rounded-full" style={{ width: "95%" }}></div>
+                        <div className="h-2 w-full bg-gray-700 rounded-full">
+                          <div className="h-2 bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style={{ width: "95%" }}></div>
                         </div>
-                        <span className="ml-2 text-sm text-gray-700">95%</span>
+                        <span className="ml-2 text-sm text-white">95%</span>
                       </div>
-                      <p className="mt-1 text-xs text-gray-500">Excellent network performance</p>
+                      <p className="mt-1 text-xs text-gray-300">Excellent network performance</p>
                     </div>
                     
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">API Gateway Availability</h4>
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-4 rounded-lg border border-gray-700 shadow-md">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">API Gateway Availability</h4>
                       <div className="flex items-center">
-                        <div className="h-2 w-full bg-gray-200 rounded-full">
-                          <div className="h-2 bg-green-500 rounded-full" style={{ width: "100%" }}></div>
+                        <div className="h-2 w-full bg-gray-700 rounded-full">
+                          <div className="h-2 bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style={{ width: "100%" }}></div>
                         </div>
-                        <span className="ml-2 text-sm text-gray-700">100%</span>
+                        <span className="ml-2 text-sm text-white">100%</span>
                       </div>
-                      <p className="mt-1 text-xs text-gray-500">Fully operational</p>
+                      <p className="mt-1 text-xs text-gray-300">Fully operational</p>
                     </div>
                     
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">IAM Service Status</h4>
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-4 rounded-lg border border-gray-700 shadow-md">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">IAM Service Status</h4>
                       <div className="flex items-center">
-                        <div className="h-2 w-full bg-gray-200 rounded-full">
-                          <div className="h-2 bg-green-500 rounded-full" style={{ width: "100%" }}></div>
+                        <div className="h-2 w-full bg-gray-700 rounded-full">
+                          <div className="h-2 bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style={{ width: "100%" }}></div>
                         </div>
-                        <span className="ml-2 text-sm text-gray-700">100%</span>
+                        <span className="ml-2 text-sm text-white">100%</span>
                       </div>
-                      <p className="mt-1 text-xs text-gray-500">Fully operational</p>
+                      <p className="mt-1 text-xs text-gray-300">Fully operational</p>
                     </div>
                     
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">CloudWatch Status</h4>
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-4 rounded-lg border border-gray-700 shadow-md">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">CloudWatch Status</h4>
                       <div className="flex items-center">
-                        <div className="h-2 w-full bg-gray-200 rounded-full">
-                          <div className="h-2 bg-green-500 rounded-full" style={{ width: "100%" }}></div>
+                        <div className="h-2 w-full bg-gray-700 rounded-full">
+                          <div className="h-2 bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style={{ width: "100%" }}></div>
                         </div>
-                        <span className="ml-2 text-sm text-gray-700">100%</span>
+                        <span className="ml-2 text-sm text-white">100%</span>
                       </div>
-                      <p className="mt-1 text-xs text-gray-500">Fully operational</p>
+                      <p className="mt-1 text-xs text-gray-300">Fully operational</p>
                     </div>
                     
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">Current Region</h4>
-                      <div className="text-base font-semibold text-orange-600">{currentRegion}</div>
-                      <p className="mt-1 text-xs text-gray-500">Last updated: {new Date().toLocaleTimeString()}</p>
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-4 rounded-lg border border-gray-700 shadow-md">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">AWS Region Status</h4>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-bold text-white">{currentRegion}</span>
+                        <span className="px-2 py-1 text-xs rounded-full bg-gradient-to-r from-orange-600 to-orange-500 text-white">Active</span>
+                      </div>
+                      <p className="mt-1 text-xs text-gray-300">Last updated: {new Date().toLocaleTimeString()}</p>
                     </div>
                   </div>
                 </div>

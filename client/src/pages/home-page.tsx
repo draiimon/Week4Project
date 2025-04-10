@@ -27,11 +27,11 @@ export default function HomePage() {
       <Sidebar />
 
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        {/* Top Navigation Bar */}
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+        {/* Top Navigation Bar with Orange-Gray Gradient */}
+        <div className="relative z-10 flex-shrink-0 flex h-16 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 shadow-lg">
           <button
             type="button"
-            className="md:hidden px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
+            className="md:hidden px-4 text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
           >
             <span className="sr-only">Open sidebar</span>
             <svg
@@ -52,11 +52,11 @@ export default function HomePage() {
           </button>
           <div className="flex-1 px-4 flex justify-between">
             <div className="flex-1 flex">
-              <p className="text-orange-600 self-center font-semibold">OakTree DevOps Platform</p>
+              <p className="text-white self-center font-bold text-lg">AWS DevOps Platform</p>
             </div>
             {/* Sign-in button removed - handled by sidebar user panel */}
             <div className="ml-4 flex items-center md:ml-6">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-white bg-gray-800 bg-opacity-50 px-3 py-1 rounded-full">
                 Connected to AWS Region: {awsRegion}
               </div>
             </div>
@@ -64,15 +64,17 @@ export default function HomePage() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 relative overflow-y-auto focus:outline-none">
+        <main className="flex-1 relative overflow-y-auto focus:outline-none bg-gray-100">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <h1 className="text-2xl font-semibold text-gray-900">
-                Week 4: AWS Integration Dashboard
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                End-to-End AWS DevOps Pipeline Implementation
-              </p>
+              <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-lg shadow-lg px-6 py-4">
+                <h1 className="text-2xl font-bold text-white">
+                  Week 4: AWS Integration Dashboard
+                </h1>
+                <p className="mt-1 text-sm text-gray-200">
+                  End-to-End AWS DevOps Pipeline Implementation with Real-Time Metrics
+                </p>
+              </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4">
@@ -88,25 +90,25 @@ export default function HomePage() {
                 <AWSInfrastructure />
 
                 {/* AWS DynamoDB Authentication Integration */}
-                <div className="bg-white shadow rounded-lg overflow-hidden">
-                  <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden border border-orange-500/20">
+                  <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
+                    <h3 className="text-lg leading-6 font-bold text-white">
                       AWS Authentication Integration
                     </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    <p className="mt-1 max-w-2xl text-sm text-gray-200">
                       AWS DynamoDB User Management
                     </p>
                   </div>
-                  <div className="p-6">
-                    <div className="bg-gray-50 p-4 rounded-md">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">
-                        AWS Configuration:
+                  <div className="p-6 text-white">
+                    <div className="bg-gray-800 bg-opacity-50 p-4 rounded-md border border-gray-700">
+                      <h4 className="text-sm font-medium text-orange-400 mb-2">
+                        AWS Live Configuration:
                       </h4>
-                      <div className="bg-gray-50 p-3 rounded-md font-mono text-xs">
-                        <pre className="whitespace-pre-wrap text-gray-700">
+                      <div className="bg-gray-900 p-3 rounded-md font-mono text-xs border border-gray-700">
+                        <pre className="whitespace-pre-wrap text-gray-300">
 {`# AWS DynamoDB Configuration
 REGION: ${awsRegion}
-TABLE: OakTreeUsers
+TABLE: UsersTable
 FEATURES: User Authentication, Data Storage
 AWS_ACCESS_KEY_ID: [CREDENTIAL HIDDEN]
 AWS_SECRET_ACCESS_KEY: [CREDENTIAL HIDDEN]`}
@@ -115,21 +117,21 @@ AWS_SECRET_ACCESS_KEY: [CREDENTIAL HIDDEN]`}
                     </div>
                     
                     <div className="mt-4">
-                      <div className="p-4 bg-green-50 text-green-800 rounded-md border border-green-200">
+                      <div className="p-4 bg-gray-800 rounded-md border border-orange-500/20">
                         <div className="flex">
-                          <svg className="h-5 w-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <svg className="h-5 w-5 text-orange-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
-                          <p>User authentication system successfully integrated with AWS DynamoDB</p>
+                          <p className="text-gray-200">User authentication system successfully integrated with AWS DynamoDB</p>
                         </div>
                       </div>
                     </div>
                     
                     <div className="mt-4">
-                      <p className="text-sm text-gray-500 mb-2">
+                      <p className="text-sm text-orange-300 mb-2 font-semibold">
                         This integration provides:
                       </p>
-                      <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                      <ul className="list-disc pl-5 text-sm text-gray-300 space-y-1">
                         <li>Secure user registration with AWS DynamoDB storage</li>
                         <li>Password encryption with crypto library</li>
                         <li>Real-time AWS authentication in ap-southeast-1 region</li>

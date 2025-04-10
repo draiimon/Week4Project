@@ -97,7 +97,7 @@ const Sidebar = () => {
     <aside className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col w-64 bg-gray-800">
         {/* Logo */}
-        <div className="flex items-center justify-center h-16 bg-gray-900">
+        <div className="flex items-center justify-center h-16 bg-gradient-to-r from-gray-900 to-gray-800">
           <div className="flex items-center">
             <svg
               className="h-8 w-8 text-orange-500"
@@ -127,7 +127,7 @@ const Sidebar = () => {
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="ml-2 text-white text-lg font-semibold">OakTree</span>
+            <span className="ml-2 text-white text-lg font-semibold">AWS DevOps</span>
           </div>
         </div>
 
