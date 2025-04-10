@@ -4,7 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
 import { useQuery } from "@tanstack/react-query";
-import { LuServer, LuCpu, LuHardDrive, LuCloudLightning } from "react-icons/lu";
+import { LuServer, LuCpu, LuHardDrive, LuCloudLightning, LuUser, LuShield } from "react-icons/lu";
+import { useAuth } from "@/hooks/use-auth";
 
 interface SystemInfo {
   hostname: string;
@@ -63,6 +64,7 @@ function formatUptime(seconds: number) {
 }
 
 export const SystemStatus: React.FC = () => {
+  const { user } = useAuth();
   const { data, isLoading, error } = useQuery({
     queryKey: ['/api/system-status'],
     refetchInterval: 30000, // Refresh every 30 seconds

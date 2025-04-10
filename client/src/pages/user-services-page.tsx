@@ -265,24 +265,7 @@ export default function UserServicesPage() {
                           </p>
                         </div>
                         
-                        <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
-                          <h4 className="text-sm font-medium text-white mb-2">User Information</h4>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">Username:</span> {user?.username || "Not logged in"}
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">Authentication:</span> {user ? "Active" : "Inactive"}
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">Role:</span> DevOps Administrator
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">Permissions:</span> Full Access
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm">
-                            <span className="font-medium">Last Updated:</span> {new Date().toLocaleTimeString()}
-                          </p>
-                        </div>
+
                       </div>
                       
                       <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
