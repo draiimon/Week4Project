@@ -4,14 +4,13 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { AlertTriangle, Check, XCircle, ToggleLeft, ToggleRight } from 'lucide-react';
+import { AlertTriangle, Check, XCircle, ToggleLeft, ToggleRight, Shield } from 'lucide-react';
 
 export const AdminPanel: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [awsCallsDisabled, setAwsCallsDisabled] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [statusRefreshTime, setStatusRefreshTime] = useState<string>('');
   
   // Only show for the admin user
   const isAdmin = user?.username === 'msn_clx';
@@ -22,7 +21,6 @@ export const AdminPanel: React.FC = () => {
       .then(res => res.json())
       .then(data => {
         setAwsCallsDisabled(data.awsCallsDisabled || false);
-        setStatusRefreshTime(new Date().toLocaleTimeString());
         setIsLoading(false);
       })
       .catch((err) => {
@@ -82,74 +80,68 @@ export const AdminPanel: React.FC = () => {
   if (!isAdmin) return null;
   
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-5 mb-6 border-l-4 border-orange-500">
+    <div className="bg-gray-800 shadow-lg rounded-lg p-4 mb-6 border border-gray-700">
       <div className="flex justify-between items-center mb-4">
-        <div>
-          <h3 className="text-xl font-bold mb-1 flex items-center">
-            Admin Controls
-            {isLoading && (
-              <span className="ml-2 inline-block w-4 h-4 border-2 border-gray-300 border-t-orange-500 rounded-full animate-spin"></span>
-            )}
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Control AWS resource usage to save credits
-          </p>
+        <div className="flex items-center space-x-2">
+          <Shield className="h-5 w-5 text-orange-500" />
+          <div>
+            <h3 className="text-lg font-bold text-white flex items-center">
+              Admin Controls
+              {isLoading && (
+                <span className="ml-2 inline-block w-4 h-4 border-2 border-gray-300 border-t-orange-500 rounded-full animate-spin"></span>
+              )}
+            </h3>
+            <p className="text-sm text-gray-300">
+              Toggle AWS features to save credits
+            </p>
+          </div>
         </div>
-        <Button
-          onClick={fetchAWSStatus}
-          variant="outline"
-          size="sm"
-          disabled={isLoading}
-          className="text-xs"
-        >
-          Refresh Status
-        </Button>
       </div>
       
-      <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-gray-700 p-3 rounded-lg">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
             {awsCallsDisabled ? (
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
+              <AlertTriangle className="h-5 w-5 text-orange-400" />
             ) : (
-              <Check className="h-5 w-5 text-green-500" />
+              <Check className="h-5 w-5 text-green-400" />
             )}
-            <Label htmlFor="aws-toggle" className="text-base font-medium cursor-pointer">
+            <Label htmlFor="aws-toggle" className="text-white font-medium cursor-pointer">
               AWS DynamoDB Calls
             </Label>
           </div>
           
           <div className="flex items-center space-x-2">
-            <span className={`text-sm ${awsCallsDisabled ? 'text-orange-500 font-medium' : 'text-green-600 font-medium'}`}>
+            <span className={`text-sm ${awsCallsDisabled ? 'text-orange-400 font-medium' : 'text-green-400 font-medium'}`}>
               {awsCallsDisabled ? "Disabled" : "Enabled"}
             </span>
             
             <Switch
               id="aws-toggle"
               checked={!awsCallsDisabled}
-              onCheckedChange={() => toggleAwsCalls()}
+              onCheckedChange={toggleAwsCalls}
               disabled={isLoading}
               className="data-[state=checked]:bg-green-500"
             />
           </div>
         </div>
         
-        <div className="bg-orange-50 dark:bg-gray-800 p-3 rounded-md border border-orange-200 dark:border-gray-700">
+        <div className="p-3 rounded-md bg-gray-800 border border-gray-600">
           <p className="text-sm font-medium">
             {awsCallsDisabled ? (
-              <span className="text-orange-600 flex items-center">
+              <span className="text-orange-400 flex items-center">
                 <XCircle className="inline-block w-4 h-4 mr-1" />
                 AWS calls are currently disabled (saving credits)
               </span>
             ) : (
-              <span className="text-green-600 flex items-center">
+              <span className="text-green-400 flex items-center">
                 <Check className="inline-block w-4 h-4 mr-1" />
                 AWS calls are currently enabled (using credits)
               </span>
             )}
           </p>
           
-          <div className="mt-3 flex items-center justify-between">
+          <div className="mt-3">
             <Button
               onClick={toggleAwsCalls}
               disabled={isLoading}
@@ -173,12 +165,6 @@ export const AdminPanel: React.FC = () => {
               )}
             </Button>
           </div>
-          
-          {statusRefreshTime && (
-            <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-              Last status update: {statusRefreshTime}
-            </p>
-          )}
         </div>
       </div>
     </div>
