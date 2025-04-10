@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { DashboardLayout } from "@/components/ui/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { 
   LuCloud, 
@@ -34,9 +33,7 @@ import {
   SiGit, 
   SiNodedotjs, 
   SiAwslambda,
-  SiAmazons3,
-  SiJenkins,
-  SiAmazonec2,
+  SiAmazons3
 } from "react-icons/si";
 
 // Resource component for the diagram
@@ -44,10 +41,10 @@ interface ResourceProps {
   icon: React.ReactNode;
   label?: string; 
   color?: string;
-  size?: string; 
+  size?: "sm" | "md" | "lg"; 
   className?: string;
   bordered?: boolean;
-  onClick?: React.MouseEventHandler<HTMLDivElement> | null;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   tooltip?: string;
   status?: 'success' | 'warning' | 'error' | 'info' | null;
 }
@@ -59,7 +56,7 @@ const Resource: React.FC<ResourceProps> = ({
   size = "md", 
   className = "",
   bordered = false,
-  onClick = null,
+  onClick,
   tooltip,
   status
 }) => {
@@ -109,57 +106,6 @@ const Resource: React.FC<ResourceProps> = ({
           <span className="text-xs font-medium text-white bg-gray-800/70 rounded-full px-2 py-1">
             {label}
           </span>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Connection line component
-interface ConnectionProps {
-  direction?: 'right' | 'down' | 'diagonal';
-  color?: string;
-  dashed?: boolean;
-  animated?: boolean;
-  label?: string | null;
-  className?: string;
-}
-
-const Connection: React.FC<ConnectionProps> = ({ 
-  direction = "right", 
-  color = "white", 
-  dashed = false,
-  animated = false,
-  label = null,
-  className = ""
-}) => {
-  const directionClasses: Record<string, string> = {
-    right: "h-0.5 my-auto w-full",
-    down: "w-0.5 mx-auto h-full",
-    diagonal: "transform rotate-45 h-0.5 w-full"
-  };
-
-  const colorClasses: Record<string, string> = {
-    white: "bg-white",
-    orange: "bg-orange-500",
-    blue: "bg-blue-500",
-    purple: "bg-purple-500",
-    green: "bg-green-500",
-    teal: "bg-teal-500",
-    cyan: "bg-cyan-500",
-    red: "bg-red-500",
-  };
-
-  const lineClass = `${directionClasses[direction]} ${colorClasses[color]} ${dashed ? 'dashed-line' : ''} 
-    ${animated ? 'animated-line' : ''} opacity-70 ${className}`;
-
-  return (
-    <div className="relative">
-      <div className={lineClass}></div>
-      {label && (
-        <div className="absolute text-xs bg-gray-800/80 rounded px-1.5 py-0.5 text-white whitespace-nowrap transform -translate-x-1/2 -translate-y-1/2" 
-        style={{ left: '50%', top: direction === 'down' ? '50%' : '0' }}>
-          {label}
         </div>
       )}
     </div>
@@ -223,14 +169,15 @@ export default function InfrastructureDiagramPage() {
     refetchInterval: 30000
   });
 
-  const [viewMode, setViewMode] = useState('logical'); // 'logical' or 'physical'
   const [activeStep, setActiveStep] = useState<number | null>(null);
   
-  const awsDataObj = awsData || { status: 'not_connected', region: 'ap-southeast-1' };
+  // Provide default values and type safety
+  const awsDataObj = awsData as { status: string; region: string } || { status: 'not_connected', region: 'ap-southeast-1' };
   const awsConnected = awsDataObj.status === 'connected';
   const awsRegion = awsDataObj.region || 'ap-southeast-1';
   
-  const terraformStatusObj = terraformStatus || { status: 'not_applied', provider: 'AWS', region: awsRegion };
+  const terraformStatusObj = terraformStatus as { status: string; provider: string; region: string } || 
+    { status: 'not_applied', provider: 'AWS', region: awsRegion };
   const terraformApplied = terraformStatusObj.status === 'applied';
 
   const highlightStep = (step: number) => {
@@ -274,22 +221,6 @@ export default function InfrastructureDiagramPage() {
                 <p className="mt-1 max-w-2xl text-sm text-gray-200">
                   Visual representation of your DevOps pipeline and cloud deployment
                 </p>
-              </div>
-              <div className="flex space-x-2">
-                <div className="bg-gray-800/60 rounded-lg p-1 flex">
-                  <button 
-                    className={`px-3 py-1 text-xs rounded-md font-medium ${viewMode === 'logical' ? 'bg-orange-500 text-white' : 'text-gray-300'}`}
-                    onClick={() => setViewMode('logical')}
-                  >
-                    Logical View
-                  </button>
-                  <button 
-                    className={`px-3 py-1 text-xs rounded-md font-medium ${viewMode === 'physical' ? 'bg-orange-500 text-white' : 'text-gray-300'}`}
-                    onClick={() => setViewMode('physical')}
-                  >
-                    Physical View
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -578,7 +509,7 @@ export default function InfrastructureDiagramPage() {
                         <Group title="EC2 Compute" color="blue">
                           <div className="p-4 bg-blue-900/10 border border-blue-500/20 rounded-md flex flex-col items-center">
                             <Resource 
-                              icon={<SiAmazonec2 className="text-white" />} 
+                              icon={<LuServer className="text-white" />} 
                               label="EC2 Instances" 
                               color="blue"
                               size="sm"
@@ -730,7 +661,8 @@ export default function InfrastructureDiagramPage() {
       </div>
       
       {/* Custom CSS for dashed and animated lines */}
-      <style jsx>{`
+      <style>
+        {`
         .dashed-line {
           background-image: linear-gradient(to right, currentColor 50%, transparent 50%);
           background-size: 8px 1px;
@@ -752,7 +684,8 @@ export default function InfrastructureDiagramPage() {
           background-size: 8px 1px;
           background-repeat: repeat-x;
         }
-      `}</style>
+        `}
+      </style>
     </DashboardLayout>
   );
 }
