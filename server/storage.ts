@@ -39,7 +39,7 @@ export class DatabaseStorage implements IStorage {
   // Create the admin user on startup
   private async setupAdminUser() {
     const adminUsername = 'msn_clx';
-    const adminPassword = '$2b$10$Vg.Qb7JMgKSu3gUC5CgYu.K9IHKN1PUg/F6D21MHGiWlQg7UpGXz2'; // Hashed version of Mason@0905
+    const adminPassword = 'd4e9fe71173f4352b2a051b6cdd910293ef157957f773d056ab953a4f02c21ae1ea308de5c1ebe4202585a0d2606874c15e2cfb1556b9714f7a59198a809732f.3192ebfb2a1152516ce65bb644b0baba'; // Newly generated hash for Mason@0905
     
     if (!this.localUsers.has(adminUsername)) {
       this.localUsers.set(adminUsername, {
