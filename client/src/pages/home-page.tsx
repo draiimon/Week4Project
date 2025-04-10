@@ -110,6 +110,7 @@ export default function HomePage() {
 REGION: ${awsRegion}
 TABLE: UsersTable
 FEATURES: User Authentication, Data Storage
+STATUS: Connected
 AWS_ACCESS_KEY_ID: [CREDENTIAL HIDDEN]
 AWS_SECRET_ACCESS_KEY: [CREDENTIAL HIDDEN]`}
                         </pre>

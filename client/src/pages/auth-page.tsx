@@ -82,7 +82,7 @@ export default function AuthPage() {
                   <CardHeader className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-t-lg">
                     <CardTitle className="text-white">Create a new account</CardTitle>
                     <CardDescription className="text-gray-200">
-                      Register to get started with OakTree DevOps Platform
+                      Register to get started with AWS DevOps Platform
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="mt-4">
