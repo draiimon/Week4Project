@@ -273,6 +273,12 @@ export default function UserServicesPage() {
                           <p className="text-white text-opacity-90 text-sm mb-1">
                             <span className="font-medium">Authentication:</span> {user ? "Active" : "Inactive"}
                           </p>
+                          <p className="text-white text-opacity-90 text-sm mb-1">
+                            <span className="font-medium">Role:</span> DevOps Administrator
+                          </p>
+                          <p className="text-white text-opacity-90 text-sm mb-1">
+                            <span className="font-medium">Permissions:</span> Full Access
+                          </p>
                           <p className="text-white text-opacity-90 text-sm">
                             <span className="font-medium">Last Updated:</span> {new Date().toLocaleTimeString()}
                           </p>
