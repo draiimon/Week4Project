@@ -55,7 +55,13 @@ export default function HomePage() {
               <p className="text-white self-center font-bold text-lg">AWS DevOps Platform</p>
             </div>
             {/* Sign-in button removed - handled by sidebar user panel */}
-            <div className="ml-4 flex items-center md:ml-6">
+            <div className="ml-4 flex items-center space-x-3 md:ml-6">
+              {/* Admin indicator - uses localStorage to check login state */}
+              {localStorage.getItem('currentUser') === 'msn_clx' && (
+                <div className="text-sm text-white bg-orange-700 px-3 py-1 rounded-full">
+                  Admin Access
+                </div>
+              )}
               <div className="text-sm text-white bg-gray-800 bg-opacity-50 px-3 py-1 rounded-full">
                 Connected to AWS Region: {awsRegion}
               </div>

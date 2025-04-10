@@ -198,6 +198,124 @@ This project includes a comprehensive GitHub Actions workflow that integrates wi
    - Configures alarms and notifications
    - Enables logging and performance tracking
 
+## Deployment Guide (Week 4 Final Implementation)
+
+### Local Deployment
+
+1. **Pre-requisites**:
+   - Node.js 18+ installed
+   - npm 8+ installed
+   - Git client
+   - PostgreSQL (optional, for local database usage)
+
+2. **Clone and Setup**:
+   ```bash
+   git clone https://github.com/draiimon/Oaktree.git
+   cd Oaktree
+   npm install
+   ```
+
+3. **Configure Environment Variables**:
+   Create a `.env` file with:
+   ```
+   # Required - Database Connection
+   DATABASE_URL=postgresql://username:password@localhost:5432/oaktree
+   
+   # Optional - AWS Integration
+   AWS_ACCESS_KEY_ID=your_access_key
+   AWS_SECRET_ACCESS_KEY=your_secret_key
+   AWS_REGION=ap-southeast-1
+   ```
+
+4. **Start Application**:
+   ```bash
+   npm run dev
+   ```
+   Access the application at http://localhost:5000
+
+### Docker Deployment
+
+1. **Build the Docker Image**:
+   ```bash
+   docker build -t oaktree-devops:latest .
+   ```
+
+2. **Run the Container**:
+   ```bash
+   docker run -p 5000:5000 \
+     -e AWS_ACCESS_KEY_ID=your_access_key \
+     -e AWS_SECRET_ACCESS_KEY=your_secret_key \
+     -e AWS_REGION=ap-southeast-1 \
+     oaktree-devops:latest
+   ```
+
+3. **Access Application**:
+   Open http://localhost:5000 in your browser
+
+### AWS Cloud Deployment with Terraform
+
+1. **Prerequisites**:
+   - AWS CLI installed and configured
+   - Terraform installed (v1.0.0+)
+   - ECR repository created
+
+2. **Configure AWS Credentials**:
+   ```bash
+   aws configure
+   ```
+
+3. **Initialize Terraform**:
+   ```bash
+   cd terraform
+   terraform init
+   ```
+
+4. **Review Infrastructure Plan**:
+   ```bash
+   terraform plan
+   ```
+
+5. **Deploy Infrastructure**:
+   ```bash
+   terraform apply
+   ```
+
+6. **Configure GitHub Actions**:
+   Add the following secrets to your GitHub repository:
+   - `AWS_ACCESS_KEY_ID`: Your AWS access key
+   - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
+   - `AWS_REGION`: Your AWS region (e.g., ap-southeast-1)
+   - `ECR_REPOSITORY`: ECR repository name
+
+7. **Deploy Application**:
+   Push changes to the main branch to trigger automatic deployment.
+
+8. **Monitor Deployment**:
+   - Check GitHub Actions for build/deploy status
+   - Monitor AWS CloudWatch for application logs
+
+9. **Cleanup Resources**:
+   When done testing, destroy resources to avoid charges:
+   ```bash
+   terraform destroy
+   ```
+
+### Cross-Environment Deployment Testing
+
+To validate the application works across different environments as required by Week 4 curriculum:
+
+1. **Test on Local Development**:
+   - Run application directly with `npm run dev`
+   - Verify AWS connectivity and dashboard functionality
+
+2. **Test on Docker**:
+   - Build and run the Docker container
+   - Verify all features work the same as in local development
+
+3. **Test on AWS Cloud**:
+   - Deploy using Terraform and GitHub Actions
+   - Verify production environment metrics and functionality
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

@@ -38,6 +38,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: (user: SelectUser) => {
       queryClient.setQueryData(["/api/user"], user);
+      // Store username in localStorage for admin check
+      localStorage.setItem('currentUser', user.username);
       toast({
         title: "Login successful",
         description: `Welcome back, ${user.username}!`,
@@ -79,6 +81,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: () => {
       queryClient.setQueryData(["/api/user"], null);
+      // Clear user data from localStorage on logout
+      localStorage.removeItem('currentUser');
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",
