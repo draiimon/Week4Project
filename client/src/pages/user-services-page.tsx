@@ -80,12 +80,23 @@ export default function UserServicesPage() {
     lastUpdated: new Date().toISOString()
   });
 
+  const [terraformStatus, setTerraformStatus] = useState({ 
+    status: "not_applied", 
+    provider: "",
+    region: "" 
+  });
+
   useEffect(() => {
     async function fetchHostInfo() {
       try {
         // Get AWS connection status and region
         const awsResponse = await fetch('/api/aws/status');
         const awsData = await awsResponse.json();
+        
+        // Get Terraform status
+        const terraformResponse = await fetch('/api/terraform/status');
+        const terraformData = await terraformResponse.json();
+        setTerraformStatus(terraformData);
         
         // Get system metrics
         const systemResponse = await fetch('/api/system-status');
@@ -227,8 +238,30 @@ export default function UserServicesPage() {
                           <p className="text-white text-opacity-90 text-sm mb-1">
                             <span className="font-medium">Status:</span> {hostInfo.status}
                           </p>
-                          <p className="text-white text-opacity-90 text-sm">
+                          <p className="text-white text-opacity-90 text-sm mb-1">
                             <span className="font-medium">Service:</span> DynamoDB
+                          </p>
+                          <p className="text-white text-opacity-90 text-sm">
+                            <span className="font-medium">Environment:</span> {hostInfo.environment}
+                          </p>
+                        </div>
+                        
+                        <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
+                          <h4 className="text-sm font-medium text-white mb-2">Terraform Status</h4>
+                          <p className="text-white text-opacity-90 text-sm mb-1">
+                            <span className="font-medium">Status:</span>{" "}
+                            <span className={terraformStatus.status === "applied" ? "text-green-400" : "text-gray-400"}>
+                              {terraformStatus.status === "applied" ? "Applied" : "Not Applied"}
+                            </span>
+                          </p>
+                          <p className="text-white text-opacity-90 text-sm mb-1">
+                            <span className="font-medium">Provider:</span> {terraformStatus.provider || "AWS"}
+                          </p>
+                          <p className="text-white text-opacity-90 text-sm mb-1">
+                            <span className="font-medium">Region:</span> {terraformStatus.region || hostInfo.region}
+                          </p>
+                          <p className="text-white text-opacity-90 text-sm">
+                            <span className="font-medium">Infrastructure:</span> {terraformStatus.status === "applied" ? "Provisioned" : "Pending"}
                           </p>
                         </div>
                         
