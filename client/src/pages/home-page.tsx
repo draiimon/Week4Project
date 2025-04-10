@@ -77,10 +77,10 @@ export default function HomePage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
               <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-lg shadow-lg px-6 py-4">
                 <h1 className="text-2xl font-bold text-white">
-                  Week 4: End-to-End DevOps Project
+                  AWS DevOps Dashboard
                 </h1>
                 <p className="mt-1 text-sm text-gray-200">
-                  Cross-Environment Deployment: Local, WSL, Docker Container & AWS Cloud
+                  Cloud Infrastructure Management & Deployment Platform
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
                   <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-800 text-white">
@@ -93,14 +93,14 @@ export default function HomePage() {
                     Terraform IaC
                   </span>
                   <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-800 text-white">
-                    GitHub Actions CI/CD
+                    CI/CD Pipeline
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4">
-              {/* Week 4 Deployment Status - Environment Info */}
+              {/* Deployment Status - Environment Info */}
               <div className="mb-6">
                 <DeploymentStatus />
               </div>
@@ -120,78 +120,38 @@ export default function HomePage() {
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {/* AWS Infrastructure */}
                 <AWSInfrastructure />
-
-                {/* AWS DynamoDB Authentication Integration */}
+                
+                {/* AWS DynamoDB Data Storage */}
                 <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden border border-orange-500/20">
                   <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
                     <h3 className="text-lg leading-6 font-bold text-white">
-                      AWS Authentication Integration
+                      AWS DynamoDB Integration
                     </h3>
                     <p className="mt-1 max-w-2xl text-sm text-gray-200">
-                      AWS DynamoDB User Management
+                      Cloud Database Storage
                     </p>
                   </div>
                   <div className="p-6 text-white">
                     <div className="bg-gray-800 bg-opacity-50 p-4 rounded-md border border-gray-700">
                       <h4 className="text-sm font-medium text-orange-400 mb-2">
-                        AWS Live Configuration:
+                        AWS Status Overview:
                       </h4>
-                      <div className="bg-gray-900 p-3 rounded-md font-mono text-xs border border-gray-700">
-                        <pre className="whitespace-pre-wrap text-gray-300">
-{`# AWS DynamoDB Configuration
-REGION: ${awsRegion}
-TABLE: OakTreeUsers
-FEATURES: User Authentication, Data Storage
-STATUS: Connected
-AWS_ACCESS_KEY_ID: [CREDENTIAL HIDDEN]
-AWS_SECRET_ACCESS_KEY: [CREDENTIAL HIDDEN]`}
-                        </pre>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4">
-                      <div className="p-4 bg-gray-800 rounded-md border border-orange-500/20">
-                        <div className="flex">
-                          <svg className="h-5 w-5 text-orange-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                          <p className="text-gray-200">User authentication system successfully integrated with AWS DynamoDB</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4">
-                      <p className="text-sm text-orange-300 mb-2 font-semibold">
-                        This integration provides:
-                      </p>
-                      <ul className="list-disc pl-5 text-sm text-gray-300 space-y-1">
-                        <li>Secure user registration with AWS DynamoDB storage</li>
-                        <li>Password encryption with crypto library</li>
-                        <li>Real-time AWS authentication in {awsRegion} region</li>
-                        <li>Actual metrics from your AWS account resources</li>
-                      </ul>
-                    </div>
-                    
-                    <div className="mt-4 p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-orange-500/20 rounded-md">
-                      <h4 className="text-sm font-medium text-orange-400 mb-2">
-                        Live AWS Connection Status
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <div className="flex items-center">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="flex items-center p-3 bg-gray-800 rounded border border-gray-700">
                           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                          <span className="text-xs text-gray-300">Connection: Established</span>
+                          <span className="text-sm text-gray-300">Region: <span className="font-medium">{awsRegion}</span></span>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center p-3 bg-gray-800 rounded border border-gray-700">
                           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                          <span className="text-xs text-gray-300">Authentication: Working</span>
+                          <span className="text-sm text-gray-300">DynamoDB: <span className="font-medium">Active</span></span>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center p-3 bg-gray-800 rounded border border-gray-700">
                           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                          <span className="text-xs text-gray-300">Data Storage: Active</span>
+                          <span className="text-sm text-gray-300">Data Storage: <span className="font-medium">Available</span></span>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center p-3 bg-gray-800 rounded border border-gray-700">
                           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                          <span className="text-xs text-gray-300">SDK Integration: Connected</span>
+                          <span className="text-sm text-gray-300">SDK: <span className="font-medium">Connected</span></span>
                         </div>
                       </div>
                     </div>
