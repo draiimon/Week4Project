@@ -1,0 +1,11 @@
+{
+  "name": "oaktree-local",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "local:dev": "node local-dev.js",
+    "local:build": "vite --config vite.config.local.ts build",
+    "local:start": "NODE_ENV=production node local-dev.js"
+  }
+}
