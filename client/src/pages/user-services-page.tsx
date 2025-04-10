@@ -2,13 +2,55 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 
+interface SystemMetrics {
+  memory: {
+    total: number;
+    used: number;
+    free: number;
+    usagePercent: number;
+  };
+  cpu: {
+    model: string;
+    cores: number;
+    usage: number;
+  };
+  uptime: number;
+  platform: string;
+}
+
 interface HostInfo {
   hostname: string;
   type: string;
   region: string;
   environment: string;
   status: string;
+  systemMetrics: SystemMetrics;
   lastUpdated: string;
+}
+
+function formatBytes(bytes: number, decimals = 2) {
+  if (bytes === 0) return '0 Bytes';
+  
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+function formatUptime(seconds: number) {
+  const days = Math.floor(seconds / (3600 * 24));
+  const hours = Math.floor((seconds % (3600 * 24)) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  
+  let result = '';
+  if (days > 0) result += `${days}d `;
+  if (hours > 0) result += `${hours}h `;
+  result += `${minutes}m`;
+  
+  return result;
 }
 
 export default function UserServicesPage() {
@@ -20,18 +62,37 @@ export default function UserServicesPage() {
     region: "",
     environment: "",
     status: "",
+    systemMetrics: {
+      memory: {
+        total: 0,
+        used: 0,
+        free: 0,
+        usagePercent: 0
+      },
+      cpu: {
+        model: "",
+        cores: 0,
+        usage: 0
+      },
+      uptime: 0,
+      platform: ""
+    },
     lastUpdated: new Date().toISOString()
   });
 
   useEffect(() => {
     async function fetchHostInfo() {
       try {
-        // Get real AWS connection status and region
-        const response = await fetch('/api/aws/status');
-        const data = await response.json();
+        // Get AWS connection status and region
+        const awsResponse = await fetch('/api/aws/status');
+        const awsData = await awsResponse.json();
+        
+        // Get system metrics
+        const systemResponse = await fetch('/api/system-status');
+        const systemData = await systemResponse.json();
         
         // Get hostname from browser
-        const hostname = window.location.hostname;
+        const hostname = window.location.hostname || systemData.hostname;
         
         // Get environment info
         let environment = "Development";
@@ -43,10 +104,16 @@ export default function UserServicesPage() {
         
         setHostInfo({
           hostname: hostname,
-          type: "AWS DynamoDB Client",
-          region: data.region || "ap-southeast-1",
+          type: "DevOps Deployment",
+          region: awsData.region || "ap-southeast-1",
           environment: environment,
-          status: data.status === "connected" ? "Active" : "Disconnected",
+          status: awsData.status === "connected" ? "Active" : "Disconnected",
+          systemMetrics: {
+            memory: systemData.memory,
+            cpu: systemData.cpu,
+            uptime: systemData.uptime,
+            platform: systemData.platform
+          },
           lastUpdated: new Date().toISOString()
         });
         
@@ -58,6 +125,12 @@ export default function UserServicesPage() {
     }
     
     fetchHostInfo();
+    
+    // Set up polling to refresh data every 30 seconds
+    const intervalId = setInterval(fetchHostInfo, 30000);
+    
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
