@@ -62,6 +62,7 @@ export function setupAuth(app: Express) {
         // First try to authenticate with AWS DynamoDB if configured
         if (isAWSConfigured) {
           try {
+            console.log(`Looking up user '${username}' in AWS DynamoDB`);
             const awsUser = await awsDb.authenticateUser(username, password);
             
             if (awsUser) {
@@ -79,6 +80,8 @@ export function setupAuth(app: Express) {
               
               console.log("AWS DynamoDB authentication successful");
               return done(null, user);
+            } else {
+              console.log(`User '${username}' not found in DynamoDB or password incorrect`);
             }
           } catch (awsError) {
             console.log("AWS DynamoDB auth failed, falling back to local:", awsError);
@@ -86,10 +89,18 @@ export function setupAuth(app: Express) {
         }
         
         // Local authentication fallback
+        console.log(`Trying local authentication for user '${username}'`);
         const user = await storage.getUserByUsername(username);
-        if (!user || !(await comparePasswords(password, user.password))) {
+        if (!user) {
+          console.log(`User '${username}' not found in local database`);
+          return done(null, false);
+        }
+        
+        if (!(await comparePasswords(password, user.password))) {
+          console.log(`Password incorrect for user '${username}' in local database`);
           return done(null, false);
         } else {
+          console.log(`Local authentication successful for user '${username}'`);
           return done(null, user);
         }
       } catch (error) {
