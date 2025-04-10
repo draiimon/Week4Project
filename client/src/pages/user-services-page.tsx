@@ -267,15 +267,16 @@ export default function UserServicesPage() {
                         
                         <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
                           <h4 className="text-sm font-medium text-white mb-2">User Information</h4>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">Username:</span> {user?.username || "Not logged in"}
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">Authentication:</span> {user ? "Active" : "Inactive"}
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm">
-                            <span className="font-medium">Last Updated:</span> {new Date().toLocaleTimeString()}
-                          </p>
+                          <div className="flex space-x-1">
+                            <span className="text-white text-opacity-90 text-sm font-medium">User:</span>
+                            <span className="text-white text-opacity-90 text-sm">{user?.username || "Not logged in"}</span>
+                            <span className="text-xs bg-green-500 text-white px-1 rounded ml-1">
+                              {user ? "Active" : "Inactive"}
+                            </span>
+                          </div>
+                          <div className="text-white text-opacity-70 text-xs mt-1">
+                            Updated: {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                          </div>
                         </div>
                       </div>
                       
