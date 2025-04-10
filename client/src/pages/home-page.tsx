@@ -425,7 +425,6 @@ export default function HomePage() {
                           
                           <h5 className="text-white text-sm font-medium mb-2">Environment Variables</h5>
                           <div className="bg-gray-900 bg-opacity-50 p-3 rounded text-xs font-mono text-gray-300">
-                            <div>DATABASE_URL=postgresql://...</div>
                             <div>AWS_ACCESS_KEY_ID=*******</div>
                             <div>AWS_SECRET_ACCESS_KEY=******</div>
                             <div>AWS_REGION={awsRegion}</div>

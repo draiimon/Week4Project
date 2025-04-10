@@ -1,33 +1,35 @@
-# OakTree DevOps Project - Week 4 Final Implementation
+# OakTree DevOps Project - AWS Cloud Management Platform
 
-This repository contains the Week 4 final implementation of the OakTree DevOps project, featuring AWS integration, containerization, and cross-environment support.
+A comprehensive AWS cloud infrastructure management and deployment platform with real-time monitoring and admin controls.
 
-## Features
+**By Mark Andrei Castillo**
 
-- **AWS DynamoDB Integration**: User authentication and data storage
-- **AWS Cognito Support**: User identity management
-- **AWS IAM Security**: Fine-grained access control
-- **AWS CodeDeploy Integration**: Automated deployment pipeline
-- **Cross-Environment Support**: Runs on Linux, Windows WSL, and Docker
-- **Modern UI**: React frontend with orange and gray themed design
-- **Secure Authentication**: AWS-managed authentication services
-- **Complete CI/CD Pipeline**: GitHub Actions workflow integrated with AWS CodePipeline
+## 🚀 Key Features
 
-## Getting Started
+- **AWS DynamoDB Integration**: Secure user authentication and data storage
+- **Interactive Admin Panel**: Toggle AWS services to save credits
+- **Real-time AWS Metrics**: Monitor your cloud resources with live data
+- **Multi-Environment Support**: Runs seamlessly on any platform (Linux, Windows, Docker)
+- **Modern React UI**: Sleek interface with responsive design
+- **Infrastructure Management**: Complete AWS resource visualization
+- **Secure Authentication**: Local admin user plus AWS-powered user management
+- **Terraform Integration**: Ready for Infrastructure as Code deployments
+
+## 📋 Quick Start Guide
 
 ### Prerequisites
 
-- Node.js (v18 or later)
-- npm (v8 or later)
+- Node.js (v18+)
+- npm (v8+)
 - Docker (optional, for containerized deployment)
-- AWS Account (optional, for full functionality)
+- AWS Account (optional, for full cloud functionality)
 
-### Quick Setup (No Database Required)
+### Basic Setup
 
 1. **Clone the repository**
    ```bash
-   git clone --branch Week-4 https://github.com/draiimon/Oaktree.git
-   cd Oaktree
+   git clone https://github.com/your-username/oaktree-cloud-platform.git
+   cd oaktree-cloud-platform
    ```
 
 2. **Install dependencies**
@@ -35,335 +37,121 @@ This repository contains the Week 4 final implementation of the OakTree DevOps p
    npm install
    ```
 
-3. **Configure environment variables**
-   Create a `.env` file in the root directory with:
-   ```
-   # Enable AWS Mode (no PostgreSQL needed)
-   USE_AWS_DB=true
-   
-   # AWS Configuration (for full functionality)
-   AWS_REGION=ap-southeast-1
-   AWS_ACCESS_KEY_ID=your_access_key_here
-   AWS_SECRET_ACCESS_KEY=your_secret_key_here
-   
-   # If you don't have AWS credentials, the app will run with limited functionality
-   ```
-
-4. **Start the development server**
-   ```bash
-   # Method 1: Standard method (may have compatibility issues in some environments)
-   npm run dev
-   
-   # Method 2: Local compatibility mode (more reliable across environments)
-   node run-local.js
-   ```
-
-5. **Access the application**
-   Open your browser and navigate to http://localhost:5000
-
-### Running in Windows WSL
-
-1. **Clone the repository in WSL**
-   ```bash
-   git clone --branch Week-4 https://github.com/draiimon/Oaktree.git
-   cd Oaktree
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure .env file**
-   ```
-   # Enable AWS Mode (no PostgreSQL needed)
-   USE_AWS_DB=true
-   
-   # Add AWS credentials if available
-   AWS_REGION=ap-southeast-1
-   AWS_ACCESS_KEY_ID=your_access_key_here
-   AWS_SECRET_ACCESS_KEY=your_secret_key_here
-   ```
-
-4. **Run the application**
-   ```bash
-   # Method 1: Standard method (may have compatibility issues in WSL)
-   npm run dev
-   
-   # Method 2: Local compatibility mode (recommended for WSL)
-   node run-local.js
-   ```
-
-### Docker Deployment (No Database Required)
-
-1. **Build the Docker image**
-   ```bash
-   docker build -t oaktree-app:latest .
-   ```
-
-2. **Run the container with AWS mode enabled**
-   ```bash
-   docker run -d -p 5000:5000 \
-     -e USE_AWS_DB=true \
-     -e AWS_REGION=ap-southeast-1 \
-     -e AWS_ACCESS_KEY_ID=your_access_key \
-     -e AWS_SECRET_ACCESS_KEY=your_secret_key \
-     --name oaktree-container \
-     oaktree-app:latest
-   ```
-
-   If you don't have AWS credentials, you can still run with limited functionality:
-   ```bash
-   docker run -d -p 5000:5000 \
-     -e USE_AWS_DB=true \
-     -e AWS_REGION=ap-southeast-1 \
-     --name oaktree-container \
-     oaktree-app:latest
-   ```
-
-3. **Access the application**
-   Open your browser and navigate to http://localhost:5000
-
-## AWS Integration
-
-This application is fully integrated with AWS services for authentication, data storage, deployment, and monitoring. The application is designed to work seamlessly with AWS infrastructure.
-
-### AWS Services Used
-
-1. **AWS DynamoDB**
-   - NoSQL database for user data and authentication information
-   - Provides high availability and scalability
-   - Used table schema:
-     ```
-     Table Name: OakTreeUsers
-     Primary Key: username (String)
-     Additional Attributes:
-       - password (String, hashed)
-       - email (String)
-       - createdAt (String)
-     ```
-
-2. **AWS Cognito**
-   - User authentication and identity management
-   - Securely handles user registration and login
-   - Integrates with IAM for access control
-
-3. **AWS IAM**
-   - Manages secure access to AWS services and resources
-   - Provides fine-grained permissions for application components
-   - Required policies for DynamoDB and Cognito access
-
-4. **AWS CodePipeline & CodeDeploy**
-   - Automates build, test, and deployment processes
-   - Integrates with GitHub Actions for continuous deployment
-   - Provides logging and rollback capabilities
-
-### Setting Up AWS Resources
-
-1. **Configure IAM Permissions**
-   - Create an IAM user with permissions for DynamoDB and Cognito
-   - Generate access keys for application use
-
-2. **Set Up DynamoDB**
-   - Create a table named `OakTreeUsers` with primary key `username` (String)
-   - Configure read/write capacity units as needed
-
-3. **Configure Cognito**
-   - Create a User Pool for identity management
-   - Set up App Client for application integration
-   - Configure user attributes and password policies
-
-4. **Environment Configuration**
-   - Set the required environment variables in your deployment environment:
-     ```
-     AWS_ACCESS_KEY_ID=your_access_key
-     AWS_SECRET_ACCESS_KEY=your_secret_key
-     AWS_REGION=your_region
-     AWS_COGNITO_USER_POOL_ID=your_user_pool_id
-     AWS_COGNITO_CLIENT_ID=your_client_id
-     ```
-
-## Project Structure
-
-```
-.
-├── .github/workflows    # CI/CD pipeline configurations
-├── client/             # React frontend
-│   ├── src/            # Source code
-│   ├── public/         # Static assets
-│   └── ...
-├── server/             # Express backend
-│   ├── auth.ts         # Authentication logic
-│   ├── aws-db.ts       # AWS DynamoDB integration
-│   ├── db.ts           # PostgreSQL database connection
-│   ├── routes.ts       # API routes
-│   ├── start-local.js  # Local compatibility server script
-│   ├── storage.ts      # Data storage interface
-│   └── ...
-├── shared/             # Shared types and utilities
-├── terraform/          # Infrastructure as Code for AWS
-├── .dockerignore       # Docker ignore file
-├── .env.example        # Example environment variables
-├── Dockerfile          # Docker configuration
-├── package.json        # Dependencies and scripts
-├── run-local.js        # Local environment startup script
-└── README.md           # Project documentation
-```
-
-## CI/CD Pipeline with AWS Integration
-
-This project includes a comprehensive GitHub Actions workflow that integrates with AWS services for continuous integration and deployment:
-
-1. **Build and Test**: 
-   - Runs automatically on every push and pull request
-   - Verifies code quality and functionality
-
-2. **AWS Integration**:
-   - Configures AWS credentials securely via GitHub Secrets
-   - Validates AWS resource access and permissions
-   - Prepares deployment artifacts for AWS
-
-3. **Docker Build and AWS ECR**:
-   - Creates optimized Docker images for deployment
-   - Pushes images to AWS Elastic Container Registry
-   - Tags images for version control and rollbacks
-
-4. **AWS CodeDeploy Integration**:
-   - Automatically deploys to AWS infrastructure from the main branch
-   - Configures AWS resources using Infrastructure as Code
-   - Implements proper security protocols for AWS resources
-
-5. **AWS Monitoring Integration**:
-   - Sets up CloudWatch for application monitoring
-   - Configures alarms and notifications
-   - Enables logging and performance tracking
-
-## Deployment Guide (Week 4 Final Implementation)
-
-### Local Deployment
-
-1. **Pre-requisites**:
-   - Node.js 18+ installed
-   - npm 8+ installed
-   - Git client
-   - PostgreSQL (optional, for local database usage)
-
-2. **Clone and Setup**:
-   ```bash
-   git clone https://github.com/draiimon/Oaktree.git
-   cd Oaktree
-   npm install
-   ```
-
-3. **Configure Environment Variables**:
+3. **Configure environment**
    Create a `.env` file with:
    ```
-   # Required - Database Connection
-   DATABASE_URL=postgresql://username:password@localhost:5432/oaktree
-   
-   # Optional - AWS Integration
-   AWS_ACCESS_KEY_ID=your_access_key
-   AWS_SECRET_ACCESS_KEY=your_secret_key
+   # AWS Configuration
    AWS_REGION=ap-southeast-1
+   AWS_ACCESS_KEY_ID=your_access_key_here
+   AWS_SECRET_ACCESS_KEY=your_secret_key_here
+   USE_AWS_DB=true
+   
+   # Note: No database URL needed - uses DynamoDB exclusively!
    ```
 
-4. **Start Application**:
+4. **Start the application**
    ```bash
-   # Standard method (may have compatibility issues in some environments)
    npm run dev
-   
-   # Local compatibility mode (recommended for WSL or when standard method fails)
-   node run-local.js
    ```
-   Access the application at http://localhost:5000
+
+5. **Access the dashboard**
+   - Open http://localhost:5000
+   - Login with admin credentials:
+     - Username: `msn_clx`
+     - Password: `Mason@0905`
+
+## 🛠️ Architecture Overview
+
+### AWS Services Integration
+
+#### DynamoDB Integration
+- **Primary Function**: User account storage and authentication
+- **Table Structure**: OakTreeUsers with username as primary key
+- **Admin Control**: Can be disabled to save AWS credits
+
+#### Admin Features
+- **Resource Toggle**: Enable/disable DynamoDB to save credits
+- **Real-time Status**: Monitor AWS connection status
+- **AWS Cloud Metrics**: View usage statistics and performance data
+
+### Multi-Environment Support
+
+#### Local Development
+```bash
+# Just run the standard development server
+npm run dev
+```
+
+#### Docker Container
+```bash
+# Build container
+docker build -t oaktree-platform:latest .
+
+# Run container
+docker run -d -p 5000:5000 \
+  -e AWS_REGION=ap-southeast-1 \
+  -e AWS_ACCESS_KEY_ID=your_key \
+  -e AWS_SECRET_ACCESS_KEY=your_secret \
+  -e USE_AWS_DB=true \
+  --name oaktree-container \
+  oaktree-platform:latest
+```
+
+## 📊 Dashboard & Monitoring
+
+The platform provides comprehensive real-time monitoring:
+
+- **AWS Connection Status**: View and verify your AWS connection
+- **DynamoDB Table Status**: Monitor your database health
+- **System Performance**: Real-time metrics for CPU, memory, and network
+- **User Activity**: Track user registrations and authentications
+
+## 🔐 Security Features
+
+- **Admin Authentication**: Secure admin user with local fallback
+- **AWS IAM Integration**: Proper permissions management
+- **Environment Variable Protection**: Secure handling of AWS credentials
+- **Credit-Saving Features**: Disable AWS calls when not needed
+
+## 🔧 Development Guide
+
+### Project Structure
+```
+.
+├── client/               # React frontend
+│   └── src/              # Frontend source code
+│       ├── components/   # UI components
+│       └── pages/        # Application pages
+├── server/               # Express backend
+│   ├── aws-db.ts         # AWS DynamoDB integration
+│   ├── routes.ts         # API endpoints
+│   └── storage.ts        # Data storage interface
+└── shared/               # Shared code and types
+```
+
+### Key Components
+
+- **Admin Panel**: Located at `client/src/components/ui/admin-panel.tsx`
+- **AWS Status**: Located at `client/src/components/ui/aws-status.tsx`
+- **DynamoDB Integration**: Located at `server/aws-db.ts`
+
+## 🌟 Deployment Options
 
 ### Docker Deployment
+Build and deploy as a container for maximum portability.
 
-1. **Build the Docker Image**:
-   ```bash
-   docker build -t oaktree-devops:latest .
-   ```
+### AWS Cloud Deployment
+1. Configure your AWS credentials
+2. Use the platform's Terraform integration for Infrastructure as Code
 
-2. **Run the Container**:
-   ```bash
-   docker run -p 5000:5000 \
-     -e AWS_ACCESS_KEY_ID=your_access_key \
-     -e AWS_SECRET_ACCESS_KEY=your_secret_key \
-     -e AWS_REGION=ap-southeast-1 \
-     oaktree-devops:latest
-   ```
+## 🤝 Contributing
 
-3. **Access Application**:
-   Open http://localhost:5000 in your browser
+We welcome contributions! Please feel free to submit pull requests.
 
-### AWS Cloud Deployment with Terraform
-
-1. **Prerequisites**:
-   - AWS CLI installed and configured
-   - Terraform installed (v1.0.0+)
-   - ECR repository created
-
-2. **Configure AWS Credentials**:
-   ```bash
-   aws configure
-   ```
-
-3. **Initialize Terraform**:
-   ```bash
-   cd terraform
-   terraform init
-   ```
-
-4. **Review Infrastructure Plan**:
-   ```bash
-   terraform plan
-   ```
-
-5. **Deploy Infrastructure**:
-   ```bash
-   terraform apply
-   ```
-
-6. **Configure GitHub Actions**:
-   Add the following secrets to your GitHub repository:
-   - `AWS_ACCESS_KEY_ID`: Your AWS access key
-   - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
-   - `AWS_REGION`: Your AWS region (e.g., ap-southeast-1)
-   - `ECR_REPOSITORY`: ECR repository name
-
-7. **Deploy Application**:
-   Push changes to the main branch to trigger automatic deployment.
-
-8. **Monitor Deployment**:
-   - Check GitHub Actions for build/deploy status
-   - Monitor AWS CloudWatch for application logs
-
-9. **Cleanup Resources**:
-   When done testing, destroy resources to avoid charges:
-   ```bash
-   terraform destroy
-   ```
-
-### Cross-Environment Deployment Testing
-
-To validate the application works across different environments as required by Week 4 curriculum:
-
-1. **Test on Local Development**:
-   - Run application with the most suitable method for your environment:
-     ```bash
-     npm run dev        # Standard method
-     node run-local.js  # Compatible method for WSL/troubleshooting
-     ```
-   - Verify AWS connectivity and dashboard functionality
-
-2. **Test on Docker**:
-   - Build and run the Docker container
-   - Verify all features work the same as in local development
-
-3. **Test on AWS Cloud**:
-   - Deploy using Terraform and GitHub Actions
-   - Verify production environment metrics and functionality
-
-## License
+## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+**Developed by Mark Andrei Castillo**

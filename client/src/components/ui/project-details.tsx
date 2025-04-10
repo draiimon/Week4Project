@@ -157,10 +157,10 @@ npm install
 
 # Configure environment variables
 # Create .env file with:
-DATABASE_URL=postgresql://[user]:[password]@localhost:5432/oaktree
 AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
 AWS_REGION=your_region
+USE_AWS_DB=true
 
 # Run the application
 npm run dev
