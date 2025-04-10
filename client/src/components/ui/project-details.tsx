@@ -169,22 +169,65 @@ export const ContainerizedApp: React.FC = () => {
     <div className="mt-8 bg-white shadow rounded-lg overflow-hidden">
       <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
         <h3 className="text-lg leading-6 font-medium text-gray-900">
-          Containerized Application
+          Cross-Environment Deployment
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-gray-500">
-          Docker configuration and deployment
+          Local, WSL, and Docker configurations
         </p>
       </div>
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Dockerfile */}
+          {/* Local Development */}
+          <div>
+            <h4 className="text-sm font-medium text-gray-900 mb-2">
+              Local Development Setup:
+            </h4>
+            <div className="bg-gray-800 rounded-md p-3 font-mono overflow-auto max-h-72">
+              <pre className="text-xs text-blue-400">
+{`# Clone repository
+git clone https://github.com/draiimon/Oaktree.git
+cd Oaktree
+
+# Install dependencies
+npm install
+
+# Configure environment variables
+# Create .env file with:
+DATABASE_URL=postgresql://[user]:[password]@localhost:5432/oaktree
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_REGION=your_region
+
+# Run the application
+npm run dev
+
+# Application will be available at:
+# http://localhost:5000`}
+              </pre>
+            </div>
+            
+            <h4 className="text-sm font-medium text-gray-900 mt-4 mb-2">
+              WSL-Specific Configuration:
+            </h4>
+            <div className="bg-gray-50 p-3 rounded-md">
+              <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                <li>Ensure PostgreSQL is installed and running in WSL</li>
+                <li>Set the proper DATABASE_URL in your .env file</li>
+                <li>Make sure Node.js and npm are installed in your WSL environment</li>
+                <li>Run with <code className="bg-gray-200 px-1 rounded">npm run dev</code> from the project directory</li>
+                <li>Access using localhost or the WSL IP address</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Docker Configuration */}
           <div>
             <h4 className="text-sm font-medium text-gray-900 mb-2">
               Dockerfile:
             </h4>
-            <div className="bg-gray-800 rounded-md p-3 font-mono overflow-auto max-h-72">
-              <pre className="text-xs text-blue-400">
-{`FROM node:16-alpine
+            <div className="bg-gray-800 rounded-md p-3 font-mono overflow-auto max-h-40">
+              <pre className="text-xs text-green-400">
+{`FROM node:18-alpine
 
 WORKDIR /app
 
@@ -194,65 +237,62 @@ RUN npm install
 
 COPY . .
 
+# Build the application
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 5000
 
+# Allow environment variables to be passed
 ENV NODE_ENV=production
+ENV DATABASE_URL=
+ENV AWS_ACCESS_KEY_ID=
+ENV AWS_SECRET_ACCESS_KEY=
+ENV AWS_REGION=
 
 CMD ["npm", "start"]`}
               </pre>
             </div>
-          </div>
-
-          {/* Docker Commands */}
-          <div>
-            <h4 className="text-sm font-medium text-gray-900 mb-2">
-              Docker Commands:
+            
+            <h4 className="text-sm font-medium text-gray-900 mt-4 mb-2">
+              Docker Deployment Commands:
             </h4>
-            <div className="bg-gray-800 rounded-md p-3 font-mono overflow-auto max-h-72">
+            <div className="bg-gray-800 rounded-md p-3 font-mono overflow-auto max-h-40">
               <pre className="text-xs text-green-400">
-{`$ docker build -t oaktree-app:latest .
+{`# Build the Docker image
+docker build -t oaktree-app:latest .
 
-Sending build context to Docker daemon  42.5MB
-Step 1/9 : FROM node:16-alpine
- ---> d4b35166b5f2
-Step 2/9 : WORKDIR /app
- ---> Using cache
- ---> 8f71f4e8d56c
-Step 3/9 : COPY package*.json ./
- ---> Using cache
- ---> 05d72d681f6d
-Step 4/9 : RUN npm install
- ---> Using cache
- ---> f9e7e6cb4831
-Step 5/9 : COPY . .
- ---> Using cache
- ---> 2a41e8d92d3a
-Step 6/9 : RUN npm run build
- ---> Using cache
- ---> 0b7d595f1b11
-Step 7/9 : EXPOSE 3000
- ---> Using cache
- ---> 1d93342c8d5a
-Step 8/9 : ENV NODE_ENV=production
- ---> Using cache
- ---> 6f8c784fe7ad
-Step 9/9 : CMD ["npm", "start"]
- ---> Using cache
- ---> faf3a6d0d4d9
-Successfully built faf3a6d0d4d9
-Successfully tagged oaktree-app:latest
+# Run with environment variables
+docker run -d \\
+  -p 5000:5000 \\
+  -e DATABASE_URL=postgresql://[user]:[password]@host.docker.internal:5432/oaktree \\
+  -e AWS_ACCESS_KEY_ID=your_access_key \\
+  -e AWS_SECRET_ACCESS_KEY=your_secret_key \\
+  -e AWS_REGION=your_region \\
+  --name oaktree-container \\
+  oaktree-app:latest
 
-$ docker run -d -p 3000:3000 --name oaktree-container oaktree-app:latest
-b09c85d3f394a59bb0238c4583d0ac0dd7b2813cefa29d21cc9c97dcfb792a9d
-
-$ docker ps
-CONTAINER ID   IMAGE              COMMAND       STATUS          PORTS                    NAMES
-b09c85d3f394   oaktree-app:latest "npm start"   Up 2 minutes   0.0.0.0:3000->3000/tcp   oaktree-container`}
+# For local development without AWS, omit AWS variables:
+docker run -d \\
+  -p 5000:5000 \\
+  -e DATABASE_URL=postgresql://[user]:[password]@host.docker.internal:5432/oaktree \\
+  --name oaktree-container \\
+  oaktree-app:latest`}
               </pre>
             </div>
           </div>
+        </div>
+        
+        <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-md">
+          <h4 className="text-sm font-medium text-orange-800 mb-2">
+            Important Notes for Cross-Environment Compatibility:
+          </h4>
+          <ul className="list-disc pl-5 text-sm text-orange-700 space-y-1">
+            <li>Application can run with or without AWS credentials</li>
+            <li>When AWS credentials are not provided, it falls back to local PostgreSQL</li>
+            <li>For WSL, use <code className="bg-orange-100 px-1 rounded">host.docker.internal</code> to connect to Windows services</li>
+            <li>In Docker, you may need to configure network settings for proper database connectivity</li>
+            <li>All environment variables can be passed via <code className="bg-orange-100 px-1 rounded">.env</code> file or directly on command line</li>
+          </ul>
         </div>
       </div>
     </div>
