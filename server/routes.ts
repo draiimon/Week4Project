@@ -39,7 +39,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({
       vpc: {
         id: "vpc-08c05f6fe25301574",
-        region: "us-east-1"
+        region: envVars.AWS_REGION
       },
       databases: [
         {

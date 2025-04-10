@@ -3,13 +3,15 @@ import React from "react";
 export const AWSInfrastructure: React.FC = () => {
   // In the frontend we can't access process.env directly, we'll use API status instead
   const [isAWSConfigured, setIsAWSConfigured] = React.useState(true);
+  const [awsRegion, setAwsRegion] = React.useState('');
   
   React.useEffect(() => {
-    // Optionally check AWS connection status from the API
+    // Fetch AWS connection status from the API
     fetch('/api/aws/status')
       .then(res => res.json())
       .then(data => {
         setIsAWSConfigured(data.status === 'connected');
+        setAwsRegion(data.region || '');
       })
       .catch(() => {
         setIsAWSConfigured(false);
