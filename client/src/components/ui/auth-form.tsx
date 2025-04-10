@@ -49,16 +49,17 @@ export const LoginForm: React.FC = () => {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel className="text-orange-400">Username</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
                   placeholder="Enter your username" 
                   autoComplete="username"
                   disabled={loginMutation.isPending}
+                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-orange-300" />
             </FormItem>
           )}
         />
@@ -68,7 +69,7 @@ export const LoginForm: React.FC = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="text-orange-400">Password</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -76,16 +77,17 @@ export const LoginForm: React.FC = () => {
                   placeholder="Enter your password" 
                   autoComplete="current-password"
                   disabled={loginMutation.isPending}
+                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-orange-300" />
             </FormItem>
           )}
         />
 
         <Button 
           type="submit" 
-          className="w-full bg-orange-500 hover:bg-orange-600"
+          className="w-full bg-gradient-to-r from-gray-700 to-orange-600 hover:from-gray-600 hover:to-orange-500 text-white"
           disabled={loginMutation.isPending}
         >
           {loginMutation.isPending ? (
@@ -135,7 +137,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email address</FormLabel>
+              <FormLabel className="text-orange-400">Email address</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -143,9 +145,10 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
                   placeholder="Enter your email" 
                   autoComplete="email"
                   disabled={registerMutation.isPending}
+                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-orange-300" />
             </FormItem>
           )}
         />
@@ -155,16 +158,17 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel className="text-orange-400">Username</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
                   placeholder="Choose a username" 
                   autoComplete="username"
                   disabled={registerMutation.isPending}
+                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-orange-300" />
             </FormItem>
           )}
         />
@@ -174,7 +178,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="text-orange-400">Password</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -182,9 +186,10 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
                   placeholder="Create a password" 
                   autoComplete="new-password"
                   disabled={registerMutation.isPending}
+                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-orange-300" />
             </FormItem>
           )}
         />
@@ -194,7 +199,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel className="text-orange-400">Confirm Password</FormLabel>
               <FormControl>
                 <Input 
                   {...field} 
@@ -202,9 +207,10 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
                   placeholder="Confirm your password" 
                   autoComplete="new-password"
                   disabled={registerMutation.isPending}
+                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-orange-300" />
             </FormItem>
           )}
         />
@@ -215,10 +221,11 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
             checked={agreedToTerms} 
             onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
             disabled={registerMutation.isPending}
+            className="border-orange-500 text-orange-500 focus:ring-orange-500"
           />
           <label
             htmlFor="terms"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-sm font-medium leading-none text-gray-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             I agree to the Terms and Conditions
           </label>
@@ -226,7 +233,7 @@ export const RegisterForm: React.FC<{onComplete?: () => void}> = ({ onComplete }
 
         <Button 
           type="submit" 
-          className="w-full mt-4 bg-orange-500 hover:bg-orange-600"
+          className="w-full mt-4 bg-gradient-to-r from-gray-700 to-orange-600 hover:from-gray-600 hover:to-orange-500 text-white"
           disabled={registerMutation.isPending || !agreedToTerms}
         >
           {registerMutation.isPending ? (
