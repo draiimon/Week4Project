@@ -1,0 +1,340 @@
+Microsoft Windows [Version 10.0.19045.4529]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\KHARDZ>cd Desktop
+
+C:\Users\KHARDZ\Desktop>cd Week 4
+
+C:\Users\KHARDZ\Desktop\Week 4>wsl
+Welcome to Ubuntu 24.04.2 LTS (GNU/Linux 5.15.133.1-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Apr 10 14:59:17 +08 2025
+
+  System load:  0.3                 Processes:             63
+  Usage of /:   0.8% of 1006.85GB   Users logged in:       0
+  Memory usage: 11%                 IPv4 address for eth0: 172.18.168.44
+  Swap usage:   0%
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+This message is shown once a day. To disable it please create the
+/home/rae/.hushlogin file.
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ aws configure
+AWS Access Key ID [****************DCH6]:
+AWS Secret Access Key [****************c1FA]:
+Default region name [ap-southeast-1]:
+Default output format [json]:
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ git clone https://github.com/draiimon/Oaktree/tree/Week-4
+Cloning into 'Week-4'...
+fatal: repository 'https://github.com/draiimon/Oaktree/tree/Week-4/' not found
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ git clone -b Week-4 https://github.com/draiimon/Oaktree.git
+Cloning into 'Oaktree'...
+remote: Enumerating objects: 2576, done.
+remote: Counting objects: 100% (1355/1355), done.
+remote: Compressing objects: 100% (900/900), done.
+remote: Total 2576 (delta 430), reused 1290 (delta 373), pack-reused 1221 (from 1)
+Receiving objects: 100% (2576/2576), 6.22 MiB | 4.07 MiB/s, done.
+Resolving deltas: 100% (601/601), done.
+Updating files: 100% (98/98), done.
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ cd Oaktree
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ nano .env
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ npm install
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+⠦
+
+added 560 packages, and audited 561 packages in 13m
+
+63 packages are looking for funding
+  run `npm fund` for details
+
+8 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.3.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.3.0
+npm notice To update run: npm install -g npm@11.3.0
+npm notice
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+
+/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/server/db.ts:9
+  throw new Error(
+        ^
+
+
+Error: DATABASE_URL must be set. Did you forget to provision a database?
+    at <anonymous> (/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/server/db.ts:9:9)
+    at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+    at async loadESM (node:internal/process/esm_loader:34:7)
+    at async handleMainPromise (node:internal/modules/run_main:106:12)
+
+Node.js v18.20.8
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ nano server/db.ts
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ cat server/aws-db.ts
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+  QueryCommand,
+  ScanCommand,
+  DeleteCommand
+} from "@aws-sdk/lib-dynamodb";
+import { scrypt, randomBytes, timingSafeEqual } from "crypto";
+import { promisify } from "util";
+
+// Table name for users
+const USER_TABLE = "OakTreeUsers";
+const scryptAsync = promisify(scrypt);
+
+// Check if AWS is properly configured
+export function isAWSConfigured(): boolean {
+  return !!(
+    process.env.AWS_ACCESS_KEY_ID &&
+    process.env.AWS_SECRET_ACCESS_KEY &&
+    process.env.AWS_REGION
+  );
+}
+
+// Initialize DynamoDB client with error handling
+let dynamoClient: DynamoDBDocumentClient | null = null;
+
+function getDynamoClient(): DynamoDBDocumentClient | null {
+  if (dynamoClient) return dynamoClient;
+
+  if (!isAWSConfigured()) {
+    console.log("AWS credentials not found. DynamoDB integration will be unavailable.");
+    return null;
+  }
+
+  try {
+    const client = new DynamoDBClient({
+      region: process.env.AWS_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ""
+      }
+    });
+
+    dynamoClient = DynamoDBDocumentClient.from(client);
+    console.log("AWS DynamoDB client initialized successfully");
+    return dynamoClient;
+  } catch (error) {
+    console.error("Failed to initialize AWS DynamoDB client:", error);
+    return null;
+  }
+}
+
+// Password handling functions
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
+}
+
+async function comparePasswords(supplied: string, stored: string) {
+  const [hashed, salt] = stored.split(".");
+  const hashedBuf = Buffer.from(hashed, "hex");
+  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+  return timingSafeEqual(hashedBuf, suppliedBuf);
+}
+
+// Create/check table for user management
+export async function createUsersTable(): Promise<boolean> {
+  console.log("Checking/setting up DynamoDB table for users...");
+
+  const client = getDynamoClient();
+  if (!client) {
+    console.log("Skipping DynamoDB table setup because AWS is not configured.");
+    return false;
+  }
+
+  try {
+    // This would typically use the DynamoDB client directly with CreateTableCommand
+    // This is a simplified version for demo purposes
+
+    // For now, we'll just check if we can query the table and silently handle the error
+    try {
+      const command = new ScanCommand({
+        TableName: USER_TABLE,
+        Limit: 1
+      });
+
+      await client.send(command);
+      console.log(`DynamoDB table '${USER_TABLE}' is ready for use.`);
+      return true;
+    } catch (error: any) {
+      if (error.name === "ResourceNotFoundException" ||
+          (error.__type && error.__type.includes("ResourceNotFoundException"))) {
+        console.log(`DynamoDB table '${USER_TABLE}' does not exist. Using local authentication only.`);
+        // In a production environment, we would create the table here
+        // but for this demo we'll just use local authentication
+        return false;
+      }
+
+      // For other errors, log but don't crash
+      console.log("Error accessing DynamoDB table, using local authentication:", error.message || error);
+      return false;
+    }
+  } catch (error) {
+    console.log("Error setting up DynamoDB table, using local authentication only:", error);
+    return false;
+  }
+}
+
+// Get user by username
+export async function getUserByUsername(username: string) {
+  const client = getDynamoClient();
+  if (!client) return null;
+
+  try {
+    // Query for a user by username
+    const command = new QueryCommand({
+      TableName: USER_TABLE,
+      KeyConditionExpression: "username = :username",
+      ExpressionAttributeValues: {
+        ":username": username,
+      },
+    });
+
+    const response = await client.send(command);
+
+    if (response.Items && response.Items.length > 0) {
+      return response.Items[0];
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error getting user from DynamoDB:", error);
+    return null;
+  }
+}
+
+// Create a new user
+export async function createUser(user: { username: string, password: string, email: string }) {
+  const client = getDynamoClient();
+  if (!client) {
+    console.log("AWS DynamoDB is not available. Skipping AWS user creation.");
+    return null; // Return null to indicate we couldn't create in AWS
+  }
+
+  try {
+    // Hash the password before storing
+    const hashedPassword = await hashPassword(user.password);
+
+    try {
+      const command = new PutCommand({
+        TableName: USER_TABLE,
+        Item: {
+          username: user.username,
+          password: hashedPassword,
+          email: user.email,
+          createdAt: new Date().toISOString()
+        },
+        // Only add if username doesn't already exist
+        ConditionExpression: "attribute_not_exists(username)"
+      });
+
+      await client.send(command);
+
+      console.log(`User '${user.username}' successfully created in AWS DynamoDB`);
+      return {
+        username: user.username,
+        email: user.email
+      };
+    } catch (error: any) {
+      // Check for ResourceNotFoundException or table doesn't exist
+      if (error.name === "ResourceNotFoundException" ||
+          (error.__type && error.__type.includes("ResourceNotFoundException"))) {
+        console.log(`Cannot create user in DynamoDB - table '${USER_TABLE}' does not exist.`);
+        return null;
+      }
+
+      // For conditional check failure (username exists)
+      if (error.name === "ConditionalCheckFailedException" ||
+          (error.__type && error.__type.includes("ConditionalCheckFailedException"))) {
+        console.log(`User '${user.username}' already exists in DynamoDB.`);
+        return null;
+      }
+
+      // Other errors
+      console.log("Error creating user in DynamoDB:", error.message || error);
+      return null;
+    }
+  } catch (error) {
+    console.log("Unexpected error creating user in AWS DynamoDB:", error);
+    return null;
+  }
+}
+
+// Authenticate a user
+export async function authenticateUser(username: string, password: string) {
+  const client = getDynamoClient();
+  if (!client) {
+    console.log("AWS DynamoDB is not available for authentication.");
+    return null;
+  }
+
+  try {
+    const user = await getUserByUsername(username);
+
+    if (!user || !(await comparePasswords(password, user.password))) {
+      return null;
+    }
+
+    return {
+      username: user.username,
+      email: user.email
+    };
+  } catch (error) {
+    console.error("Error authenticating user with DynamoDB:", error);
+    return null;
+  }
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+node:internal/process/esm_loader:40/Week 4/Oaktree$ nano .env
+      internalBinding('errors').triggerUncaughtException(server/storage.ts
+                                ^op/Week 4/Oaktree$ nano server/index.ts
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@prisma/client' imported from /mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/server/index.tsHARDZ/Desktop/Week 4/Oaktree$ npm run dev
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at nextResolve (node:internal/modules/esm/hooks:864:28)
+    at resolveBase (file:///mnt/c/Users/KHARDZ/Desktop/Week%204/Oaktree/node_modules/tsx/dist/esm/index.mjs?1744269999482:2:3212)
+    at resolveDirectory (file:///mnt/c/Users/KHARDZ/Desktop/Week%204/Oaktree/node_modules/tsx/dist/esm/index.mjs?1744269999482:2:3584)
+    at resolveTsPaths (file:///mnt/c/Users/KHARDZ/Desktop/Week%204/Oaktree/node_modules/tsx/dist/esm/index.mjs?1744269999482:2:4073)
+    at async resolve (file:///mnt/c/Users/KHARDZ/Desktop/Week%204/Oaktree/node_modules/tsx/dist/esm/index.mjs?1744269999482:2:4441)
+    at async nextResolve (node:internal/modules/esm/hooks:864:22) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.20.8
+
+
+

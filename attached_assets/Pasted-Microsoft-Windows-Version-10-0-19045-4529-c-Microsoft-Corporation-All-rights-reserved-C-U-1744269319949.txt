@@ -1,0 +1,53 @@
+Microsoft Windows [Version 10.0.19045.4529]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\KHARDZ>cd Desktop
+
+C:\Users\KHARDZ\Desktop>cd Week 4
+
+C:\Users\KHARDZ\Desktop\Week 4>wsl
+Welcome to Ubuntu 24.04.2 LTS (GNU/Linux 5.15.133.1-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Apr 10 14:59:17 +08 2025
+
+  System load:  0.3                 Processes:             63
+  Usage of /:   0.8% of 1006.85GB   Users logged in:       0
+  Memory usage: 11%                 IPv4 address for eth0: 172.18.168.44
+  Swap usage:   0%
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+This message is shown once a day. To disable it please create the
+/home/rae/.hushlogin file.
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ aws configure
+AWS Access Key ID [****************DCH6]:
+AWS Secret Access Key [****************c1FA]:
+Default region name [ap-southeast-1]:
+Default output format [json]:
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ git clone https://github.com/draiimon/Oaktree/tree/Week-4
+Cloning into 'Week-4'...
+fatal: repository 'https://github.com/draiimon/Oaktree/tree/Week-4/' not found
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ git clone -b Week-4 https://github.com/draiimon/Oaktree.git
+Cloning into 'Oaktree'...
+remote: Enumerating objects: 2576, done.
+remote: Counting objects: 100% (1355/1355), done.
+remote: Compressing objects: 100% (900/900), done.
+remote: Total 2576 (delta 430), reused 1290 (delta 373), pack-reused 1221 (from 1)
+Receiving objects: 100% (2576/2576), 6.22 MiB | 4.07 MiB/s, done.
+Resolving deltas: 100% (601/601), done.
+Updating files: 100% (98/98), done.
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ cd Oaktree
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ nano .env
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ npm install
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+⠦
+⠦
+
