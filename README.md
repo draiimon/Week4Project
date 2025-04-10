@@ -51,7 +51,11 @@ This repository contains the Week 4 final implementation of the OakTree DevOps p
 
 4. **Start the development server**
    ```bash
+   # Method 1: Standard method (may have compatibility issues in some environments)
    npm run dev
+   
+   # Method 2: Local compatibility mode (more reliable across environments)
+   node run-local.js
    ```
 
 5. **Access the application**
@@ -83,7 +87,11 @@ This repository contains the Week 4 final implementation of the OakTree DevOps p
 
 4. **Run the application**
    ```bash
+   # Method 1: Standard method (may have compatibility issues in WSL)
    npm run dev
+   
+   # Method 2: Local compatibility mode (recommended for WSL)
+   node run-local.js
    ```
 
 ### Docker Deployment (No Database Required)
@@ -189,13 +197,16 @@ This application is fully integrated with AWS services for authentication, data 
 │   ├── aws-db.ts       # AWS DynamoDB integration
 │   ├── db.ts           # PostgreSQL database connection
 │   ├── routes.ts       # API routes
+│   ├── start-local.js  # Local compatibility server script
 │   ├── storage.ts      # Data storage interface
 │   └── ...
 ├── shared/             # Shared types and utilities
+├── terraform/          # Infrastructure as Code for AWS
 ├── .dockerignore       # Docker ignore file
 ├── .env.example        # Example environment variables
 ├── Dockerfile          # Docker configuration
 ├── package.json        # Dependencies and scripts
+├── run-local.js        # Local environment startup script
 └── README.md           # Project documentation
 ```
 
@@ -258,7 +269,11 @@ This project includes a comprehensive GitHub Actions workflow that integrates wi
 
 4. **Start Application**:
    ```bash
+   # Standard method (may have compatibility issues in some environments)
    npm run dev
+   
+   # Local compatibility mode (recommended for WSL or when standard method fails)
+   node run-local.js
    ```
    Access the application at http://localhost:5000
 
@@ -334,7 +349,11 @@ This project includes a comprehensive GitHub Actions workflow that integrates wi
 To validate the application works across different environments as required by Week 4 curriculum:
 
 1. **Test on Local Development**:
-   - Run application directly with `npm run dev`
+   - Run application with the most suitable method for your environment:
+     ```bash
+     npm run dev        # Standard method
+     node run-local.js  # Compatible method for WSL/troubleshooting
+     ```
    - Verify AWS connectivity and dashboard functionality
 
 2. **Test on Docker**:
