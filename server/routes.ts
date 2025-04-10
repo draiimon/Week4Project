@@ -15,6 +15,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // put application routes here
   // prefix all routes with /api
 
+  // Admin endpoint to toggle AWS calls
+  app.post("/api/admin/toggle-aws", async (req, res) => {
+    const { disable } = req.body;
+    const username = req.session?.user?.username;
+    
+    if (username === 'msn_clx') { // Only allow the admin to toggle this
+      console.log(`Admin user ${username} setting DISABLE_AWS_CALLS to: ${disable}`);
+      process.env.DISABLE_AWS_CALLS = disable ? 'true' : 'false';
+      res.json({ success: true, awsCallsDisabled: disable });
+    } else {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+  });
+
   // AWS status endpoint - reports current AWS configuration status with real data
   app.get("/api/aws/status", async (_req, res) => {
     const awsConfigured = await isAWSConfigured();
@@ -23,11 +37,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const timestamp = new Date().toISOString();
     
     res.json({
-      status: awsConfigured ? "connected" : "not_connected",
+      status: envVars.DISABLE_AWS_CALLS ? "disabled_to_save_credits" : (awsConfigured ? "connected" : "not_connected"),
       region: envVars.AWS_REGION,
       services: {
         dynamodb: {
-          enabled: true,
+          enabled: !envVars.DISABLE_AWS_CALLS,
           tableName: "OakTreeUsers"
         },
         cognito: {
@@ -36,7 +50,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       },
       environment: process.env.NODE_ENV || "development",
-      timestamp: timestamp
+      timestamp: timestamp,
+      awsCallsDisabled: envVars.DISABLE_AWS_CALLS
     });
   });
 

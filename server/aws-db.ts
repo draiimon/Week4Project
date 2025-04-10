@@ -26,6 +26,12 @@ let dynamoClient: DynamoDBDocumentClient | null = null;
 function getDynamoClient(): DynamoDBDocumentClient | null {
   if (dynamoClient) return dynamoClient;
   
+  // Check if AWS calls are disabled to save AWS credits
+  if (envVars.DISABLE_AWS_CALLS) {
+    console.log("AWS calls are disabled to save AWS credits. DynamoDB integration will be unavailable.");
+    return null;
+  }
+  
   if (!isAWSConfigured()) {
     console.log("AWS credentials not found. DynamoDB integration will be unavailable.");
     return null;

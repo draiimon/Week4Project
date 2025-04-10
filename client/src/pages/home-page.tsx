@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/ui/sidebar";
 import { PipelineDisplay } from "@/components/ui/pipeline-display";
 import { SystemStatus } from "@/components/ui/system-status";
+import { AdminPanel } from "@/components/ui/admin-panel";
 
 export default function HomePage() {
   const [awsRegion, setAwsRegion] = useState<string>('ap-southeast-1');
