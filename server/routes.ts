@@ -414,7 +414,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         items: [
           {
             username: 'msn_clx',
-            email: 'admin@oaktree.dev',
+            email: 'private@email.com',
             createdAt: new Date().toISOString()
           }
         ],
@@ -468,7 +468,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         items: [
           {
             username: 'msn_clx',
-            email: 'admin@oaktree.dev',
+            email: 'private@email.com',
             createdAt: new Date().toISOString()
           }
         ],
