@@ -59,6 +59,8 @@ export const StatusCard: React.FC<StatusCardProps> = ({
 
 export const ProjectStatusOverview: React.FC = () => {
   const [awsStatus, setAwsStatus] = React.useState<string>("Loading...");
+  const [awsRegion, setAwsRegion] = React.useState<string>("");
+  const [environment, setEnvironment] = React.useState<string>("Loading...");
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   
   React.useEffect(() => {
@@ -67,6 +69,8 @@ export const ProjectStatusOverview: React.FC = () => {
       .then(res => res.json())
       .then(data => {
         setAwsStatus(data.status === 'connected' ? 'Connected' : 'Not Connected');
+        setAwsRegion(data.region || 'ap-southeast-1');
+        setEnvironment(data.environment || 'Production');
         setIsLoading(false);
       })
       .catch(() => {
@@ -82,14 +86,38 @@ export const ProjectStatusOverview: React.FC = () => {
         {isLoading ? (
           <p className="text-sm text-gray-500">Loading project status...</p>
         ) : (
-          <div className="mt-3 grid grid-cols-1 gap-5">
-            <StatusCard
-              title="Final DevOps Project"
-              status={awsStatus === 'Connected' ? 'Completed' : 'In Progress'}
-              description={`AWS DynamoDB Status: ${awsStatus}`}
-              isActive={awsStatus !== 'Connected'}
-            />
-          </div>
+          <>
+            <div className="mt-3 grid grid-cols-1 gap-5 mb-4">
+              <StatusCard
+                title="AWS DevOps Project"
+                status={awsStatus === 'Connected' ? 'Live on AWS Cloud' : 'Local Development Mode'}
+                description={`AWS DynamoDB Status: ${awsStatus}`}
+                isActive={awsStatus !== 'Connected'}
+              />
+            </div>
+            
+            <div className="bg-blue-50 p-4 rounded-md border border-blue-100">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <svg className="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-blue-800">Project Connection Information</h3>
+                  <div className="mt-2 text-sm text-blue-700">
+                    <ul className="list-disc space-y-1 pl-5">
+                      <li>Environment: <span className="font-medium">{awsStatus === 'Connected' ? 'AWS Cloud' : 'Local Development'}</span></li>
+                      <li>Region: <span className="font-medium">{awsRegion}</span></li>
+                      <li>AWS DynamoDB Status: <span className="font-medium">{awsStatus}</span></li>
+                      <li>Authentication: <span className="font-medium">{awsStatus === 'Connected' ? 'Using AWS DynamoDB' : 'Using Local Database'}</span></li>
+                      <li>Data Storage: <span className="font-medium">{awsStatus === 'Connected' ? 'AWS DynamoDB Tables' : 'Local Database'}</span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>
