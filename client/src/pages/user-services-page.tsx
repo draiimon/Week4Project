@@ -264,20 +264,6 @@ export default function UserServicesPage() {
                             <span className="font-medium">Infrastructure:</span> {terraformStatus.status === "applied" ? "Provisioned" : "Pending"}
                           </p>
                         </div>
-                        
-                        <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
-                          <h4 className="text-sm font-medium text-white mb-2">User Information</h4>
-                          <div className="flex space-x-1">
-                            <span className="text-white text-opacity-90 text-sm font-medium">User:</span>
-                            <span className="text-white text-opacity-90 text-sm">{user?.username || "Not logged in"}</span>
-                            <span className="text-xs bg-green-500 text-white px-1 rounded ml-1">
-                              {user ? "Active" : "Inactive"}
-                            </span>
-                          </div>
-                          <div className="text-white text-opacity-70 text-xs mt-1">
-                            Updated: {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                          </div>
-                        </div>
                       </div>
                       
                       <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -382,20 +368,36 @@ export default function UserServicesPage() {
                         </p>
                       </div>
                       <div className="bg-white bg-opacity-10 p-6">
-                        <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm mb-4">
-                          <h4 className="text-sm font-medium text-white mb-2">System Information</h4>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">Platform:</span> {hostInfo.environment}
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">Host:</span> {hostInfo.hostname}
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm mb-1">
-                            <span className="font-medium">AWS SDK:</span> JavaScript v3
-                          </p>
-                          <p className="text-white text-opacity-90 text-sm">
-                            <span className="font-medium">Endpoint:</span> dynamodb.{hostInfo.region}.amazonaws.com
-                          </p>
+                        <div className="grid grid-cols-1 gap-4">
+                          <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
+                            <h4 className="text-sm font-medium text-white mb-2">System Information</h4>
+                            <p className="text-white text-opacity-90 text-sm mb-1">
+                              <span className="font-medium">Platform:</span> {hostInfo.environment}
+                            </p>
+                            <p className="text-white text-opacity-90 text-sm mb-1">
+                              <span className="font-medium">Host:</span> {hostInfo.hostname}
+                            </p>
+                            <p className="text-white text-opacity-90 text-sm mb-1">
+                              <span className="font-medium">AWS SDK:</span> JavaScript v3
+                            </p>
+                            <p className="text-white text-opacity-90 text-sm">
+                              <span className="font-medium">Endpoint:</span> dynamodb.{hostInfo.region}.amazonaws.com
+                            </p>
+                          </div>
+
+                          <div className="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
+                            <h4 className="text-sm font-medium text-white mb-2">User Information</h4>
+                            <div className="flex space-x-1">
+                              <span className="text-white text-opacity-90 text-sm font-medium">User:</span>
+                              <span className="text-white text-opacity-90 text-sm">{user?.username || "Not logged in"}</span>
+                              <span className="text-xs bg-green-500 text-white px-1 rounded ml-1">
+                                {user ? "Active" : "Inactive"}
+                              </span>
+                            </div>
+                            <div className="text-white text-opacity-70 text-xs mt-1">
+                              Updated: {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            </div>
+                          </div>
                         </div>
                         
                         <div className="grid grid-cols-2 gap-4">
