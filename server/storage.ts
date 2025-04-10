@@ -1,10 +1,10 @@
 import { users, type User, type InsertUser } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
-import session from "express-session";
-import createMemoryStore from "memorystore";
+import * as expressSession from "express-session";
+import memorystore from "memorystore";
 
-const MemoryStore = createMemoryStore(session);
+const MemoryStore = memorystore(expressSession.default);
 
 // modify the interface with any CRUD methods
 // you might need
@@ -13,11 +13,11 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  sessionStore: session.SessionStore;
+  sessionStore: expressSession.Store;
 }
 
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.SessionStore;
+  sessionStore: expressSession.Store;
 
   constructor() {
     this.sessionStore = new MemoryStore({
