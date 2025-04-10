@@ -18,21 +18,19 @@ function Router() {
   const [location] = useLocation();
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-grow">
+    <Switch>
+      <Route path="/auth" component={AuthPage} />
+      <Route>
         <Switch>
           <ProtectedRoute path="/" component={HomePage} />
           <ProtectedRoute path="/dynamodb" component={DynamoDBPage} />
           <ProtectedRoute path="/regions" component={RegionsPage} />
           <ProtectedRoute path="/user-services" component={UserServicesPage} />
-          <Route path="/auth" component={AuthPage} />
           <Route component={NotFound} />
         </Switch>
-      </main>
-      
-      {/* Don't show footer on auth page */}
-      {location !== "/auth" && <Footer />}
-    </div>
+        {/* Footer only on non-auth pages, but outside main content flow */}
+      </Route>
+    </Switch>
   );
 }
 

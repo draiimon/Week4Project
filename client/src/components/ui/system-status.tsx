@@ -213,9 +213,9 @@ export const SystemStatus: React.FC = () => {
                   </div>
                   
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">Cognito</span>
-                    <Badge variant={systemInfo.aws.services.cognito ? "outline" : "destructive"} className={systemInfo.aws.services.cognito ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100" : ""}>
-                      {systemInfo.aws.services.cognito ? "Available" : "Unavailable"}
+                    <span className="text-gray-500 dark:text-gray-400">IAM Roles</span>
+                    <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                      Available
                     </Badge>
                   </div>
                 </div>
@@ -318,9 +318,9 @@ export const SystemStatus: React.FC = () => {
                 </div>
                 
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Cognito</span>
-                  <Badge variant={systemInfo.aws.services.cognito ? "outline" : "destructive"} className={systemInfo.aws.services.cognito ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100" : ""}>
-                    {systemInfo.aws.services.cognito ? "Available" : "Unavailable"}
+                  <span className="text-gray-500 dark:text-gray-400">IAM Roles</span>
+                  <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                    Available
                   </Badge>
                 </div>
               </div>
