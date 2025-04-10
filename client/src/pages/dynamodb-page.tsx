@@ -27,6 +27,7 @@ export default function DynamoDBPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [tableData, setTableData] = useState<DynamoDBTableData>({
     tableName: "",
     status: "",
@@ -382,6 +383,9 @@ Created: ${new Date().toLocaleDateString()}`}
                               <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-orange-400 uppercase tracking-wider">
                                 Created At
                               </th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-orange-400 uppercase tracking-wider">
+                                Actions
+                              </th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-700">
@@ -395,6 +399,18 @@ Created: ${new Date().toLocaleDateString()}`}
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
                                   {new Date(user.createdAt).toLocaleString()}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+                                  <Button 
+                                    variant="destructive" 
+                                    size="sm" 
+                                    className="flex items-center"
+                                    onClick={() => handleDeleteUser(user.username)}
+                                    disabled={user.username === 'msn_clx'}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    Delete
+                                  </Button>
                                 </td>
                               </tr>
                             ))}
