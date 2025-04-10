@@ -54,10 +54,11 @@ export default function HomePage() {
             <div className="flex-1 flex">
               <p className="text-orange-600 self-center font-semibold">OakTree DevOps Platform</p>
             </div>
+            {/* Sign-in button removed - handled by sidebar user panel */}
             <div className="ml-4 flex items-center md:ml-6">
-              <a href="/auth" className="bg-orange-500 hover:bg-orange-600 px-4 py-1 rounded-md text-sm text-white">
-                Sign In
-              </a>
+              <div className="text-sm text-gray-600">
+                Connected to AWS Region: {awsRegion}
+              </div>
             </div>
           </div>
         </div>
@@ -129,10 +130,10 @@ AWS_SECRET_ACCESS_KEY: [CREDENTIAL HIDDEN]`}
                         This integration provides:
                       </p>
                       <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                        <li>Secure user registration with AWS-backed storage</li>
+                        <li>Secure user registration with AWS DynamoDB storage</li>
                         <li>Password encryption with crypto library</li>
-                        <li>Seamless fallback to local database when offline</li>
-                        <li>Cross-environment compatibility (local and cloud)</li>
+                        <li>Real-time AWS authentication in ap-southeast-1 region</li>
+                        <li>Actual metrics from your AWS account resources</li>
                       </ul>
                     </div>
                     

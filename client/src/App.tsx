@@ -12,6 +12,9 @@ function Router() {
   return (
     <Switch>
       <ProtectedRoute path="/" component={HomePage} />
+      <ProtectedRoute path="/dynamodb" component={HomePage} />
+      <ProtectedRoute path="/regions" component={HomePage} />
+      <ProtectedRoute path="/user-services" component={HomePage} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>

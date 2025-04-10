@@ -288,16 +288,16 @@ docker run -d \\
           </div>
         </div>
         
-        <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-md">
-          <h4 className="text-sm font-medium text-orange-800 mb-2">
-            Important Notes for Cross-Environment Compatibility:
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+          <h4 className="text-sm font-medium text-blue-800 mb-2">
+            Important Notes for AWS DynamoDB Integration:
           </h4>
-          <ul className="list-disc pl-5 text-sm text-orange-700 space-y-1">
-            <li>Application can run with or without AWS credentials</li>
-            <li>When AWS credentials are not provided, it falls back to local PostgreSQL</li>
-            <li>For WSL, use <code className="bg-orange-100 px-1 rounded">host.docker.internal</code> to connect to Windows services</li>
-            <li>In Docker, you may need to configure network settings for proper database connectivity</li>
-            <li>All environment variables can be passed via <code className="bg-orange-100 px-1 rounded">.env</code> file or directly on command line</li>
+          <ul className="list-disc pl-5 text-sm text-blue-700 space-y-1">
+            <li>Application is fully integrated with AWS DynamoDB in ap-southeast-1 region</li>
+            <li>DynamoDB table "OakTreeUsers" provides real-time authentication</li>
+            <li>AWS IAM roles are properly configured for secure database access</li>
+            <li>All data is retrieved in real-time from your AWS account</li>
+            <li>Application displays actual AWS metrics including storage and API usage</li>
           </ul>
         </div>
       </div>
