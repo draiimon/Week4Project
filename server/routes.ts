@@ -22,9 +22,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     if (username === 'msn_clx') { // Only allow the admin to toggle this
       console.log(`Admin user ${username} setting DISABLE_AWS_CALLS to: ${disable}`);
+      
+      // Update the environment variable
       process.env.DISABLE_AWS_CALLS = disable ? 'true' : 'false';
+      
+      // Also update the envVars object to ensure it's reflected immediately
+      envVars.DISABLE_AWS_CALLS = disable;
+      
+      console.log(`AWS calls are now ${disable ? 'disabled' : 'enabled'}`);
+      
       res.json({ success: true, awsCallsDisabled: disable });
     } else {
+      console.log(`Unauthorized toggle attempt by user: ${username || 'unknown'}`);
       res.status(403).json({ success: false, message: 'Unauthorized' });
     }
   });
