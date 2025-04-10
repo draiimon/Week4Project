@@ -100,22 +100,24 @@ export default function UserServicesPage() {
           </div>
         </div>
 
-        {/* Main Content with Gradients */}
-        <main className="flex-1 relative overflow-y-auto focus:outline-none bg-gray-50">
+        {/* Main Content with Orange-Gray Gradients */}
+        <main className="flex-1 relative overflow-y-auto focus:outline-none bg-gray-100">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <h1 className="text-2xl font-bold text-gray-900">
-                AWS User Services
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Real-time Connection Information and Metrics
-              </p>
+              <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-lg shadow-lg px-6 py-4">
+                <h1 className="text-2xl font-bold text-white">
+                  AWS User Services
+                </h1>
+                <p className="mt-1 text-sm text-gray-200">
+                  Real-time Connection Information and Metrics
+                </p>
+              </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-6">
               {isLoading ? (
-                <div className="bg-white shadow-lg rounded-lg p-8 text-center">
-                  <p className="text-gray-500">Loading connection information...</p>
+                <div className="bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg rounded-lg p-8 text-center">
+                  <p className="text-gray-300">Loading connection information...</p>
                 </div>
               ) : (
                 <>
@@ -239,7 +241,7 @@ export default function UserServicesPage() {
                             <span className="font-medium">Secret Key:</span> ****************
                           </p>
                           <p className="text-white text-opacity-90 text-sm">
-                            <span className="font-medium">IAM User:</span> OakTree Service Account
+                            <span className="font-medium">IAM User:</span> AWS DevOps Service Account
                           </p>
                         </div>
                         
@@ -311,12 +313,12 @@ export default function UserServicesPage() {
                   </div>
                   
                   {/* Real-time Metrics */}
-                  <div className="mt-8 bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg rounded-lg overflow-hidden">
-                    <div className="px-6 py-5 border-b border-teal-400 border-opacity-30">
+                  <div className="mt-8 bg-gradient-to-br from-gray-800 via-gray-700 to-orange-600 shadow-lg rounded-lg overflow-hidden">
+                    <div className="px-6 py-5 border-b border-gray-700 border-opacity-50">
                       <h3 className="text-lg leading-6 font-bold text-white">
                         Real-time Connection Metrics
                       </h3>
-                      <p className="text-sm text-teal-100">
+                      <p className="text-sm text-gray-100">
                         Live metrics from your AWS connection
                       </p>
                     </div>
@@ -324,12 +326,12 @@ export default function UserServicesPage() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="col-span-3 bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
                           <h4 className="text-sm font-medium text-white mb-2">Connection Timeline</h4>
-                          <div className="h-40 bg-gradient-to-r from-teal-200 to-emerald-200 rounded-lg opacity-80 p-4 flex items-end">
+                          <div className="h-40 bg-gradient-to-r from-gray-700 to-gray-800 rounded-lg opacity-90 p-4 flex items-end">
                             {/* Simulated connection timeline bars */}
                             {Array.from({ length: 24 }).map((_, i) => (
                               <div 
                                 key={i} 
-                                className="w-full bg-teal-600" 
+                                className="w-full bg-orange-500" 
                                 style={{ 
                                   height: `${Math.max(15, Math.floor(Math.random() * 80))}%`,
                                   marginRight: '4px'
@@ -354,7 +356,7 @@ export default function UserServicesPage() {
                             <span className="text-sm font-bold text-white">95</span>
                           </div>
                           <div className="mt-2 w-full bg-white bg-opacity-20 h-2 rounded-full">
-                            <div className="bg-teal-300 h-2 rounded-full" style={{ width: "30%" }}></div>
+                            <div className="bg-orange-500 h-2 rounded-full" style={{ width: "30%" }}></div>
                           </div>
                           <p className="mt-1 text-white text-opacity-70 text-xs">30% of capacity</p>
                         </div>
@@ -365,7 +367,7 @@ export default function UserServicesPage() {
                             <span className="text-sm font-bold text-white">23</span>
                           </div>
                           <div className="mt-2 w-full bg-white bg-opacity-20 h-2 rounded-full">
-                            <div className="bg-teal-300 h-2 rounded-full" style={{ width: "15%" }}></div>
+                            <div className="bg-orange-500 h-2 rounded-full" style={{ width: "15%" }}></div>
                           </div>
                           <p className="mt-1 text-white text-opacity-70 text-xs">15% of capacity</p>
                         </div>
@@ -376,7 +378,7 @@ export default function UserServicesPage() {
                             <span className="text-sm font-bold text-white">1.3 MB/s</span>
                           </div>
                           <div className="mt-2 w-full bg-white bg-opacity-20 h-2 rounded-full">
-                            <div className="bg-teal-300 h-2 rounded-full" style={{ width: "20%" }}></div>
+                            <div className="bg-orange-500 h-2 rounded-full" style={{ width: "20%" }}></div>
                           </div>
                           <p className="mt-1 text-white text-opacity-70 text-xs">20% of allocation</p>
                         </div>
@@ -387,7 +389,7 @@ export default function UserServicesPage() {
                             <span className="text-sm font-bold text-white">100%</span>
                           </div>
                           <div className="mt-2 w-full bg-white bg-opacity-20 h-2 rounded-full">
-                            <div className="bg-teal-300 h-2 rounded-full" style={{ width: "100%" }}></div>
+                            <div className="bg-orange-500 h-2 rounded-full" style={{ width: "100%" }}></div>
                           </div>
                           <p className="mt-1 text-white text-opacity-70 text-xs">Last 30 days</p>
                         </div>
