@@ -164,14 +164,7 @@ export const AWSInfrastructure: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-4">
-          <button
-            type="button"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-          >
-            View AWS Configuration
-          </button>
-        </div>
+
       </div>
     </div>
   );
@@ -220,15 +213,15 @@ npm run dev
             </div>
             
             <h4 className="text-sm font-medium text-gray-900 mt-4 mb-2">
-              WSL-Specific Configuration:
+              AWS Configuration:
             </h4>
             <div className="bg-gray-50 p-3 rounded-md">
               <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                <li>Ensure PostgreSQL is installed and running in WSL</li>
-                <li>Set the proper DATABASE_URL in your .env file</li>
-                <li>Make sure Node.js and npm are installed in your WSL environment</li>
-                <li>Run with <code className="bg-gray-200 px-1 rounded">npm run dev</code> from the project directory</li>
-                <li>Access using localhost or the WSL IP address</li>
+                <li>AWS DynamoDB configured for user authentication</li>
+                <li>AWS Region: ap-southeast-1 (Singapore)</li>
+                <li>AWS IAM roles properly configured for secure access</li>
+                <li>AWS SDK integration for real-time data access</li>
+                <li>AWS CloudWatch for application monitoring</li>
               </ul>
             </div>
           </div>
@@ -399,70 +392,7 @@ export const ProjectDocumentation: React.FC = () => {
           </ul>
         </div>
 
-        <div className="mt-6 flex flex-col sm:flex-row sm:space-x-4">
-          <a
-            href="/auth"
-            className="w-full sm:w-auto mb-3 sm:mb-0 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-          >
-            <svg
-              className="-ml-1 mr-2 h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Try Authentication
-          </a>
-          <a
-            href="https://github.com/draiimon/Oaktree/tree/Week-4"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto mb-3 sm:mb-0 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600"
-          >
-            <svg
-              className="-ml-1 mr-2 h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            View GitHub Repository
-          </a>
-          <button
-            type="button"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-          >
-            <svg
-              className="-ml-1 mr-2 h-5 w-5 text-gray-500"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            Setup Instructions
-          </button>
-        </div>
+
       </div>
     </div>
   );

@@ -59,7 +59,6 @@ export const StatusCard: React.FC<StatusCardProps> = ({
 
 export const ProjectStatusOverview: React.FC = () => {
   const [awsStatus, setAwsStatus] = React.useState<string>("Loading...");
-  const [week4Status, setWeek4Status] = React.useState<string>("In Progress");
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   
   React.useEffect(() => {
@@ -68,10 +67,6 @@ export const ProjectStatusOverview: React.FC = () => {
       .then(res => res.json())
       .then(data => {
         setAwsStatus(data.status === 'connected' ? 'Connected' : 'Not Connected');
-        // If AWS is properly connected, mark Week 4 as completed
-        if (data.status === 'connected') {
-          setWeek4Status('Completed');
-        }
         setIsLoading(false);
       })
       .catch(() => {
@@ -83,31 +78,16 @@ export const ProjectStatusOverview: React.FC = () => {
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden mb-8">
       <div className="p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-2">Project Status</h2>
+        <h2 className="text-lg font-medium text-gray-900 mb-2">Week 4 Final Project Status</h2>
         {isLoading ? (
           <p className="text-sm text-gray-500">Loading project status...</p>
         ) : (
-          <div className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-3 grid grid-cols-1 gap-5">
             <StatusCard
-              title="Week 1"
-              status="Completed"
-              description="Linux, Git & Docker Basics"
-            />
-            <StatusCard
-              title="Week 2"
-              status="Completed"
-              description="CI/CD Pipeline Setup"
-            />
-            <StatusCard
-              title="Week 3"
-              status="Completed"
-              description="Cloud Services & IaC"
-            />
-            <StatusCard
-              title="Week 4"
-              status={week4Status}
+              title="Final DevOps Project"
+              status={awsStatus === 'Connected' ? 'Completed' : 'In Progress'}
               description={`AWS DynamoDB Status: ${awsStatus}`}
-              isActive={week4Status !== 'Completed'}
+              isActive={awsStatus !== 'Connected'}
             />
           </div>
         )}
