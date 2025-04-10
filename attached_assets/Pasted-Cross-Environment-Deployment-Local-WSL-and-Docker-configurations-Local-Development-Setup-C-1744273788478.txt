@@ -1,0 +1,79 @@
+Cross-Environment Deployment
+Local, WSL, and Docker configurations
+
+Local Development Setup:
+# Clone repository
+git clone https://github.com/draiimon/Oaktree.git
+cd Oaktree
+
+# Install dependencies
+npm install
+
+# Configure environment variables
+# Create .env file with:
+DATABASE_URL=postgresql://[user]:[password]@localhost:5432/oaktree
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_REGION=your_region
+
+# Run the application
+npm run dev
+
+# Application will be available at:
+# http://localhost:5000
+AWS Configuration:
+AWS DynamoDB configured for user authentication
+AWS Region: ap-southeast-1 (Singapore)
+AWS IAM roles properly configured for secure access
+AWS SDK integration for real-time data access
+AWS CloudWatch for application monitoring
+Dockerfile:
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+# Build the application
+RUN npm run build
+
+EXPOSE 5000
+
+# Allow environment variables to be passed
+ENV NODE_ENV=production
+ENV DATABASE_URL=
+ENV AWS_ACCESS_KEY_ID=
+ENV AWS_SECRET_ACCESS_KEY=
+ENV AWS_REGION=
+
+CMD ["npm", "start"]
+Docker Deployment Commands:
+# Build the Docker image
+docker build -t oaktree-app:latest .
+
+# Run with environment variables
+docker run -d \
+  -p 5000:5000 \
+  -e DATABASE_URL=postgresql://[user]:[password]@host.docker.internal:5432/oaktree \
+  -e AWS_ACCESS_KEY_ID=your_access_key \
+  -e AWS_SECRET_ACCESS_KEY=your_secret_key \
+  -e AWS_REGION=your_region \
+  --name oaktree-container \
+  oaktree-app:latest
+
+# For local development without AWS, omit AWS variables:
+docker run -d \
+  -p 5000:5000 \
+  -e DATABASE_URL=postgresql://[user]:[password]@host.docker.internal:5432/oaktree \
+  --name oaktree-container \
+  oaktree-app:latest
+Important Notes for AWS DynamoDB Integration:
+Application is fully integrated with AWS DynamoDB in ap-southeast-1 region
+DynamoDB table "OakTreeUsers" provides real-time authentication
+AWS IAM roles are properly configured for secure database access
+All data is retrieved in real-time from your AWS account
+Application displays actual AWS metrics including storage and API usage

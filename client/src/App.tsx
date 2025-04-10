@@ -8,13 +8,18 @@ import AuthPage from "@/pages/auth-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
 
+// Import the new pages
+import DynamoDBPage from "@/pages/dynamodb-page";
+import RegionsPage from "@/pages/regions-page";
+import UserServicesPage from "@/pages/user-services-page";
+
 function Router() {
   return (
     <Switch>
       <ProtectedRoute path="/" component={HomePage} />
-      <ProtectedRoute path="/dynamodb" component={HomePage} />
-      <ProtectedRoute path="/regions" component={HomePage} />
-      <ProtectedRoute path="/user-services" component={HomePage} />
+      <ProtectedRoute path="/dynamodb" component={DynamoDBPage} />
+      <ProtectedRoute path="/regions" component={RegionsPage} />
+      <ProtectedRoute path="/user-services" component={UserServicesPage} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
