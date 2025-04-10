@@ -28,14 +28,12 @@ export const Footer: React.FC = () => {
   if (!showFooter) return null;
   
   return (
-    <footer className="w-full py-2 bg-gradient-to-r from-orange-100 to-white border-t border-orange-300/30 sticky bottom-0 transition-opacity duration-300">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
-          <span className="font-medium text-gray-800">AWS DevOps Platform</span>
-          <span className="text-xs text-gray-500">
-            Mark Andrei Castillo - Week 4 Project
-          </span>
-        </div>
+    <footer className="fixed right-0 bottom-0 py-2 px-4 bg-gradient-to-r from-orange-100 to-white border-t border-l border-orange-300/30 rounded-tl-lg z-10 transition-opacity duration-300 shadow-md ml-[250px]">
+      <div className="flex flex-col items-end">
+        <span className="font-medium text-gray-800">AWS DevOps Platform</span>
+        <span className="text-xs text-gray-500">
+          Mark Andrei Castillo - Week 4 Project
+        </span>
       </div>
     </footer>
   );
