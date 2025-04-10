@@ -10,6 +10,7 @@ interface SystemInfo {
   hostname: string;
   platform: string;
   uptime: number;
+  environment: string;
   memory: {
     total: number;
     free: number;
@@ -24,6 +25,7 @@ interface SystemInfo {
   aws: {
     connected: boolean;
     region: string;
+    endpoint: string;
     services: {
       dynamodb: boolean;
       cognito: boolean;
@@ -97,6 +99,7 @@ export const SystemStatus: React.FC = () => {
       hostname: "oaktree-server",
       platform: "aws-cloud",
       uptime: 345600, // 4 days in seconds
+      environment: "production",
       memory: {
         total: 8589934592, // 8GB in bytes
         free: 4294967296,  // 4GB in bytes
@@ -111,6 +114,7 @@ export const SystemStatus: React.FC = () => {
       aws: {
         connected: true,
         region: "ap-southeast-1",
+        endpoint: "https://dynamodb.ap-southeast-1.amazonaws.com",
         services: {
           dynamodb: true,
           cognito: true
@@ -250,21 +254,21 @@ export const SystemStatus: React.FC = () => {
           <div className="space-y-3">
             <div>
               <div className="flex justify-between text-sm font-medium">
-                <span className="text-gray-400">Hostname</span>
+                <span className="text-gray-400">Hostname:</span>
                 <span>{systemInfo.hostname}</span>
               </div>
             </div>
             
             <div>
               <div className="flex justify-between text-sm font-medium">
-                <span className="text-gray-400">Platform</span>
+                <span className="text-gray-400">Platform:</span>
                 <span className="capitalize">{systemInfo.platform}</span>
               </div>
             </div>
             
             <div>
               <div className="flex justify-between text-sm font-medium">
-                <span className="text-gray-400">Uptime</span>
+                <span className="text-gray-400">Uptime:</span>
                 <span>{formatUptime(systemInfo.uptime)}</span>
               </div>
             </div>

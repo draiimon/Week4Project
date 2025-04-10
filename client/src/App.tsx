@@ -7,7 +7,7 @@ import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
-import Footer from "@/components/ui/footer";
+import { Footer } from "@/components/ui/footer";
 
 // Import the new pages
 import DynamoDBPage from "@/pages/dynamodb-page";

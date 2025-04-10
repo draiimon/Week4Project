@@ -1,18 +1,64 @@
 import React from 'react';
+import { Separator } from "@/components/ui/separator";
 
-export default function Footer() {
+export const Footer: React.FC = () => {
   return (
-    <footer className="mt-auto w-full">
-      <div className="bg-gradient-to-r from-orange-300 to-white px-4 py-2">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="text-orange-800 text-xs font-medium">
-            © 2025 DevOps Dashboard
+    <footer className="w-full py-4 mt-auto bg-gradient-to-r from-orange-100 to-white border-t border-orange-300/30">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex items-center space-x-2 mb-2 md:mb-0">
+            <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 p-1 rounded-md shadow-sm">
+              <svg
+                className="h-5 w-5 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 2L3 7L12 12L21 7L12 2Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M3 17L12 22L21 17"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M3 12L12 17L21 12"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <span className="font-medium text-gray-800">AWS DevOps Platform</span>
           </div>
-          <div className="text-orange-700 text-xs">
-            <span>Created by Mark Andrei Castillo</span>
+          
+          <div className="flex items-center justify-center mb-2 md:mb-0">
+            <span className="text-xs text-gray-500">
+              © {new Date().getFullYear()} Oak Tree Solutions. All rights reserved.
+            </span>
+          </div>
+          
+          <div className="flex space-x-4">
+            <a href="#" className="text-gray-600 hover:text-orange-600 transition-colors text-sm">
+              Documentation
+            </a>
+            <a href="#" className="text-gray-600 hover:text-orange-600 transition-colors text-sm">
+              Support
+            </a>
+            <a href="#" className="text-gray-600 hover:text-orange-600 transition-colors text-sm">
+              Privacy
+            </a>
           </div>
         </div>
       </div>
     </footer>
   );
-}
+};
