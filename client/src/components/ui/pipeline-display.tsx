@@ -53,10 +53,10 @@ export const PipelineDisplay: React.FC = () => {
     <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden mb-8 border border-orange-500/20">
       <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
         <h3 className="text-lg leading-6 font-bold text-white">
-          AWS DynamoDB Integration
+          AWS Cloud Integration Pipeline
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-gray-200">
-          Status of your Week 4 AWS connection
+          Week 4 End-to-End AWS DevOps Connection Status
         </p>
       </div>
 
@@ -90,7 +90,7 @@ export const PipelineDisplay: React.FC = () => {
                 </h4>
                 <p className="text-sm text-gray-300 mt-1">
                   {awsStatus === 'connected' 
-                    ? 'Your application is successfully connected to AWS DynamoDB for user authentication and data storage.' 
+                    ? 'Your application is successfully connected to AWS Cloud with real-time metrics, fulfilling Week 4 AWS integration requirements.' 
                     : 'Your application is having trouble connecting to AWS. Please check your credentials.'}
                 </p>
               </div>
