@@ -30,7 +30,6 @@ export const envVars = {
   AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
   USE_AWS_DB: process.env.USE_AWS_DB === 'true',
-  DATABASE_URL: process.env.DATABASE_URL,
   // Flag to disable DynamoDB calls to save AWS credits
   DISABLE_AWS_CALLS: process.env.DISABLE_AWS_CALLS === 'true' || false
 };
