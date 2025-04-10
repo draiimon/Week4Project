@@ -401,10 +401,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
 
+    // Check AWS configuration including USE_AWS_DB flag
     const awsConfigured = await isAWSConfigured();
-    if (!awsConfigured) {
-      return res.status(503).json({
-        error: "AWS DynamoDB is not properly configured"
+    const useAwsDb = process.env.USE_AWS_DB === 'true';
+    
+    if (!awsConfigured || !useAwsDb) {
+      // Return mock data if AWS is not configured or USE_AWS_DB is false
+      return res.json({
+        tableName: "OakTreeUsers (Local)",
+        region: envVars.AWS_REGION || 'local',
+        itemCount: 1,
+        items: [
+          {
+            username: 'msn_clx',
+            email: 'admin@oaktree.dev',
+            createdAt: new Date().toISOString()
+          }
+        ],
+        sizeBytes: 1024,
+        scannedCount: 1,
+        lastUpdated: new Date().toISOString(),
+        isLocalMode: true
       });
     }
 
@@ -442,11 +459,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         lastUpdated: new Date().toISOString()
       });
     } catch (err) {
-      const error = err as Error;
-      console.error("Error fetching users from DynamoDB:", error);
-      res.status(500).json({
-        error: "Failed to retrieve users from DynamoDB",
-        message: error.message
+      // If there's an error with AWS, return mock data
+      console.error("Error fetching users from DynamoDB:", err);
+      res.json({
+        tableName: "OakTreeUsers (Fallback)",
+        region: envVars.AWS_REGION || 'unknown',
+        itemCount: 1,
+        items: [
+          {
+            username: 'msn_clx',
+            email: 'admin@oaktree.dev',
+            createdAt: new Date().toISOString()
+          }
+        ],
+        sizeBytes: 1024,
+        scannedCount: 1,
+        lastUpdated: new Date().toISOString(),
+        isErrorMode: true
       });
     }
   });
