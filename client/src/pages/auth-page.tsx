@@ -143,9 +143,9 @@ export default function AuthPage() {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h4 className="text-lg font-medium text-gray-900">Cloud Integration & IaC</h4>
+                    <h4 className="text-lg font-medium text-gray-900">AWS Integration & IaC</h4>
                     <p className="mt-2 text-base text-gray-600">
-                      Connect with AWS, GCP, and Azure. Use Infrastructure as Code to provision your resources.
+                      Full AWS infrastructure integration with Infrastructure as Code to provision your resources.
                     </p>
                   </div>
                 </li>

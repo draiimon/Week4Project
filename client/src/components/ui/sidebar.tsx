@@ -84,8 +84,8 @@ const navItems = [
     ),
   },
   {
-    name: "Cloud Services",
-    href: "/cloud-services",
+    name: "AWS Services",
+    href: "/aws-services",
     icon: (
       <svg
         className="mr-3 h-6 w-6"

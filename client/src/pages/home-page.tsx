@@ -94,10 +94,10 @@ export default function HomePage() {
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
               <h1 className="text-2xl font-semibold text-gray-900">
-                Week 4: Final Project Dashboard
+                Week 4: AWS Integration Dashboard
               </h1>
               <p className="mt-1 text-sm text-gray-500">
-                End-to-End DevOps Pipeline Implementation
+                End-to-End AWS DevOps Pipeline Implementation
               </p>
             </div>
 
