@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/ui/sidebar";
+import { PipelineDisplay } from "@/components/ui/pipeline-display";
+import { SystemStatus } from "@/components/ui/system-status";
+import { AdminPanel } from "@/components/ui/admin-panel";
 
 export default function HomePage() {
   const [awsRegion, setAwsRegion] = useState<string>('ap-southeast-1');
@@ -465,7 +468,16 @@ export default function HomePage() {
                 </div>
               </div>
               
-              {/* DynamoDB is the only service we're keeping - all accessed via the sidebar */}
+              {/* System Metrics and Status */}
+              <div className="mb-6">
+                <SystemStatus />
+              </div>
+              
+              {/* Admin Panel - Only visible to msn_clx */}
+              <div className="mb-6">
+                <AdminPanel />
+              </div>
+              
               {/* No footer needed here anymore as we have global footer */}
             </div>
           </div>
