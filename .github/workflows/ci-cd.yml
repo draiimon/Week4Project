@@ -66,8 +66,8 @@ jobs:
         context: .
         push: ${{ github.event_name != 'pull_request' }}
         tags: |
-          ghcr.io/${{ github.repository }}/oaktree:latest
-          ghcr.io/${{ github.repository }}/oaktree:${{ github.sha }}
+          ghcr.io/draiimon/oaktree:latest
+          ghcr.io/draiimon/oaktree:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
