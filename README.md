@@ -40,7 +40,7 @@ A comprehensive AWS cloud infrastructure management and deployment platform with
 3. **Run the Fix Script (for local environments)**
    ```bash
    # Fix any compatibility issues automatically
-   node fix.js
+   node fix.cjs
    ```
 
 4. **Configure environment**
@@ -92,7 +92,7 @@ A comprehensive AWS cloud infrastructure management and deployment platform with
 For running on local machines (Windows, Linux, WSL):
 ```bash
 # Fix the local environment issues with one command
-node fix.js
+node fix.cjs
 
 # Then run the app normally
 npm run dev
