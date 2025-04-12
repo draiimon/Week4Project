@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
+# Update vite.config.ts to use __dirname instead of import.meta.dirname
+RUN sed -i 's/import.meta.dirname/__dirname/g' vite.config.ts
+
 # Build the application (if needed)
 RUN npm run build
 
