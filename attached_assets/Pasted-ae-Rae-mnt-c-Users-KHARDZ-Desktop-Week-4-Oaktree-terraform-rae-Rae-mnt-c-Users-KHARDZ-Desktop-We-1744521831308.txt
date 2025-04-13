@@ -1,0 +1,616 @@
+ae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/terraform$
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/terraform$ ls
+README.md  main.tf
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/terraform$ rm main.tf
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/terraform$ rm README.md
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/terraform$ nano streamlined-main.tf
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree/terraform$ cd /mnt/c/Users/KHARDZ/Desktop/Week\ 4/oaktree/terraform
+eamlined-main.tf main.tfrae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/oaktree/terraform$ cp streamlined-main.tf main.tf
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/oaktree/terraform$ terraform init
+erraform apply -auto-approveInitializing the backend...
+╷
+│ Error: Terraform encountered problems during initialisation, including problems
+│ with the configuration, described below.
+│
+│ The Terraform configuration must be valid before initialization so that
+│ Terraform can determine which modules and providers need to be installed.
+│
+│
+╵
+╷
+│ Error: Duplicate provider configuration
+│
+│   on streamlined-main.tf line 1:
+│    1: provider "aws" {
+│
+│ A default (non-aliased) provider configuration for "aws" was already given at main.tf:1,1-15. If multiple
+│ configurations are required, set the "alias" argument for alternative configurations.
+╵
+╷
+│ Error: Duplicate provider configuration
+│
+│   on streamlined-main.tf line 1:
+│    1: provider "aws" {
+│
+│ A default (non-aliased) provider configuration for "aws" was already given at main.tf:1,1-15. If multiple
+│ configurations are required, set the "alias" argument for alternative configurations.
+╵
+╷
+│ Error: Duplicate variable declaration
+│
+│   on streamlined-main.tf line 6:
+│    6: variable "app_name" {
+│
+│ A variable named "app_name" was already declared at main.tf:6,1-20. Variable names must be unique within a module.
+╵
+╷
+│ Error: Duplicate variable declaration
+│
+│   on streamlined-main.tf line 6:
+│    6: variable "app_name" {
+│
+│ A variable named "app_name" was already declared at main.tf:6,1-20. Variable names must be unique within a module.
+╵
+╷
+│ Error: Duplicate variable declaration
+│
+│   on streamlined-main.tf line 12:
+│   12: variable "environment" {
+│
+│ A variable named "environment" was already declared at main.tf:12,1-23. Variable names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate variable declaration
+│
+│   on streamlined-main.tf line 12:
+│   12: variable "environment" {
+│
+│ A variable named "environment" was already declared at main.tf:12,1-23. Variable names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate local value definition
+│
+│   on streamlined-main.tf line 19, in locals:
+│   19:   name_prefix = "${var.app_name}-${var.environment}"
+│
+│ A local value named "name_prefix" was already defined at main.tf:19,3-53. Local value names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate local value definition
+│
+│   on streamlined-main.tf line 19, in locals:
+│   19:   name_prefix = "${var.app_name}-${var.environment}"
+│
+│ A local value named "name_prefix" was already defined at main.tf:19,3-53. Local value names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate local value definition
+│
+│   on streamlined-main.tf line 20, in locals:
+│   20:   common_tags = {
+│   21:     Project     = var.app_name
+│   22:     Environment = var.environment
+│   23:     ManagedBy   = "terraform"
+│   24:   }
+│
+│ A local value named "common_tags" was already defined at main.tf:20,3-24,4. Local value names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate local value definition
+│
+│   on streamlined-main.tf line 20, in locals:
+│   20:   common_tags = {
+│   21:     Project     = var.app_name
+│   22:     Environment = var.environment
+│   23:     ManagedBy   = "terraform"
+│   24:   }
+│
+│ A local value named "common_tags" was already defined at main.tf:20,3-24,4. Local value names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate resource "aws_vpc" configuration
+│
+│   on streamlined-main.tf line 28:
+│   28: resource "aws_vpc" "app_vpc" {
+│
+│ A aws_vpc resource named "app_vpc" was already declared at main.tf:28,1-29. Resource names must be unique per type in
+│ each module.
+╵
+╷
+│ Error: Duplicate resource "aws_vpc" configuration
+│
+│   on streamlined-main.tf line 28:
+│   28: resource "aws_vpc" "app_vpc" {
+│
+│ A aws_vpc resource named "app_vpc" was already declared at main.tf:28,1-29. Resource names must be unique per type in
+│ each module.
+╵
+╷
+│ Error: Duplicate resource "aws_subnet" configuration
+│
+│   on streamlined-main.tf line 38:
+│   38: resource "aws_subnet" "public_subnet_a" {
+│
+│ A aws_subnet resource named "public_subnet_a" was already declared at main.tf:38,1-40. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_subnet" configuration
+│
+│   on streamlined-main.tf line 38:
+│   38: resource "aws_subnet" "public_subnet_a" {
+│
+│ A aws_subnet resource named "public_subnet_a" was already declared at main.tf:38,1-40. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_subnet" configuration
+│
+│   on streamlined-main.tf line 49:
+│   49: resource "aws_subnet" "public_subnet_b" {
+│
+│ A aws_subnet resource named "public_subnet_b" was already declared at main.tf:49,1-40. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_subnet" configuration
+│
+│   on streamlined-main.tf line 49:
+│   49: resource "aws_subnet" "public_subnet_b" {
+│
+│ A aws_subnet resource named "public_subnet_b" was already declared at main.tf:49,1-40. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_internet_gateway" configuration
+│
+│   on streamlined-main.tf line 60:
+│   60: resource "aws_internet_gateway" "igw" {
+│
+│ A aws_internet_gateway resource named "igw" was already declared at main.tf:60,1-38. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_internet_gateway" configuration
+│
+│   on streamlined-main.tf line 60:
+│   60: resource "aws_internet_gateway" "igw" {
+│
+│ A aws_internet_gateway resource named "igw" was already declared at main.tf:60,1-38. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_route_table" configuration
+│
+│   on streamlined-main.tf line 68:
+│   68: resource "aws_route_table" "public_route_table" {
+│
+│ A aws_route_table resource named "public_route_table" was already declared at main.tf:68,1-48. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_route_table" configuration
+│
+│   on streamlined-main.tf line 68:
+│   68: resource "aws_route_table" "public_route_table" {
+│
+│ A aws_route_table resource named "public_route_table" was already declared at main.tf:68,1-48. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_route_table_association" configuration
+│
+│   on streamlined-main.tf line 81:
+│   81: resource "aws_route_table_association" "public_a" {
+│
+│ A aws_route_table_association resource named "public_a" was already declared at main.tf:81,1-50. Resource names must
+│ be unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_route_table_association" configuration
+│
+│   on streamlined-main.tf line 81:
+│   81: resource "aws_route_table_association" "public_a" {
+│
+│ A aws_route_table_association resource named "public_a" was already declared at main.tf:81,1-50. Resource names must
+│ be unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_route_table_association" configuration
+│
+│   on streamlined-main.tf line 86:
+│   86: resource "aws_route_table_association" "public_b" {
+│
+│ A aws_route_table_association resource named "public_b" was already declared at main.tf:86,1-50. Resource names must
+│ be unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_route_table_association" configuration
+│
+│   on streamlined-main.tf line 86:
+│   86: resource "aws_route_table_association" "public_b" {
+│
+│ A aws_route_table_association resource named "public_b" was already declared at main.tf:86,1-50. Resource names must
+│ be unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_security_group" configuration
+│
+│   on streamlined-main.tf line 92:
+│   92: resource "aws_security_group" "alb_sg" {
+│
+│ A aws_security_group resource named "alb_sg" was already declared at main.tf:92,1-39. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_security_group" configuration
+│
+│   on streamlined-main.tf line 92:
+│   92: resource "aws_security_group" "alb_sg" {
+│
+│ A aws_security_group resource named "alb_sg" was already declared at main.tf:92,1-39. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_security_group" configuration
+│
+│   on streamlined-main.tf line 118:
+│  118: resource "aws_security_group" "app_sg" {
+│
+│ A aws_security_group resource named "app_sg" was already declared at main.tf:118,1-39. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_security_group" configuration
+│
+│   on streamlined-main.tf line 118:
+│  118: resource "aws_security_group" "app_sg" {
+│
+│ A aws_security_group resource named "app_sg" was already declared at main.tf:118,1-39. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_dynamodb_table" configuration
+│
+│   on streamlined-main.tf line 145:
+│  145: resource "aws_dynamodb_table" "users_table" {
+│
+│ A aws_dynamodb_table resource named "users_table" was already declared at main.tf:145,1-44. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_dynamodb_table" configuration
+│
+│   on streamlined-main.tf line 145:
+│  145: resource "aws_dynamodb_table" "users_table" {
+│
+│ A aws_dynamodb_table resource named "users_table" was already declared at main.tf:145,1-44. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_ecr_repository" configuration
+│
+│   on streamlined-main.tf line 161:
+│  161: resource "aws_ecr_repository" "app_repo" {
+│
+│ A aws_ecr_repository resource named "app_repo" was already declared at main.tf:161,1-41. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_ecr_repository" configuration
+│
+│   on streamlined-main.tf line 161:
+│  161: resource "aws_ecr_repository" "app_repo" {
+│
+│ A aws_ecr_repository resource named "app_repo" was already declared at main.tf:161,1-41. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_cloudwatch_log_group" configuration
+│
+│   on streamlined-main.tf line 174:
+│  174: resource "aws_cloudwatch_log_group" "app_logs" {
+│
+│ A aws_cloudwatch_log_group resource named "app_logs" was already declared at main.tf:174,1-47. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_cloudwatch_log_group" configuration
+│
+│   on streamlined-main.tf line 174:
+│  174: resource "aws_cloudwatch_log_group" "app_logs" {
+│
+│ A aws_cloudwatch_log_group resource named "app_logs" was already declared at main.tf:174,1-47. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_role" configuration
+│
+│   on streamlined-main.tf line 182:
+│  182: resource "aws_iam_role" "ecs_execution_role" {
+│
+│ A aws_iam_role resource named "ecs_execution_role" was already declared at main.tf:182,1-45. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_role" configuration
+│
+│   on streamlined-main.tf line 182:
+│  182: resource "aws_iam_role" "ecs_execution_role" {
+│
+│ A aws_iam_role resource named "ecs_execution_role" was already declared at main.tf:182,1-45. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_role" configuration
+│
+│   on streamlined-main.tf line 201:
+│  201: resource "aws_iam_role" "ecs_task_role" {
+│
+│ A aws_iam_role resource named "ecs_task_role" was already declared at main.tf:201,1-40. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_role" configuration
+│
+│   on streamlined-main.tf line 201:
+│  201: resource "aws_iam_role" "ecs_task_role" {
+│
+│ A aws_iam_role resource named "ecs_task_role" was already declared at main.tf:201,1-40. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_policy" configuration
+│
+│   on streamlined-main.tf line 221:
+│  221: resource "aws_iam_policy" "dynamodb_access" {
+│
+│ A aws_iam_policy resource named "dynamodb_access" was already declared at main.tf:221,1-44. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_policy" configuration
+│
+│   on streamlined-main.tf line 221:
+│  221: resource "aws_iam_policy" "dynamodb_access" {
+│
+│ A aws_iam_policy resource named "dynamodb_access" was already declared at main.tf:221,1-44. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_role_policy_attachment" configuration
+│
+│   on streamlined-main.tf line 247:
+│  247: resource "aws_iam_role_policy_attachment" "task_execution_role_policy" {
+│
+│ A aws_iam_role_policy_attachment resource named "task_execution_role_policy" was already declared at
+│ main.tf:247,1-71. Resource names must be unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_role_policy_attachment" configuration
+│
+│   on streamlined-main.tf line 247:
+│  247: resource "aws_iam_role_policy_attachment" "task_execution_role_policy" {
+│
+│ A aws_iam_role_policy_attachment resource named "task_execution_role_policy" was already declared at
+│ main.tf:247,1-71. Resource names must be unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_role_policy_attachment" configuration
+│
+│   on streamlined-main.tf line 252:
+│  252: resource "aws_iam_role_policy_attachment" "dynamodb_policy_attachment" {
+│
+│ A aws_iam_role_policy_attachment resource named "dynamodb_policy_attachment" was already declared at
+│ main.tf:252,1-71. Resource names must be unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_iam_role_policy_attachment" configuration
+│
+│   on streamlined-main.tf line 252:
+│  252: resource "aws_iam_role_policy_attachment" "dynamodb_policy_attachment" {
+│
+│ A aws_iam_role_policy_attachment resource named "dynamodb_policy_attachment" was already declared at
+│ main.tf:252,1-71. Resource names must be unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_lb" configuration
+│
+│   on streamlined-main.tf line 258:
+│  258: resource "aws_lb" "app_alb" {
+│
+│ A aws_lb resource named "app_alb" was already declared at main.tf:258,1-28. Resource names must be unique per type in
+│ each module.
+╵
+╷
+│ Error: Duplicate resource "aws_lb" configuration
+│
+│   on streamlined-main.tf line 258:
+│  258: resource "aws_lb" "app_alb" {
+│
+│ A aws_lb resource named "app_alb" was already declared at main.tf:258,1-28. Resource names must be unique per type in
+│ each module.
+╵
+╷
+│ Error: Duplicate resource "aws_lb_target_group" configuration
+│
+│   on streamlined-main.tf line 270:
+│  270: resource "aws_lb_target_group" "app_tg" {
+│
+│ A aws_lb_target_group resource named "app_tg" was already declared at main.tf:270,1-40. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_lb_target_group" configuration
+│
+│   on streamlined-main.tf line 270:
+│  270: resource "aws_lb_target_group" "app_tg" {
+│
+│ A aws_lb_target_group resource named "app_tg" was already declared at main.tf:270,1-40. Resource names must be unique
+│ per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_lb_listener" configuration
+│
+│   on streamlined-main.tf line 289:
+│  289: resource "aws_lb_listener" "app_listener" {
+│
+│ A aws_lb_listener resource named "app_listener" was already declared at main.tf:289,1-42. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_lb_listener" configuration
+│
+│   on streamlined-main.tf line 289:
+│  289: resource "aws_lb_listener" "app_listener" {
+│
+│ A aws_lb_listener resource named "app_listener" was already declared at main.tf:289,1-42. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_ecs_cluster" configuration
+│
+│   on streamlined-main.tf line 301:
+│  301: resource "aws_ecs_cluster" "app_cluster" {
+│
+│ A aws_ecs_cluster resource named "app_cluster" was already declared at main.tf:301,1-41. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_ecs_cluster" configuration
+│
+│   on streamlined-main.tf line 301:
+│  301: resource "aws_ecs_cluster" "app_cluster" {
+│
+│ A aws_ecs_cluster resource named "app_cluster" was already declared at main.tf:301,1-41. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_ecs_task_definition" configuration
+│
+│   on streamlined-main.tf line 313:
+│  313: resource "aws_ecs_task_definition" "app_task" {
+│
+│ A aws_ecs_task_definition resource named "app_task" was already declared at main.tf:313,1-46. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_ecs_task_definition" configuration
+│
+│   on streamlined-main.tf line 313:
+│  313: resource "aws_ecs_task_definition" "app_task" {
+│
+│ A aws_ecs_task_definition resource named "app_task" was already declared at main.tf:313,1-46. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_ecs_service" configuration
+│
+│   on streamlined-main.tf line 386:
+│  386: resource "aws_ecs_service" "app_service" {
+│
+│ A aws_ecs_service resource named "app_service" was already declared at main.tf:386,1-41. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate resource "aws_ecs_service" configuration
+│
+│   on streamlined-main.tf line 386:
+│  386: resource "aws_ecs_service" "app_service" {
+│
+│ A aws_ecs_service resource named "app_service" was already declared at main.tf:386,1-41. Resource names must be
+│ unique per type in each module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 425:
+│  425: output "ecr_repository_url" {
+│
+│ An output named "ecr_repository_url" was already defined at main.tf:425,1-28. Output names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 425:
+│  425: output "ecr_repository_url" {
+│
+│ An output named "ecr_repository_url" was already defined at main.tf:425,1-28. Output names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 430:
+│  430: output "dynamodb_table_name" {
+│
+│ An output named "dynamodb_table_name" was already defined at main.tf:430,1-29. Output names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 430:
+│  430: output "dynamodb_table_name" {
+│
+│ An output named "dynamodb_table_name" was already defined at main.tf:430,1-29. Output names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 435:
+│  435: output "alb_dns_name" {
+│
+│ An output named "alb_dns_name" was already defined at main.tf:435,1-22. Output names must be unique within a module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 435:
+│  435: output "alb_dns_name" {
+│
+│ An output named "alb_dns_name" was already defined at main.tf:435,1-22. Output names must be unique within a module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 440:
+│  440: output "docker_push_commands" {
+│
+│ An output named "docker_push_commands" was already defined at main.tf:440,1-30. Output names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 440:
+│  440: output "docker_push_commands" {
+│
+│ An output named "docker_push_commands" was already defined at main.tf:440,1-30. Output names must be unique within a
+│ module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 455:
+│  455: output "app_url" {
+│
+│ An output named "app_url" was already defined at main.tf:455,1-17. Output names must be unique within a module.
+╵
+╷
+│ Error: Duplicate output definition
+│
+│   on streamlined-main.tf line 455:
+│  455: output "app_url" {
+│
+│ An output named "app_url" was already defined at main.tf:455,1-17. Output names must be unique within a module.
+╵
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/oaktree/terraform$ terraform apply -auto-approve
