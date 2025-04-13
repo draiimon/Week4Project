@@ -4,10 +4,9 @@ provider "aws" {
 
 # VPC Resource
 resource "aws_vpc" "oaktree_vpc" {
-  cidr_block       = "172.31.0.0/16"
-  instance_tenancy = "default"
-
-  enable_dns_support = true
+  cidr_block           = "172.31.0.0/16"
+  instance_tenancy     = "default"
+  enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
@@ -17,9 +16,9 @@ resource "aws_vpc" "oaktree_vpc" {
 
 # Public Subnets
 resource "aws_subnet" "oaktree_public_a" {
-  vpc_id            = aws_vpc.oaktree_vpc.id
-  cidr_block        = "172.31.0.0/20"
-  availability_zone = "ap-southeast-1a"
+  vpc_id                  = aws_vpc.oaktree_vpc.id
+  cidr_block              = "172.31.0.0/20"
+  availability_zone       = "ap-southeast-1a"
   map_public_ip_on_launch = true
 
   tags = {
@@ -28,9 +27,9 @@ resource "aws_subnet" "oaktree_public_a" {
 }
 
 resource "aws_subnet" "oaktree_public_b" {
-  vpc_id            = aws_vpc.oaktree_vpc.id
-  cidr_block        = "172.31.16.0/20"
-  availability_zone = "ap-southeast-1b"
+  vpc_id                  = aws_vpc.oaktree_vpc.id
+  cidr_block              = "172.31.16.0/20"
+  availability_zone       = "ap-southeast-1b"
   map_public_ip_on_launch = true
 
   tags = {
@@ -39,9 +38,9 @@ resource "aws_subnet" "oaktree_public_b" {
 }
 
 resource "aws_subnet" "oaktree_public_c" {
-  vpc_id            = aws_vpc.oaktree_vpc.id
-  cidr_block        = "172.31.32.0/20"
-  availability_zone = "ap-southeast-1c"
+  vpc_id                  = aws_vpc.oaktree_vpc.id
+  cidr_block              = "172.31.32.0/20"
+  availability_zone       = "ap-southeast-1c"
   map_public_ip_on_launch = true
 
   tags = {
@@ -96,26 +95,20 @@ resource "aws_security_group" "oaktree_sg" {
 
   # Allow HTTP traffic
   ingress {
-    from_port   = 5000
-    to_port     = 5000
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP traffic"
   }
 
-  # Allow HTTPS traffic
+  # Allow port 5000 for Express.js application
   ingress {
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Allow traffic on port 5000 (Express.js default)
-  ingress {
-    from_port   = 5000
-    to_port     = 5000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow Express.js traffic"
   }
 
   # Allow all outbound traffic
@@ -124,10 +117,40 @@ resource "aws_security_group" "oaktree_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
   }
 
   tags = {
     Name = "oaktree-security-group"
+  }
+}
+
+# ECS Container Security Group
+resource "aws_security_group" "ecs_container_sg" {
+  name        = "oaktree-ecs-container-sg"
+  description = "Allow traffic to ECS containers"
+  vpc_id      = aws_vpc.oaktree_vpc.id
+
+  # Allow inbound traffic from ALB
+  ingress {
+    from_port       = 5000
+    to_port         = 5000
+    protocol        = "tcp"
+    security_groups = [aws_security_group.oaktree_sg.id]
+    description     = "Allow traffic from ALB to containers"
+  }
+
+  # Allow all outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
+  }
+
+  tags = {
+    Name = "oaktree-ecs-container-sg"
   }
 }
 
@@ -151,10 +174,10 @@ resource "aws_lb" "oaktree_alb" {
 
 # DynamoDB Table
 resource "aws_dynamodb_table" "oaktree_users" {
-  name            = "oaktree-users"
-  hash_key        = "user_id"
-  read_capacity   = 5
-  write_capacity  = 5
+  name           = "oaktree-users"
+  hash_key       = "user_id"
+  read_capacity  = 5
+  write_capacity = 5
 
   attribute {
     name = "user_id"
@@ -165,6 +188,16 @@ resource "aws_dynamodb_table" "oaktree_users" {
 
   tags = {
     Name = "oaktree-users"
+  }
+}
+
+# CloudWatch Log Group for ECS
+resource "aws_cloudwatch_log_group" "ecs_logs" {
+  name              = "/ecs/oaktree-task"
+  retention_in_days = 30
+
+  tags = {
+    Name = "oaktree-ecs-logs"
   }
 }
 
@@ -182,6 +215,15 @@ resource "aws_ecr_repository" "oaktree_repo" {
 # ECS Cluster - Using existing name but ensuring parameters match
 resource "aws_ecs_cluster" "oaktree_cluster" {
   name = "oak-cluster"  # Changed to match what's expected
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+
+  tags = {
+    Name = "oaktree-cluster"
+  }
 }
 
 # IAM Role for ECS Task Execution
@@ -223,7 +265,6 @@ resource "aws_ecs_task_definition" "oaktree_task" {
       image     = "${aws_ecr_repository.oaktree_repo.repository_url}:latest"
       essential = true
       portMappings = [
-        # Just use the port that Express is actually running on (5000)
         {
           containerPort = 5000
           hostPort      = 5000
@@ -233,7 +274,7 @@ resource "aws_ecs_task_definition" "oaktree_task" {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          "awslogs-group"         = "/ecs/oaktree-task",
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_logs.name,
           "awslogs-region"        = "ap-southeast-1",
           "awslogs-stream-prefix" = "ecs"
         }
@@ -241,7 +282,7 @@ resource "aws_ecs_task_definition" "oaktree_task" {
       environment = [
         {
           name  = "PORT",
-          value = "5000"  # Match the port that Express.js is actually using
+          value = "5000"
         },
         {
           name  = "NODE_ENV",
@@ -249,28 +290,39 @@ resource "aws_ecs_task_definition" "oaktree_task" {
         },
         {
           name  = "HOST",
-          value = "0.0.0.0"  # Make sure Express binds to all network interfaces
+          value = "0.0.0.0"
         }
-      ]
+      ],
+      healthCheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"],
+        interval    = 30,
+        timeout     = 5,
+        retries     = 3,
+        startPeriod = 60
+      }
     }
   ])
 }
 
 # Target Group for ALB
 resource "aws_lb_target_group" "oaktree_tg" {
-  name     = "oaktree-target-group"
-  port     = 5000         # Changed to 5000 to match Express.js port
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.oaktree_vpc.id
+  name        = "oaktree-target-group"
+  port        = 5000
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.oaktree_vpc.id
   target_type = "ip"
 
   health_check {
-    path                = "/"            # Using simple root path
-    interval            = 15             # Further reduced interval for faster health checks
-    timeout             = 10             # Increased timeout to give app more time to respond
+    path                = "/"
+    interval            = 30
+    timeout             = 20
     healthy_threshold   = 2
-    unhealthy_threshold = 3              # Increased to reduce false negatives
-    matcher             = "200-499"      # Allow redirects and client errors
+    unhealthy_threshold = 3
+    matcher             = "200-499"  # Accept a wider range of responses
+  }
+
+  tags = {
+    Name = "oaktree-target-group"
   }
 }
 
@@ -300,7 +352,7 @@ resource "aws_ecs_service" "oaktree_service" {
       aws_subnet.oaktree_public_b.id,
       aws_subnet.oaktree_public_c.id
     ]
-    security_groups  = [aws_security_group.oaktree_sg.id]
+    security_groups  = [aws_security_group.ecs_container_sg.id]
     assign_public_ip = true
   }
 
@@ -311,6 +363,15 @@ resource "aws_ecs_service" "oaktree_service" {
   }
 
   depends_on = [aws_lb_listener.oaktree_listener]
+
+  # Force recreate when image changes
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  # Deployment configuration
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 50
 }
 
 # Output Values
