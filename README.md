@@ -169,6 +169,27 @@ To deploy the infrastructure to AWS using Terraform:
 - For production use, change default passwords and secure your environment variables
 - Terraform creates actual AWS resources which may incur costs in your AWS account
 
+## 💰 AWS Cost Management
+
+To help manage AWS costs while maintaining your infrastructure:
+
+### Stopping Resources When Not in Use
+Run the provided scripts in the terraform folder:
+
+```bash
+# To check current resource status and costs
+cd terraform
+./check-resources.sh
+
+# To safely stop resources (scale down to 0 to save costs)
+./stop-resources.sh
+
+# To restart resources when you need them
+./start-resources.sh
+```
+
+These scripts safely scale your ECS service to 0 tasks and optimize DynamoDB settings to minimize costs without destroying your infrastructure. This approach is much safer than using `terraform destroy` as it preserves all your configurations and data.
+
 ## ❓ Troubleshooting
 
 ### Can't connect to AWS services?
