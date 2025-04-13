@@ -3,37 +3,36 @@ output "dynamodb_table_name" {
   value       = aws_dynamodb_table.oaktree_users.name
 }
 
-output "cognito_user_pool_id" {
-  description = "ID of the Cognito User Pool"
-  value       = aws_cognito_user_pool.oaktree_users.id
+output "vpc_id" {
+  description = "ID of the VPC"
+  value       = data.aws_vpc.oak_vpc.id
 }
 
-output "cognito_client_id" {
-  description = "ID of the Cognito User Pool Client"
-  value       = aws_cognito_user_pool_client.oaktree_client.id
+output "subnet_ids" {
+  description = "IDs of the subnets"
+  value       = [
+    data.aws_subnet.oak_subnet_a.id,
+    data.aws_subnet.oak_subnet_b.id,
+    data.aws_subnet.oak_subnet_c.id
+  ]
 }
 
-output "ecr_repository_url" {
-  description = "URL of the ECR repository"
-  value       = aws_ecr_repository.oaktree_repository.repository_url
+output "alb_dns_name" {
+  description = "DNS name of the Application Load Balancer"
+  value       = aws_lb.oak_alb.dns_name
 }
 
 output "ecs_cluster_name" {
   description = "Name of the ECS cluster"
-  value       = aws_ecs_cluster.oaktree_cluster.name
+  value       = aws_ecs_cluster.oak_cluster.name
 }
 
 output "ecs_service_name" {
   description = "Name of the ECS service"
-  value       = aws_ecs_service.oaktree_service.name
-}
-
-output "task_execution_role_arn" {
-  description = "ARN of the ECS task execution role"
-  value       = aws_iam_role.ecs_task_execution_role.arn
+  value       = aws_ecs_service.oak_service.name
 }
 
 output "task_role_arn" {
   description = "ARN of the ECS task role"
-  value       = aws_iam_role.ecs_task_role.arn
+  value       = aws_iam_role.oak_ecs_role.arn
 }
