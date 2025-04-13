@@ -259,18 +259,18 @@ resource "aws_ecs_task_definition" "oaktree_task" {
 # Target Group for ALB
 resource "aws_lb_target_group" "oaktree_tg" {
   name     = "oaktree-target-group"
-  port     = 80
+  port     = 5000         # Changed to 5000 to match Express.js port
   protocol = "HTTP"
   vpc_id   = aws_vpc.oaktree_vpc.id
   target_type = "ip"
   
   health_check {
-    path                = "/api/status"  # Changed to a more common health check endpoint
+    path                = "/"            # Using simple root path
     interval            = 30
     timeout             = 5
-    healthy_threshold   = 2              # Reduced threshold for faster registration
-    unhealthy_threshold = 2              # Reduced threshold for faster detection
-    matcher             = "200-499"      # Changed to accept more status codes
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    matcher             = "200-499"
   }
 }
 
@@ -307,7 +307,7 @@ resource "aws_ecs_service" "oaktree_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.oaktree_tg.arn
     container_name   = "oaktree"
-    container_port   = 80
+    container_port   = 5000
   }
   
   depends_on = [aws_lb_listener.oaktree_listener]
