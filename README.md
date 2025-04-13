@@ -93,7 +93,9 @@ Go to [http://localhost:5000](http://localhost:5000) in your browser
 - **DevOps:** Docker, GitHub Actions
 - **IaC:** Terraform
 
-## 🏗️ Setting Up Terraform
+## 🏗️ AWS Infrastructure Deployment
+
+### Setting Up AWS ECS Fargate with Terraform
 
 To deploy the infrastructure to AWS using Terraform:
 
@@ -131,15 +133,34 @@ To deploy the infrastructure to AWS using Terraform:
 
 6. **Apply Infrastructure**
    ```bash
-   terraform apply
+   terraform apply -auto-approve
    ```
-   Type `yes` when prompted to confirm.
 
-7. **Clean Up When Done**
+7. **Deploy Docker Image to ECR**
+   After Terraform completes successfully, it will output commands for deploying your Docker image. They will look something like:
    ```bash
-   terraform destroy
+   # Login to ECR
+   aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.ap-southeast-1.amazonaws.com/oaktree-dev
+
+   # Build and push the Docker image
+   docker build -t 123456789012.dkr.ecr.ap-southeast-1.amazonaws.com/oaktree-dev:latest .
+   docker push 123456789012.dkr.ecr.ap-southeast-1.amazonaws.com/oaktree-dev:latest
+
+   # Force new deployment
+   aws ecs update-service --cluster oaktree-dev-cluster --service oaktree-dev-service --force-new-deployment --region ap-southeast-1
    ```
-   Type `yes` when prompted to confirm removal of resources.
+
+8. **Access Your Application**
+   After deployment completes (which may take 5-10 minutes), access your application at the URL provided in the Terraform output:
+   ```
+   http://oaktree-dev-alb-XXXXXXXXXXXX.ap-southeast-1.elb.amazonaws.com
+   ```
+
+9. **Clean Up When Done**
+   When you're finished with the infrastructure, tear it down to avoid ongoing AWS charges:
+   ```bash
+   terraform destroy -auto-approve
+   ```
 
 ## 📝 Notes
 
@@ -154,6 +175,29 @@ To deploy the infrastructure to AWS using Terraform:
 1. Double-check your AWS credentials in the `.env` file
 2. Make sure your AWS account has the proper permissions
 3. Try running in local mode first to verify the application works
+
+### Terraform deployment issues?
+1. Verify you have sufficient IAM permissions in your AWS account
+2. If seeing duplicate resource errors, make sure to remove any previous Terraform state:
+   ```bash
+   rm -rf .terraform/
+   rm terraform.tfstate*
+   ```
+3. For security group errors with protocol "-1", ensure both from_port and to_port are set to 0
+
+### ECS container deployment failures?
+1. Check the ECS service events for error messages:
+   ```bash
+   aws ecs describe-services --cluster oaktree-dev-cluster --services oaktree-dev-service --region ap-southeast-1
+   ```
+2. Verify your Docker image pushed successfully to ECR:
+   ```bash
+   aws ecr describe-images --repository-name oaktree-dev --region ap-southeast-1
+   ```
+3. Check CloudWatch logs for container errors:
+   ```bash
+   aws logs get-log-events --log-group-name /ecs/oaktree-dev --log-stream-name ecs/oaktree-dev/latest --region ap-southeast-1
+   ```
 
 ### Docker issues?
 1. Make sure Docker is running on your system
@@ -186,6 +230,45 @@ docker stop [container-id]
 docker logs [container-id]
 ```
 
+### AWS CLI Commands
+```bash
+# Login to ECR
+aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin [ecr-repo-url]
+
+# List ECS clusters
+aws ecs list-clusters --region ap-southeast-1
+
+# Describe ECS service
+aws ecs describe-services --cluster oaktree-dev-cluster --services oaktree-dev-service --region ap-southeast-1
+
+# Force a new deployment
+aws ecs update-service --cluster oaktree-dev-cluster --service oaktree-dev-service --force-new-deployment --region ap-southeast-1
+
+# View container logs
+aws logs get-log-events --log-group-name /ecs/oaktree-dev --log-stream-name ecs/oaktree-dev/[task-id] --region ap-southeast-1
+```
+
+### Terraform Commands
+```bash
+# Initialize Terraform
+terraform init
+
+# Plan changes
+terraform plan
+
+# Apply changes
+terraform apply -auto-approve
+
+# Destroy infrastructure
+terraform destroy -auto-approve
+
+# Validate configuration
+terraform validate
+
+# Show current state
+terraform show
+```
+
 ### Nano Editor Basics
 ```bash
 # Open/create file
@@ -205,4 +288,36 @@ Ctrl + U
 
 # Find text
 Ctrl + W
+```
+
+## 🏗️ Architecture Diagram
+
+The OakTree application uses the following AWS resources:
+
+```
+┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+│                 │      │                 │      │                 │
+│  Application    │      │   Amazon        │      │   Amazon        │
+│  Load Balancer  │─────▶│   ECS Fargate   │─────▶│   DynamoDB      │
+│   (ALB)         │      │   Container     │      │   Table         │
+│                 │      │                 │      │                 │
+└─────────────────┘      └─────────────────┘      └─────────────────┘
+        ▲                        │                         │
+        │                        │                         │
+        │                        ▼                         │
+┌───────────────────────────────────────────────────────────────────┐
+│                                                                   │
+│               Amazon VPC with Multiple Availability Zones         │
+│                Security Groups and IAM Roles                      │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
+        ▲                        ▲                         ▲
+        │                        │                         │ 
+        │                        │                         │
+┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+│                 │      │                 │      │                 │
+│   CloudWatch    │      │   ECR           │      │   AWS IAM       │
+│   Logs          │      │   Repository    │      │   Policies      │
+│                 │      │                 │      │   & Roles       │
+└─────────────────┘      └─────────────────┘      └─────────────────┘
 ```
