@@ -1,0 +1,106 @@
+ae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/oaktree/terraform$ rm main.tf
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/oaktree/terraform$ nano main.tf
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/oaktree/terraform$ terraform apply -auto-approve
+aws_ecr_repository.oaktree_repo: Refreshing state... [id=oaktree-cloud-app]
+aws_vpc.oaktree_vpc: Refreshing state... [id=vpc-0cedca1b00147c7ad]
+aws_dynamodb_table.oaktree_users: Refreshing state... [id=oaktree-users]
+aws_iam_role.ecs_task_exec: Refreshing state... [id=ecsTaskExecutionRole]
+aws_internet_gateway.oaktree_igw: Refreshing state... [id=igw-0dcca4f21bb805ec2]
+aws_subnet.oaktree_public_b: Refreshing state... [id=subnet-0d2f6a8eb94d69e7a]
+aws_lb_target_group.oaktree_tg: Refreshing state... [id=arn:aws:elasticloadbalancing:ap-southeast-1:321225686735:targetgroup/oaktree-target-group/b20519327f6e9804]
+aws_security_group.oaktree_sg: Refreshing state... [id=sg-08c6abbb67e4d35fe]
+aws_subnet.oaktree_public_a: Refreshing state... [id=subnet-0eaf556277affd820]
+aws_subnet.oaktree_public_c: Refreshing state... [id=subnet-0517c01b0a4422200]
+aws_iam_role_policy_attachment.ecs_task_exec_attach: Refreshing state... [id=ecsTaskExecutionRole-20250413022829120700000001]
+aws_ecs_task_definition.oaktree_task: Refreshing state... [id=oaktree-task]
+aws_lb.oaktree_alb: Refreshing state... [id=arn:aws:elasticloadbalancing:ap-southeast-1:321225686735:loadbalancer/app/oaktree-alb/cd78a8b910092b71]
+aws_route_table.oaktree_public_rt: Refreshing state... [id=rtb-0c87e38bcdf7d0d49]
+aws_route_table_association.oaktree_rta_a: Refreshing state... [id=rtbassoc-08b21395fcad0b9e4]
+aws_route_table_association.oaktree_rta_b: Refreshing state... [id=rtbassoc-0c9f028d5245e6b33]
+aws_route_table_association.oaktree_rta_c: Refreshing state... [id=rtbassoc-08407edd5c7eb975f]
+aws_lb_listener.oaktree_listener: Refreshing state... [id=arn:aws:elasticloadbalancing:ap-southeast-1:321225686735:listener/app/oaktree-alb/cd78a8b910092b71/43d1d41b577d8c07]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with
+the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_ecs_cluster.oaktree_cluster will be created
+  + resource "aws_ecs_cluster" "oaktree_cluster" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + name     = "oak-cluster"
+      + tags_all = (known after apply)
+
+      + setting (known after apply)
+    }
+
+  # aws_ecs_service.oaktree_service will be created
+  + resource "aws_ecs_service" "oaktree_service" {
+      + availability_zone_rebalancing      = "DISABLED"
+      + cluster                            = (known after apply)
+      + deployment_maximum_percent         = 200
+      + deployment_minimum_healthy_percent = 100
+      + desired_count                      = 2
+      + enable_ecs_managed_tags            = false
+      + enable_execute_command             = false
+      + iam_role                           = (known after apply)
+      + id                                 = (known after apply)
+      + launch_type                        = "FARGATE"
+      + name                               = "oaktree-service"
+      + platform_version                   = (known after apply)
+      + scheduling_strategy                = "REPLICA"
+      + tags_all                           = (known after apply)
+      + task_definition                    = "arn:aws:ecs:ap-southeast-1:321225686735:task-definition/oaktree-task:3"
+      + triggers                           = (known after apply)
+      + wait_for_steady_state              = false
+
+      + load_balancer {
+          + container_name   = "oaktree"
+          + container_port   = 80
+          + target_group_arn = "arn:aws:elasticloadbalancing:ap-southeast-1:321225686735:targetgroup/oaktree-target-group/b20519327f6e9804"
+            # (1 unchanged attribute hidden)
+        }
+
+      + network_configuration {
+          + assign_public_ip = true
+          + security_groups  = [
+              + "sg-08c6abbb67e4d35fe",
+            ]
+          + subnets          = [
+              + "subnet-0517c01b0a4422200",
+              + "subnet-0d2f6a8eb94d69e7a",
+              + "subnet-0eaf556277affd820",
+            ]
+        }
+    }
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  ~ ecs_cluster_name        = "oaktree-cluster" -> "oak-cluster"
+aws_ecs_cluster.oaktree_cluster: Creating...
+aws_ecs_cluster.oaktree_cluster: Still creating... [10s elapsed]
+aws_ecs_cluster.oaktree_cluster: Creation complete after 13s [id=arn:aws:ecs:ap-southeast-1:321225686735:cluster/oak-cluster]
+aws_ecs_service.oaktree_service: Creating...
+aws_ecs_service.oaktree_service: Creation complete after 1s [id=arn:aws:ecs:ap-southeast-1:321225686735:service/oak-cluster/oaktree-service]
+
+Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+alb_dns_name = "oaktree-alb-2051245465.ap-southeast-1.elb.amazonaws.com"
+dynamodb_table_name = "oaktree-users"
+ecr_repository_url = "321225686735.dkr.ecr.ap-southeast-1.amazonaws.com/oaktree-cloud-app"
+ecs_cluster_name = "oak-cluster"
+ecs_service_name = "oaktree-service"
+internet_gateway_id = "igw-0dcca4f21bb805ec2"
+subnet_ids = [
+  "subnet-0eaf556277affd820",
+  "subnet-0d2f6a8eb94d69e7a",
+  "subnet-0517c01b0a4422200",
+]
+task_execution_role_arn = "arn:aws:iam::321225686735:role/ecsTaskExecutionRole"
+vpc_id = "vpc-0cedca1b00147c7ad"
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/oaktree/terraform$

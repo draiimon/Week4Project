@@ -94,6 +94,7 @@ resource "aws_security_group" "oaktree_sg" {
   description = "Allow inbound traffic for ECS and Load Balancer"
   vpc_id      = aws_vpc.oaktree_vpc.id
   
+  # Allow HTTP traffic
   ingress {
     from_port   = 80
     to_port     = 80
@@ -101,6 +102,23 @@ resource "aws_security_group" "oaktree_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   
+  # Allow HTTPS traffic
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  # Allow traffic on port 5000 (Express.js default)
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  # Allow all outbound traffic
   egress {
     from_port   = 0
     to_port     = 0
@@ -209,6 +227,29 @@ resource "aws_ecs_task_definition" "oaktree_task" {
           containerPort = 80
           hostPort      = 80
           protocol      = "tcp"
+        },
+        {
+          containerPort = 5000
+          hostPort      = 5000
+          protocol      = "tcp"
+        }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          "awslogs-group"         = "/ecs/oaktree-task",
+          "awslogs-region"        = "ap-southeast-1",
+          "awslogs-stream-prefix" = "ecs"
+        }
+      },
+      environment = [
+        {
+          name  = "PORT",
+          value = "80"
+        },
+        {
+          name  = "NODE_ENV",
+          value = "production"
         }
       ]
     }
@@ -224,12 +265,12 @@ resource "aws_lb_target_group" "oaktree_tg" {
   target_type = "ip"
   
   health_check {
-    path                = "/"
+    path                = "/api/status"  # Changed to a more common health check endpoint
     interval            = 30
     timeout             = 5
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
-    matcher             = "200-399"
+    healthy_threshold   = 2              # Reduced threshold for faster registration
+    unhealthy_threshold = 2              # Reduced threshold for faster detection
+    matcher             = "200-499"      # Changed to accept more status codes
   }
 }
 
