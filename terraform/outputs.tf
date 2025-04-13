@@ -17,22 +17,32 @@ output "subnet_ids" {
   ]
 }
 
+output "internet_gateway_id" {
+  description = "ID of the Internet Gateway"
+  value       = data.aws_internet_gateway.oak_igw.id
+}
+
 output "alb_dns_name" {
   description = "DNS name of the Application Load Balancer"
   value       = aws_lb.oak_alb.dns_name
 }
 
-output "ecs_cluster_name" {
-  description = "Name of the ECS cluster"
-  value       = aws_ecs_cluster.oak_cluster.name
+output "ecs_cluster_arn" {
+  description = "ARN of the ECS cluster"
+  value       = aws_ecs_cluster.oak_cluster.arn
 }
 
-output "ecs_service_name" {
-  description = "Name of the ECS service"
-  value       = aws_ecs_service.oak_service.name
+output "ecs_task_definition_arn" {
+  description = "ARN of the ECS task definition"
+  value       = aws_ecs_task_definition.oak_task.arn
 }
 
-output "task_role_arn" {
-  description = "ARN of the ECS task role"
-  value       = aws_iam_role.oak_ecs_role.arn
+output "ecs_service_id" {
+  description = "ID of the ECS service"
+  value       = aws_ecs_service.oak_service.id
+}
+
+output "security_group_id" {
+  description = "ID of the security group"
+  value       = data.aws_security_group.default.id
 }

@@ -25,11 +25,6 @@ data "aws_internet_gateway" "oak_igw" {
   id = "igw-009b817b22bbfe6c7"
 }
 
-# Security Group (Default Security Group)
-data "aws_security_group" "default" {
-  id = "sg-07eefbba6c112565c"
-}
-
 # Application Load Balancer (ALB)
 resource "aws_lb" "oak_alb" {
   name               = "oaktree-alb"
@@ -48,7 +43,7 @@ resource "aws_lb" "oak_alb" {
   }
 }
 
-# DynamoDB Table Configuration
+# DynamoDB Table Configuration (Existing Table)
 resource "aws_dynamodb_table" "oaktree_users" {
   name            = "oaktree-users"
   hash_key        = "user_id"
@@ -70,50 +65,6 @@ resource "aws_dynamodb_table" "oaktree_users" {
 # ECS Cluster Configuration
 resource "aws_ecs_cluster" "oak_cluster" {
   name = "oak-cluster"
-}
-
-# IAM Role for ECS
-resource "aws_iam_role" "oak_ecs_role" {
-  name = "oak-ecs-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-# IAM Role Policy for ECS Task Execution
-resource "aws_iam_role_policy" "oak_ecs_role_policy" {
-  name = "oak-ecs-role-policy"
-  role = aws_iam_role.oak_ecs_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action   = "logs:*"
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action   = "ecs:Describe*"
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action   = "ecs:List*"
-        Effect   = "Allow"
-        Resource = "*"
-      }
-    ]
-  })
 }
 
 # ECS Task Definition
@@ -155,41 +106,54 @@ resource "aws_ecs_service" "oak_service" {
       data.aws_subnet.oak_subnet_c.id
     ]
     assign_public_ip = true
-    security_groups  = [data.aws_security_group.default.id]
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.oak_target_group.arn
-    container_name   = "oak-container"
-    container_port   = 80
   }
 }
 
-# Target Group for ALB
-resource "aws_lb_target_group" "oak_target_group" {
-  name     = "oak-target-group"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = data.aws_vpc.oak_vpc.id
-  target_type = "ip"
-
-  health_check {
-    path                = "/"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
-  }
+# IAM Role for ECS
+resource "aws_iam_role" "oak_ecs_role" {
+  name = "oak-ecs-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = {
+          Service = "ecs.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
-# ALB Listener
-resource "aws_lb_listener" "oak_listener" {
-  load_balancer_arn = aws_lb.oak_alb.arn
-  port              = 80
-  protocol          = "HTTP"
+# Security Group (Default Security Group)
+data "aws_security_group" "default" {
+  id = "sg-07eefbba6c112565c"
+}
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.oak_target_group.arn
-  }
+# IAM Role Policy for ECS Task Execution
+resource "aws_iam_role_policy" "oak_ecs_role_policy" {
+  name = "oak-ecs-role-policy"
+  role = aws_iam_role.oak_ecs_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = "logs:*"
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action   = "ecs:Describe*"
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action   = "ecs:List*"
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
 }

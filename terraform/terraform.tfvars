@@ -9,4 +9,7 @@ subnet_ids = [
   "subnet-0a05d6a1b3630dca1"
 ]
 
+security_group_id = "sg-07eefbba6c112565c"
+internet_gateway_id = "igw-009b817b22bbfe6c7"
+
 allowed_cidr_blocks = ["0.0.0.0/0"]
