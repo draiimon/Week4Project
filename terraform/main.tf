@@ -161,14 +161,9 @@ resource "aws_ecr_repository" "oaktree_repo" {
   }
 }
 
-# ECS Cluster
+# ECS Cluster - Using existing name but ensuring parameters match
 resource "aws_ecs_cluster" "oaktree_cluster" {
-  name = "oaktree-cluster"
-  
-  setting {
-    name  = "containerInsights"
-    value = "enabled"
-  }
+  name = "oak-cluster"  # Changed to match what's expected
 }
 
 # IAM Role for ECS Task Execution
