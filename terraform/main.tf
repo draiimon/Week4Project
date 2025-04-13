@@ -26,7 +26,7 @@ resource "aws_cognito_user_pool" "oaktree_users" {
 
   username_attributes      = ["email"]
   auto_verify_attributes   = ["email"]
-  
+
   password_policy {
     minimum_length    = 8
     require_lowercase = true
@@ -60,7 +60,7 @@ resource "aws_cognito_user_pool_client" "oaktree_client" {
   name                = "oaktree-app-client"
   user_pool_id        = aws_cognito_user_pool.oaktree_users.id
   explicit_auth_flows = ["ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
-  
+
   prevent_user_existence_errors = "ENABLED"
   access_token_validity        = 24
   refresh_token_validity       = 30
@@ -298,5 +298,44 @@ resource "aws_ecs_service" "oaktree_service" {
     Project     = "OakTree"
     ManagedBy   = "Terraform"
     Owner       = "DevOps"
+  }
+}
+
+# Internet Gateway (Existing IGW)
+data "aws_internet_gateway" "oak_igw" {
+  filter {
+    name   = "internet-gateway-id"
+    values = ["igw-009b817b22bbfe6c7"]
+  }
+}
+
+# Application Load Balancer (ALB)
+resource "aws_lb" "oak_alb" {
+  name               = "oaktree-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [data.aws_security_group.default.id]
+  subnets            = [
+    data.aws_subnet.oak_subnet_a.id,
+    data.aws_subnet.oak_subnet_b.id,
+    data.aws_subnet.oak_subnet_c.id
+  ]
+  enable_deletion_protection = false
+}
+
+# DynamoDB Table Configuration
+resource "aws_dynamodb_table" "oaktree_users_new" {
+  name           = "oaktree-users"
+  hash_key       = "user_id"
+  read_capacity  = 5
+  write_capacity = 5
+
+  attribute {
+    name = "user_id"
+    type = "S"
+  }
+
+  tags = {
+    Name = "oaktree-users"
   }
 }
