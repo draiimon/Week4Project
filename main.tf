@@ -323,10 +323,19 @@ resource "aws_ecs_task_definition" "oaktree_task" {
         {
           name  = "AWS_REGION",
           value = "ap-southeast-1"
+        },
+        {
+          name  = "USE_AWS_DB",
+          value = "true"
+        },
+        {
+          name  = "AWS_ACCESS_KEY_ID",
+          value = "AKIAUVSUK73H3ZAMDCH6"
+        },
+        {
+          name  = "AWS_SECRET_ACCESS_KEY",
+          value = "kZtcZuJ6FbQklxLW1RfCkgWHf4JGqVLyMaLXc1FA"
         }
-        # Kung kailangan mo ng AWS credentials, dagdagan mo dito
-        # PERO tandaan na hindi best practice na ilagay ang credentials
-        # sa container definition. Mas maganda gamitin ang IAM roles.
       ],
       healthCheck = {
         command     = ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"],
