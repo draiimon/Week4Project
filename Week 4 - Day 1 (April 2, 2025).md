@@ -2,105 +2,205 @@
 
 ## **Introduction**
 
-Today marks the beginning of Week 4, where I'll be working on the final project that consolidates all the skills learned in the first three weeks. The objective is to create an end-to-end DevOps deployment for a web application called OakTree, which includes containerization, CI/CD pipeline setup, infrastructure provisioning with Terraform, and deployment to AWS cloud services.
+Today marks the beginning of Week 4, where I'll be working on the final project that consolidates all the skills learned in the first three weeks. This project is focused on creating a complete DevOps pipeline for a web application, including containerization, CI/CD setup, infrastructure as code, and cloud deployment.
+
+After reviewing the project requirements, I understand that I need to build a system that demonstrates my ability to:
+1. Containerize an application
+2. Set up automated CI/CD pipeline
+3. Provision cloud infrastructure using IaC
+4. Deploy containers to the cloud
+
+The application I've decided to build is called "OakTree" - a cloud infrastructure monitoring and management platform that I'll develop throughout this week.
 
 ## **What I Did Today**
 
-### **Project Setup:**
+### **Project Planning:**
 
-- Created a new GitHub repository for the project
-- Set up the basic Node.js application structure with React frontend
-- Established project folder structure (client, server, terraform)
-- Implemented basic UI components using shadcn/ui and Tailwind CSS
-- Created initial README documentation
+- Read through the project requirements and created a detailed plan
+- Researched similar applications to understand best practices
+- Created a simple project roadmap with key milestones:
+  - Day 1-2: Application setup and containerization
+  - Day 3-4: Infrastructure as Code with Terraform
+  - Day 5-6: CI/CD pipeline setup
+  - Day 7-8: Cloud deployment and testing
+- Drafted a basic architecture diagram using draw.io
 
-### **Infrastructure Planning:**
+### **Learning Resources Setup:**
 
-- Researched AWS services needed for deployment
-- Selected ap-southeast-1 (Singapore) as deployment region
-- Sketched initial architecture design including ECS, ECR, and ALB
-- Planned network architecture with VPC, subnets, and security groups
-- Researched IAM roles and policies for ECS and ECR
+- Collected and organized documentation for technologies I'll be using
+- Bookmarked key AWS service documentation pages
+- Set up a project notebook to track my progress and document learnings
+- Created a list of potential challenges and solutions based on previous weeks' projects
 
-### **Docker Configuration:**
+### **Environment Setup:**
 
-- Created initial Dockerfile for application containerization
-- Set up .dockerignore file to optimize build process
-- Implemented multi-stage build pattern for smaller image size
-- Added environment variable handling for production deployments
-- Tested local Docker build process
+- Created new GitHub repository for the project
+- Set up basic project directory structure
+- Initialized git repository and created initial commit
+- Configured .gitignore file for Node.js project
 
-### **AWS Account Configuration:**
+### **Application Initialization:**
 
-- Set up AWS CLI with proper credentials
-- Created dedicated IAM user with programmatic access
-- Set up access key and secret key for deployments
-- Tested AWS CLI connectivity and permissions
+- Started with a basic Node.js Express application structure
+- Set up package.json with initial dependencies
+- Created simple "Hello World" endpoint to verify the setup works
+- Added basic error handling middleware
+- Tested local server using Node.js
+
+This basic setup gives me a foundation to build upon for the rest of the week.
+
+## **Code Snippets**
+
+Here's the basic Express server I created today:
+
+```javascript
+// server/index.js
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Basic middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Simple health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.send('Welcome to OakTree - DevOps Project');
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```
+
+And here's my initial package.json:
+
+```json
+{
+  "name": "oaktree-devops",
+  "version": "0.1.0",
+  "description": "OakTree DevOps Project - Week 4 Final Project",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
+```
+
+## **Learning About Docker**
+
+Most of my time today was spent researching containerization with Docker, since that's the first part of the project. I found several key resources that were very helpful:
+
+- Docker's official documentation on containerizing Node.js applications
+- YouTube tutorials on multi-stage Docker builds
+- Blog posts about Docker best practices for production applications
+
+I took notes on key Docker concepts that I'll need to implement tomorrow:
+
+1. Dockerfile structure and commands
+2. Multi-stage builds for optimizing image size
+3. Docker layer caching for faster builds
+4. Container security best practices
+5. Environment variable handling in containers
+
+## **AWS Service Research**
+
+I spent some time understanding which AWS services would be most appropriate for my project:
+
+1. **ECR (Elastic Container Registry)** - For storing Docker images
+2. **ECS (Elastic Container Service)** - For running containerized applications
+3. **VPC (Virtual Private Cloud)** - For network isolation
+4. **IAM (Identity and Access Management)** - For secure access control
+5. **CloudWatch** - For monitoring and logging
+
+I focused on reading the documentation for these services to better understand how they would fit into my project.
 
 ## **Resources**
 
+### **Docker Documentation:**
+- [Dockerizing a Node.js web app](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/) - Official Node.js guide
+- [Docker multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/) - For optimizing container size
+- [Docker best practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/) - General guidelines
+
 ### **AWS Documentation:**
+- [Amazon ECR User Guide](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) - For understanding container registry
+- [Amazon ECS Developer Guide](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html) - For container orchestration
+- [AWS IAM Documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html) - For security configuration
 
-- ECS Fargate Service Configuration
-- ECR Repository Management
-- IAM Best Practices for DevOps
-- VPC Networking for Containers
-
-### **Docker:**
-
-- Multi-stage Builds for Node.js
-- Optimizing Node.js Docker Images
-- Best Practices for Node.js in Docker
-- Docker Image Tagging Strategies
-
-### **Terraform:**
-
-- AWS Provider Configuration
-- Module Organization Patterns
-- State Management Options
-- Variable and Output Handling
-
-### **DevOps Practices:**
-
-- CI/CD Pipeline Design Patterns
-- Infrastructure as Code Principles
-- Container Deployment Strategies
-- GitHub Actions Workflow Configuration
+### **Terraform Resources:**
+- [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) - For IaC implementation
+- [Terraform Best Practices](https://www.terraform-best-practices.com/) - Community guidelines
 
 ## **Challenges & Solutions**
 
-### **Project Structure Organization:**
+### **Project Scope Management:**
 
-- **Challenge**: Deciding how to organize the monorepo for both frontend and backend while maintaining clean Docker builds.
-- **Solution**: Created a structure with client/ and server/ directories with shared configuration at the root level, using Docker multi-stage builds to handle dependencies effectively.
+- **Challenge**: The project requirements are quite broad, making it difficult to determine how much depth to go into for each component.
+  
+- **Solution**: I decided to create a phased approach, focusing first on getting a basic working deployment pipeline before adding more advanced features. This will ensure I have a functional end-to-end solution before enhancing specific areas.
 
-### **AWS Region Selection:**
+### **Technology Selection:**
 
-- **Challenge**: Choosing the most appropriate AWS region for deployment.
-- **Solution**: Selected ap-southeast-1 (Singapore) based on proximity, available services, and cost considerations for my target audience.
-
-### **Docker Build Optimization:**
-
-- **Challenge**: Creating an efficient Docker build process that doesn't bloat the image size.
-- **Solution**: Implemented multi-stage builds to separate build dependencies from runtime dependencies, reducing the final image size significantly.
+- **Challenge**: There are multiple ways to deploy containerized applications in AWS (ECS, EKS, App Runner, etc.).
+  
+- **Solution**: After research, I selected ECS with Fargate as the best balance of simplicity and features for this project. This allows me to focus on the DevOps pipeline rather than cluster management.
 
 ## **Learning Insights**
 
-Today I learned the importance of proper project setup and planning before diving into implementation. The decisions made at this stage about architecture, region selection, and deployment patterns will have significant impacts on the project's success.
+Today I learned about the importance of planning in DevOps projects. In previous weeks, I often jumped straight into coding without a clear plan, which led to rework later. By spending today creating a roadmap and researching the technologies, I feel more confident about the direction of the project.
 
-I also gained a deeper understanding of Docker multi-stage builds by applying the concept to our Node.js application. This allowed me to create a much smaller and more efficient container image by separating the build and runtime environments.
+I also gained a better understanding of the different AWS container services and their tradeoffs. For example, while EKS (Elastic Kubernetes Service) offers more flexibility for complex applications, ECS is simpler to set up and integrate with other AWS services, making it a better choice for this project's scope and timeline.
 
-The AWS services selection process taught me to consider factors like cost, latency, and service availability when choosing a deployment region. I gained this knowledge from AWS documentation and from tutorials on YouTube by AWS Solutions Architects.
+The most valuable insight was about Docker multi-stage builds. In previous projects, my Docker images were unnecessarily large because I included build tools in the final image. By learning about multi-stage builds, I now understand how to create much smaller and more secure production images.
 
 ## **Future Plans**
 
 For tomorrow, I plan to:
 
-1. Complete the Terraform infrastructure configuration for VPC and networking
-2. Develop the CI/CD pipeline using GitHub Actions
-3. Set up the AWS ECR repository for Docker images
-4. Implement more of the application functionality
+1. Create a Dockerfile for the application
+   - Implement multi-stage build for optimization
+   - Set up proper NODE_ENV configuration
+   - Add health check configuration
+
+2. Begin setting up a basic frontend
+   - Create simple React application
+   - Set up routing and basic components
+   - Configure build process
+
+3. Learn more about AWS authentication
+   - Research IAM roles and policies
+   - Understand security best practices for deployment
+   - Set up local AWS credentials for development
+
+4. Start exploring Terraform basics
+   - Install Terraform CLI
+   - Learn about basic Terraform syntax
+   - Understand AWS provider configuration
 
 ## **Conclusion**
 
-Day 1 of Week 4 was focused on setting up the foundation for the project. I've made significant progress in establishing the project structure and planning the infrastructure. The challenges encountered were mostly related to architectural decisions, which I was able to resolve through research and best practices. I'm excited to continue building on this foundation and implementing the infrastructure as code in Terraform tomorrow.
+Day 1 of Week 4 was primarily focused on planning and research, which I believe will pay off in more efficient development in the coming days. I've set up a basic project structure and created a roadmap that will guide my work throughout the week.
+
+While I didn't write a lot of code today, the research and planning I've done have given me a clearer understanding of the requirements and challenges ahead. I'm excited to start implementing the Docker containerization tomorrow and begin building out the application.
+
+This project represents an opportunity to bring together everything I've learned in the previous weeks, and I'm looking forward to creating a complete DevOps pipeline from development to production.
