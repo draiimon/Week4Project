@@ -2,116 +2,118 @@ provider "aws" {
   region = "ap-southeast-1"
 }
 
+# Variables
+variable "app_name" {
+  description = "Name of the application"
+  type        = string
+  default     = "oaktree"
+}
+
+variable "environment" {
+  description = "Deployment environment"
+  type        = string
+  default     = "dev"
+}
+
+locals {
+  name_prefix = "${var.app_name}-${var.environment}"
+  common_tags = {
+    Project     = var.app_name
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
+}
+
+#############################
+# NETWORKING INFRASTRUCTURE #
+#############################
+
 # VPC Resource
-resource "aws_vpc" "oaktree_vpc" {
-  cidr_block           = "172.31.0.0/16"
-  instance_tenancy     = "default"
+resource "aws_vpc" "app_vpc" {
+  cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 
-  tags = {
-    Name = "oaktree-vpc"
-  }
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-vpc"
+  })
 }
 
 # Public Subnets
-resource "aws_subnet" "oaktree_public_a" {
-  vpc_id                  = aws_vpc.oaktree_vpc.id
-  cidr_block              = "172.31.0.0/20"
+resource "aws_subnet" "public_subnet_a" {
+  vpc_id                  = aws_vpc.app_vpc.id
+  cidr_block              = "10.0.1.0/24"
   availability_zone       = "ap-southeast-1a"
   map_public_ip_on_launch = true
 
-  tags = {
-    Name = "oaktree-public-subnet-a"
-  }
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-public-subnet-a"
+  })
 }
 
-resource "aws_subnet" "oaktree_public_b" {
-  vpc_id                  = aws_vpc.oaktree_vpc.id
-  cidr_block              = "172.31.16.0/20"
+resource "aws_subnet" "public_subnet_b" {
+  vpc_id                  = aws_vpc.app_vpc.id
+  cidr_block              = "10.0.2.0/24"
   availability_zone       = "ap-southeast-1b"
   map_public_ip_on_launch = true
 
-  tags = {
-    Name = "oaktree-public-subnet-b"
-  }
-}
-
-resource "aws_subnet" "oaktree_public_c" {
-  vpc_id                  = aws_vpc.oaktree_vpc.id
-  cidr_block              = "172.31.32.0/20"
-  availability_zone       = "ap-southeast-1c"
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "oaktree-public-subnet-c"
-  }
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-public-subnet-b"
+  })
 }
 
 # Internet Gateway
-resource "aws_internet_gateway" "oaktree_igw" {
-  vpc_id = aws_vpc.oaktree_vpc.id
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.app_vpc.id
 
-  tags = {
-    Name = "oaktree-igw"
-  }
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-igw"
+  })
 }
 
 # Route Table
-resource "aws_route_table" "oaktree_public_rt" {
-  vpc_id = aws_vpc.oaktree_vpc.id
+resource "aws_route_table" "public_route_table" {
+  vpc_id = aws_vpc.app_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.oaktree_igw.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 
-  tags = {
-    Name = "oaktree-public-route-table"
-  }
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-public-rt"
+  })
 }
 
 # Route Table Association
-resource "aws_route_table_association" "oaktree_rta_a" {
-  subnet_id      = aws_subnet.oaktree_public_a.id
-  route_table_id = aws_route_table.oaktree_public_rt.id
+resource "aws_route_table_association" "public_a" {
+  subnet_id      = aws_subnet.public_subnet_a.id
+  route_table_id = aws_route_table.public_route_table.id
 }
 
-resource "aws_route_table_association" "oaktree_rta_b" {
-  subnet_id      = aws_subnet.oaktree_public_b.id
-  route_table_id = aws_route_table.oaktree_public_rt.id
+resource "aws_route_table_association" "public_b" {
+  subnet_id      = aws_subnet.public_subnet_b.id
+  route_table_id = aws_route_table.public_route_table.id
 }
 
-resource "aws_route_table_association" "oaktree_rta_c" {
-  subnet_id      = aws_subnet.oaktree_public_c.id
-  route_table_id = aws_route_table.oaktree_public_rt.id
-}
+####################
+# SECURITY GROUPS  #
+####################
 
-# Security Group
-resource "aws_security_group" "oaktree_sg" {
-  name        = "oaktree-sg"
-  description = "Allow inbound traffic for ECS and Load Balancer"
-  vpc_id      = aws_vpc.oaktree_vpc.id
+# ALB Security Group
+resource "aws_security_group" "alb_sg" {
+  name        = "${local.name_prefix}-alb-sg"
+  description = "Security group for ALB"
+  vpc_id      = aws_vpc.app_vpc.id
 
-  # Allow HTTP traffic
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTP traffic"
+    description = "Allow HTTP"
   }
 
-  # Allow port 5000 for Express.js application
-  ingress {
-    from_port   = 5000
-    to_port     = 5000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow Express.js traffic"
-  }
-
-  # Allow all outbound traffic
   egress {
     from_port   = 0
     to_port     = 0
@@ -120,27 +122,25 @@ resource "aws_security_group" "oaktree_sg" {
     description = "Allow all outbound traffic"
   }
 
-  tags = {
-    Name = "oaktree-security-group"
-  }
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-alb-sg"
+  })
 }
 
-# ECS Container Security Group
-resource "aws_security_group" "ecs_container_sg" {
-  name        = "oaktree-ecs-container-sg"
-  description = "Allow traffic to ECS containers"
-  vpc_id      = aws_vpc.oaktree_vpc.id
+# Container Security Group
+resource "aws_security_group" "app_sg" {
+  name        = "${local.name_prefix}-app-sg"
+  description = "Security group for the application"
+  vpc_id      = aws_vpc.app_vpc.id
 
-  # Allow inbound traffic from ALB
   ingress {
     from_port       = 5000
     to_port         = 5000
     protocol        = "tcp"
-    security_groups = [aws_security_group.oaktree_sg.id]
-    description     = "Allow traffic from ALB to containers"
+    security_groups = [aws_security_group.alb_sg.id]
+    description     = "Allow traffic from ALB"
   }
 
-  # Allow all outbound traffic
   egress {
     from_port   = 0
     to_port     = 0
@@ -149,86 +149,67 @@ resource "aws_security_group" "ecs_container_sg" {
     description = "Allow all outbound traffic"
   }
 
-  tags = {
-    Name = "oaktree-ecs-container-sg"
-  }
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-app-sg"
+  })
 }
 
-# Application Load Balancer (ALB)
-resource "aws_lb" "oaktree_alb" {
-  name               = "oaktree-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.oaktree_sg.id]
-  subnets            = [
-    aws_subnet.oaktree_public_a.id,
-    aws_subnet.oaktree_public_b.id,
-    aws_subnet.oaktree_public_c.id
-  ]
-  enable_deletion_protection = false
-
-  tags = {
-    Name = "oaktree-alb"
-  }
-}
+#####################
+# DATA PERSISTENCE  #
+#####################
 
 # DynamoDB Table
-resource "aws_dynamodb_table" "oaktree_users" {
-  name           = "oaktree-users"
-  hash_key       = "user_id"
-  read_capacity  = 5
-  write_capacity = 5
+resource "aws_dynamodb_table" "users_table" {
+  name         = "${local.name_prefix}-users"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "user_id"
 
   attribute {
     name = "user_id"
     type = "S"
   }
 
-  billing_mode = "PROVISIONED"
-
-  tags = {
-    Name = "oaktree-users"
-  }
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-users-table"
+  })
 }
 
-# CloudWatch Log Group for ECS
-resource "aws_cloudwatch_log_group" "ecs_logs" {
-  name              = "/ecs/oaktree-task"
-  retention_in_days = 30
-
-  tags = {
-    Name = "oaktree-ecs-logs"
-  }
-}
+###################
+# CONTAINER REPO  #
+###################
 
 # ECR Repository
-resource "aws_ecr_repository" "oaktree_repo" {
-  name                 = "oaktree-cloud-app"
+resource "aws_ecr_repository" "app_repo" {
+  name                 = local.name_prefix
   image_tag_mutability = "MUTABLE"
   force_delete         = true
 
   image_scanning_configuration {
-    scan_on_push = false
+    scan_on_push = true
   }
+
+  tags = local.common_tags
 }
 
-# ECS Cluster - Using existing name but ensuring parameters match
-resource "aws_ecs_cluster" "oaktree_cluster" {
-  name = "oak-cluster"  # Changed to match what's expected
+#####################
+# APPLICATION LOGS  #
+#####################
 
-  setting {
-    name  = "containerInsights"
-    value = "enabled"
-  }
+# CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "app_logs" {
+  name              = "/ecs/${local.name_prefix}"
+  retention_in_days = 30
 
-  tags = {
-    Name = "oaktree-cluster"
-  }
+  tags = local.common_tags
 }
 
-# IAM Role for ECS Task Execution
-resource "aws_iam_role" "ecs_task_exec" {
-  name = "ecsTaskExecutionRole"
+####################
+# IDENTITY & ACCESS #
+####################
+
+# IAM Roles
+resource "aws_iam_role" "ecs_execution_role" {
+  name = "${local.name_prefix}-execution-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -242,71 +223,152 @@ resource "aws_iam_role" "ecs_task_exec" {
       }
     ]
   })
+
+  tags = local.common_tags
 }
 
-# Attach ECS Task Execution Policy
-resource "aws_iam_role_policy_attachment" "ecs_task_exec_attach" {
-  role       = aws_iam_role.ecs_task_exec.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+resource "aws_iam_role" "ecs_task_role" {
+  name = "${local.name_prefix}-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = local.common_tags
 }
 
-# DynamoDB Access Policy
+# IAM Policies
 resource "aws_iam_policy" "dynamodb_access" {
-  name        = "oaktree-dynamodb-access"
-  description = "Policy to allow access to DynamoDB tables"
+  name        = "${local.name_prefix}-dynamodb-access"
+  description = "Policy for DynamoDB access"
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
         Action = [
-          "dynamodb:*",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:UpdateItem"
         ]
-        Resource = [
-          aws_dynamodb_table.oaktree_users.arn,
-          "${aws_dynamodb_table.oaktree_users.arn}/*"
-        ]
+        Effect   = "Allow"
+        Resource = aws_dynamodb_table.users_table.arn
       }
     ]
   })
 }
 
-# Attach DynamoDB Access Policy to ECS Task Execution Role
-resource "aws_iam_role_policy_attachment" "dynamodb_policy_attach" {
-  role       = aws_iam_role.ecs_task_exec.name
+# Attach policies to roles
+resource "aws_iam_role_policy_attachment" "task_execution_role_policy" {
+  role       = aws_iam_role.ecs_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "dynamodb_policy_attachment" {
+  role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.dynamodb_access.arn
 }
 
+#######################
+# LOAD BALANCER (ALB) #
+#######################
+
+resource "aws_lb" "app_alb" {
+  name               = "${local.name_prefix}-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id]
+  subnets            = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
+
+  enable_deletion_protection = false
+
+  tags = local.common_tags
+}
+
+resource "aws_lb_target_group" "app_tg" {
+  name        = "${local.name_prefix}-tg"
+  port        = 5000
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.app_vpc.id
+  target_type = "ip"
+
+  health_check {
+    path                = "/"
+    interval            = 30
+    timeout             = 20
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    matcher             = "200-499" # Accept a wider range of responses
+  }
+
+  tags = local.common_tags
+}
+
+resource "aws_lb_listener" "app_listener" {
+  load_balancer_arn = aws_lb.app_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+}
+
+###########################
+# ECS CLUSTER & SERVICES  #
+###########################
+
+# ECS Cluster
+resource "aws_ecs_cluster" "app_cluster" {
+  name = "${local.name_prefix}-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+
+  tags = local.common_tags
+}
+
 # ECS Task Definition
-resource "aws_ecs_task_definition" "oaktree_task" {
-  family                   = "oaktree-task"
-  execution_role_arn       = aws_iam_role.ecs_task_exec.arn
+resource "aws_ecs_task_definition" "app_task" {
+  family                   = "${local.name_prefix}-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
   memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([
     {
-      name      = "oaktree"
-      image     = "${aws_ecr_repository.oaktree_repo.repository_url}:latest"
+      name      = local.name_prefix
+      image     = "${aws_ecr_repository.app_repo.repository_url}:latest"
       essential = true
+      
       portMappings = [
         {
           containerPort = 5000
           hostPort      = 5000
           protocol      = "tcp"
         }
-      ],
-      logConfiguration = {
-        logDriver = "awslogs",
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.ecs_logs.name,
-          "awslogs-region"        = "ap-southeast-1",
-          "awslogs-stream-prefix" = "ecs"
-        }
-      },
+      ]
+
       environment = [
         {
           name  = "PORT",
@@ -329,132 +391,99 @@ resource "aws_ecs_task_definition" "oaktree_task" {
           value = "true"
         },
         {
-          name  = "AWS_ACCESS_KEY_ID",
-          value = "AKIAUVSUK73H3ZAMDCH6"
-        },
-        {
-          name  = "AWS_SECRET_ACCESS_KEY",
-          value = "kZtcZuJ6FbQklxLW1RfCkgWHf4JGqVLyMaLXc1FA"
+          name  = "DYNAMODB_TABLE",
+          value = aws_dynamodb_table.users_table.name
         }
-      ],
-      healthCheck = {
-        command     = ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"],
-        interval    = 30,
-        timeout     = 5,
-        retries     = 3,
-        startPeriod = 60
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.app_logs.name
+          "awslogs-region"        = "ap-southeast-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
       }
     }
   ])
-}
 
-# Target Group for ALB
-resource "aws_lb_target_group" "oaktree_tg" {
-  name        = "oaktree-target-group"
-  port        = 5000
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.oaktree_vpc.id
-  target_type = "ip"
-
-  health_check {
-    path                = "/"
-    interval            = 30
-    timeout             = 20
-    healthy_threshold   = 2
-    unhealthy_threshold = 3
-    matcher             = "200-499"  # Accept a wider range of responses
-  }
-
-  tags = {
-    Name = "oaktree-target-group"
-  }
-}
-
-# ALB Listener
-resource "aws_lb_listener" "oaktree_listener" {
-  load_balancer_arn = aws_lb.oaktree_alb.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.oaktree_tg.arn
-  }
+  tags = local.common_tags
 }
 
 # ECS Service
-resource "aws_ecs_service" "oaktree_service" {
-  name            = "oaktree-service"
-  cluster         = aws_ecs_cluster.oaktree_cluster.id
-  task_definition = aws_ecs_task_definition.oaktree_task.arn
-  desired_count   = 2
+resource "aws_ecs_service" "app_service" {
+  name            = "${local.name_prefix}-service"
+  cluster         = aws_ecs_cluster.app_cluster.id
+  task_definition = aws_ecs_task_definition.app_task.arn
+  desired_count   = 1
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = [
-      aws_subnet.oaktree_public_a.id,
-      aws_subnet.oaktree_public_b.id,
-      aws_subnet.oaktree_public_c.id
-    ]
-    security_groups  = [aws_security_group.ecs_container_sg.id]
+    subnets          = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
+    security_groups  = [aws_security_group.app_sg.id]
     assign_public_ip = true
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.oaktree_tg.arn
-    container_name   = "oaktree"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+    container_name   = local.name_prefix
     container_port   = 5000
   }
 
-  depends_on = [aws_lb_listener.oaktree_listener]
+  depends_on = [
+    aws_lb_listener.app_listener,
+    aws_iam_role_policy_attachment.task_execution_role_policy
+  ]
 
-  # Force recreate when image changes
+  deployment_controller {
+    type = "ECS"
+  }
+
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 50
+
   lifecycle {
     create_before_destroy = true
   }
 
-  # Deployment configuration
-  deployment_maximum_percent         = 200
-  deployment_minimum_healthy_percent = 50
+  tags = local.common_tags
 }
 
-# Output Values
+##################
+# OUTPUT VALUES  #
+##################
+
+output "ecr_repository_url" {
+  description = "ECR Repository URL"
+  value       = aws_ecr_repository.app_repo.repository_url
+}
+
 output "dynamodb_table_name" {
-  value = aws_dynamodb_table.oaktree_users.name
-}
-
-output "vpc_id" {
-  value = aws_vpc.oaktree_vpc.id
-}
-
-output "subnet_ids" {
-  value = [
-    aws_subnet.oaktree_public_a.id,
-    aws_subnet.oaktree_public_b.id,
-    aws_subnet.oaktree_public_c.id
-  ]
-}
-
-output "internet_gateway_id" {
-  value = aws_internet_gateway.oaktree_igw.id
+  description = "DynamoDB Table Name"
+  value       = aws_dynamodb_table.users_table.name
 }
 
 output "alb_dns_name" {
-  value = aws_lb.oaktree_alb.dns_name
+  description = "Application Load Balancer DNS Name"
+  value       = aws_lb.app_alb.dns_name
 }
 
-output "ecr_repository_url" {
-  value = aws_ecr_repository.oaktree_repo.repository_url
+output "docker_push_commands" {
+  description = "Commands to build and push Docker image"
+  value = <<-EOT
+    # Login to ECR
+    aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.app_repo.repository_url}
+
+    # Build and push the Docker image
+    docker build -t ${aws_ecr_repository.app_repo.repository_url}:latest .
+    docker push ${aws_ecr_repository.app_repo.repository_url}:latest
+
+    # Force new deployment
+    aws ecs update-service --cluster ${aws_ecs_cluster.app_cluster.name} --service ${aws_ecs_service.app_service.name} --force-new-deployment --region ap-southeast-1
+  EOT
 }
 
-output "ecs_cluster_name" {
-  value = aws_ecs_cluster.oaktree_cluster.name
-}
-
-output "ecs_service_name" {
-  value = aws_ecs_service.oaktree_service.name
-}
-
-output "task_execution_role_arn" {
-  value = aws_iam_role.ecs_task_exec.arn
+output "app_url" {
+  description = "URL to access the application"
+  value       = "http://${aws_lb.app_alb.dns_name}"
 }

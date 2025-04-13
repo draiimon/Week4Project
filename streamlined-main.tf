@@ -24,7 +24,11 @@ locals {
   }
 }
 
-# VPC and Networking
+#############################
+# NETWORKING INFRASTRUCTURE #
+#############################
+
+# VPC Resource
 resource "aws_vpc" "app_vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
@@ -35,6 +39,7 @@ resource "aws_vpc" "app_vpc" {
   })
 }
 
+# Public Subnets
 resource "aws_subnet" "public_subnet_a" {
   vpc_id                  = aws_vpc.app_vpc.id
   cidr_block              = "10.0.1.0/24"
@@ -57,6 +62,7 @@ resource "aws_subnet" "public_subnet_b" {
   })
 }
 
+# Internet Gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.app_vpc.id
 
@@ -65,6 +71,7 @@ resource "aws_internet_gateway" "igw" {
   })
 }
 
+# Route Table
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.app_vpc.id
 
@@ -78,6 +85,7 @@ resource "aws_route_table" "public_route_table" {
   })
 }
 
+# Route Table Association
 resource "aws_route_table_association" "public_a" {
   subnet_id      = aws_subnet.public_subnet_a.id
   route_table_id = aws_route_table.public_route_table.id
@@ -88,7 +96,11 @@ resource "aws_route_table_association" "public_b" {
   route_table_id = aws_route_table.public_route_table.id
 }
 
-# Security Groups
+####################
+# SECURITY GROUPS  #
+####################
+
+# ALB Security Group
 resource "aws_security_group" "alb_sg" {
   name        = "${local.name_prefix}-alb-sg"
   description = "Security group for ALB"
@@ -115,6 +127,7 @@ resource "aws_security_group" "alb_sg" {
   })
 }
 
+# Container Security Group
 resource "aws_security_group" "app_sg" {
   name        = "${local.name_prefix}-app-sg"
   description = "Security group for the application"
@@ -141,6 +154,10 @@ resource "aws_security_group" "app_sg" {
   })
 }
 
+#####################
+# DATA PERSISTENCE  #
+#####################
+
 # DynamoDB Table
 resource "aws_dynamodb_table" "users_table" {
   name         = "${local.name_prefix}-users"
@@ -157,6 +174,10 @@ resource "aws_dynamodb_table" "users_table" {
   })
 }
 
+###################
+# CONTAINER REPO  #
+###################
+
 # ECR Repository
 resource "aws_ecr_repository" "app_repo" {
   name                 = local.name_prefix
@@ -170,6 +191,10 @@ resource "aws_ecr_repository" "app_repo" {
   tags = local.common_tags
 }
 
+#####################
+# APPLICATION LOGS  #
+#####################
+
 # CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "app_logs" {
   name              = "/ecs/${local.name_prefix}"
@@ -177,6 +202,10 @@ resource "aws_cloudwatch_log_group" "app_logs" {
 
   tags = local.common_tags
 }
+
+####################
+# IDENTITY & ACCESS #
+####################
 
 # IAM Roles
 resource "aws_iam_role" "ecs_execution_role" {
@@ -254,7 +283,10 @@ resource "aws_iam_role_policy_attachment" "dynamodb_policy_attachment" {
   policy_arn = aws_iam_policy.dynamodb_access.arn
 }
 
-# ALB Resources
+#######################
+# LOAD BALANCER (ALB) #
+#######################
+
 resource "aws_lb" "app_alb" {
   name               = "${local.name_prefix}-alb"
   internal           = false
@@ -280,7 +312,7 @@ resource "aws_lb_target_group" "app_tg" {
     timeout             = 20
     healthy_threshold   = 2
     unhealthy_threshold = 3
-    matcher             = "200-499"
+    matcher             = "200-499" # Accept a wider range of responses
   }
 
   tags = local.common_tags
@@ -296,6 +328,10 @@ resource "aws_lb_listener" "app_listener" {
     target_group_arn = aws_lb_target_group.app_tg.arn
   }
 }
+
+###########################
+# ECS CLUSTER & SERVICES  #
+###########################
 
 # ECS Cluster
 resource "aws_ecs_cluster" "app_cluster" {
@@ -357,14 +393,6 @@ resource "aws_ecs_task_definition" "app_task" {
         {
           name  = "DYNAMODB_TABLE",
           value = aws_dynamodb_table.users_table.name
-        },
-        {
-          name  = "AWS_ACCESS_KEY_ID",
-          value = "AKIAUVSUK73H3ZAMDCH6"
-        },
-        {
-          name  = "AWS_SECRET_ACCESS_KEY",
-          value = "kZtcZuJ6FbQklxLW1RfCkgWHf4JGqVLyMaLXc1FA"
         }
       ]
 
@@ -421,7 +449,10 @@ resource "aws_ecs_service" "app_service" {
   tags = local.common_tags
 }
 
-# Outputs
+##################
+# OUTPUT VALUES  #
+##################
+
 output "ecr_repository_url" {
   description = "ECR Repository URL"
   value       = aws_ecr_repository.app_repo.repository_url
