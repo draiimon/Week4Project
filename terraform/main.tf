@@ -22,12 +22,18 @@ data "aws_subnet" "oak_subnet_c" {
 
 # Internet Gateway (Using existing IGW)
 data "aws_internet_gateway" "oak_igw" {
-  id = "igw-009b817b22bbfe6c7"
+  filter {
+    name   = "internet-gateway-id"
+    values = ["igw-009b817b22bbfe6c7"]
+  }
 }
 
 # Security Group (Default Security Group)
 data "aws_security_group" "default" {
-  id = "sg-07eefbba6c112565c"
+  filter {
+    name   = "group-id"
+    values = ["sg-07eefbba6c112565c"]
+  }
 }
 
 # Application Load Balancer (ALB)
@@ -156,6 +162,12 @@ resource "aws_ecs_service" "oak_service" {
     ]
     assign_public_ip = true
     security_groups  = [data.aws_security_group.default.id]
+  }
+  
+  load_balancer {
+    target_group_arn = aws_lb_target_group.oak_target_group.arn
+    container_name   = "oak-container"
+    container_port   = 80
   }
 }
 
