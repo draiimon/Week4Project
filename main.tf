@@ -250,6 +250,34 @@ resource "aws_iam_role_policy_attachment" "ecs_task_exec_attach" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# DynamoDB Access Policy
+resource "aws_iam_policy" "dynamodb_access" {
+  name        = "oaktree-dynamodb-access"
+  description = "Policy to allow access to DynamoDB tables"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:*",
+        ]
+        Resource = [
+          aws_dynamodb_table.oaktree_users.arn,
+          "${aws_dynamodb_table.oaktree_users.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Attach DynamoDB Access Policy to ECS Task Execution Role
+resource "aws_iam_role_policy_attachment" "dynamodb_policy_attach" {
+  role       = aws_iam_role.ecs_task_exec.name
+  policy_arn = aws_iam_policy.dynamodb_access.arn
+}
+
 # ECS Task Definition
 resource "aws_ecs_task_definition" "oaktree_task" {
   family                   = "oaktree-task"
@@ -291,7 +319,14 @@ resource "aws_ecs_task_definition" "oaktree_task" {
         {
           name  = "HOST",
           value = "0.0.0.0"
+        },
+        {
+          name  = "AWS_REGION",
+          value = "ap-southeast-1"
         }
+        # Kung kailangan mo ng AWS credentials, dagdagan mo dito
+        # PERO tandaan na hindi best practice na ilagay ang credentials
+        # sa container definition. Mas maganda gamitin ang IAM roles.
       ],
       healthCheck = {
         command     = ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"],
