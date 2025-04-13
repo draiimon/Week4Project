@@ -223,11 +223,7 @@ resource "aws_ecs_task_definition" "oaktree_task" {
       image     = "${aws_ecr_repository.oaktree_repo.repository_url}:latest"
       essential = true
       portMappings = [
-        {
-          containerPort = 80
-          hostPort      = 80
-          protocol      = "tcp"
-        },
+        # Just use the port that Express is actually running on (5000)
         {
           containerPort = 5000
           hostPort      = 5000
@@ -245,11 +241,15 @@ resource "aws_ecs_task_definition" "oaktree_task" {
       environment = [
         {
           name  = "PORT",
-          value = "80"
+          value = "5000"  # Match the port that Express.js is actually using
         },
         {
           name  = "NODE_ENV",
           value = "production"
+        },
+        {
+          name  = "HOST",
+          value = "0.0.0.0"  # Make sure Express binds to all network interfaces
         }
       ]
     }
@@ -266,11 +266,11 @@ resource "aws_lb_target_group" "oaktree_tg" {
   
   health_check {
     path                = "/"            # Using simple root path
-    interval            = 20             # Reduced interval for faster health checks
-    timeout             = 5
+    interval            = 15             # Further reduced interval for faster health checks
+    timeout             = 10             # Increased timeout to give app more time to respond
     healthy_threshold   = 2
-    unhealthy_threshold = 2
-    matcher             = "200-499"
+    unhealthy_threshold = 3              # Increased to reduce false negatives
+    matcher             = "200-499"      # Allow redirects and client errors
   }
 }
 
