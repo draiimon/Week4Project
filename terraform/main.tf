@@ -266,7 +266,7 @@ resource "aws_lb_target_group" "oaktree_tg" {
   
   health_check {
     path                = "/"            # Using simple root path
-    interval            = 30
+    interval            = 20             # Reduced interval for faster health checks
     timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
