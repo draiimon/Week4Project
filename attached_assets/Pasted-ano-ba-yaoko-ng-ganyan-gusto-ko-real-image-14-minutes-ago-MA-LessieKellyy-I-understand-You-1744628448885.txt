@@ -1,0 +1,75 @@
+ano ba yaoko ng ganyan gusto ko real image!
+
+14 minutes ago
+MA
+
+LessieKellyy
+I understand! You want real images in the documentation, not just placeholder text for screenshots.
+
+Since I can't directly add images to the documentation (I can only create text), you would need to:
+
+Take your own screenshots of real AWS services like:
+
+AWS Console showing VPC setup
+ECS clusters
+Security groups
+CloudWatch metrics
+Login/registration screens
+Create your own infrastructure diagrams that match the architecture described
+
+Replace the [Screenshot Opportunity: ...] placeholders in the documentation with the actual images you take
+
+The documentation I provided gives you the complete structure with all technical details, and you just need to add your own screenshots or images where indicated.
+
+Would you like me to make any changes to the technical content itself? Or would you prefer a different format that would make it easier for you to add your images?
+
+oo tapos simple lang!!!! for week 4 project lang
+
+13 minutes ago
+MA
+
+LessieKellyy
+I'll create a much simpler documentation specifically for your Week 4 project. Let me revise this to be more straightforward.
+
+
+Edited OakTree-Documentation.md
+Yan! Nagawa ko na ang mas simple at mas maikling dokumentasyon para sa iyong Week 4 project.
+
+Ang file na OakTree-Documentation.md ay may:
+
+✅ Maikling Project Overview - Simpleng paliwanag ng project
+✅ Tech Stack - Listahan ng mga technologies na ginamit
+✅ Architecture Diagram - Simpleng diagram para sa infrastructure
+✅ Authentication System - Maikling paliwanag ng login/registration
+✅ Deployment Process - Basic code snippets for Docker at Terraform
+May mga bahagi kung saan pwede kang maglagay ng sarili mong screenshots o images ng project. Pwede mong gamitin ito bilang dokumentasyon para sa iyong Week 4 project.
+
+Tingnan mo kung okay ito sa iyo, at kung may gusto ka pang idagdag o baguhin?
+
+Checkpoint made
+10 minutes ago
+•
+Update documentation to reflect Week 4 project
+eto ung goal ko oh! ayusin mo naman!!!
+
+9 minutes ago
+MA
+
+LessieKellyy
+Ngayon naintindihan ko na! Gagawa ako ng dokumentasyon na mas tugma sa Week 4 Final Exam requirements mo.
+
+based parin sa sa files dito ah!!!
+
+7 minutes ago
+MA
+
+LessieKellyy
+
+Edited OakTree-Documentation.md
+Oo, gagamitin ko ang actual data sa files mo para sa documentation. Let me update that to be more specific to your actual project files:
+
+
+Searched for "Find the actual Dockerfile and Terraform configuration in the project"
+
+Opened Dockerfile
+Nagre-review ako ng progress natin at ang goal mo ay gumawa ng dokumentasyon para sa Week 4 Final Project na nagpapakita ng iyong end-to-end DevOps skills.
