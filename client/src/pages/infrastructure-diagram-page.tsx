@@ -555,7 +555,7 @@ export default function InfrastructureDiagramPage() {
                             />
                             <Resource 
                               icon={<SiDocker className="text-white" />} 
-                              label="ECR Registry" 
+                              label="Docker Hub" 
                               color="cyan"
                               size="sm"
                               status="success"
