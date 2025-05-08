@@ -446,49 +446,21 @@ export default function InfrastructureDiagramPage() {
                         <div className="h-8 w-0.5 bg-green-500/70"></div>
                       </div>
                       
-                      {/* Public Subnets */}
-                      <div className="grid grid-cols-2 gap-4 mb-6">
-                        <Group title="Public Subnet A (10.0.1.0/24)" color="green" className="relative">
-                          <div className="absolute -top-3 -right-3 text-xs bg-blue-900/80 px-2 py-0.5 rounded-full border border-blue-500/30">
-                            us-east-1a
-                          </div>
-                          <div className="p-4 bg-green-900/10 border border-green-500/20 rounded-md">
-                            <Resource 
-                              icon={<LuGlobe className="text-white" />} 
-                              label="ALB" 
-                              color="teal"
-                              size="sm"
-                              status="success"
-                              tooltip="Application Load Balancer (port 80)"
-                              className={`transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'} mx-auto mb-2`}
-                            />
-                            <div className="text-xs text-center text-gray-400 mb-2">Public Route Table</div>
-                            <div className="px-2 py-1 bg-green-800/30 border border-green-600/30 rounded-md text-xs text-center">
-                              Auto-assign Public IP
-                            </div>
-                          </div>
-                        </Group>
-                        
-                        <Group title="Public Subnet B (10.0.2.0/24)" color="green" className="relative">
-                          <div className="absolute -top-3 -right-3 text-xs bg-blue-900/80 px-2 py-0.5 rounded-full border border-blue-500/30">
-                            us-east-1b
-                          </div>
-                          <div className="p-4 bg-green-900/10 border border-green-500/20 rounded-md">
-                            <Resource 
-                              icon={<LuGlobe className="text-white" />} 
-                              label="ALB" 
-                              color="teal"
-                              size="sm"
-                              status="success"
-                              tooltip="Application Load Balancer (port 80)"
-                              className={`transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'} mx-auto mb-2`}
-                            />
-                            <div className="text-xs text-center text-gray-400 mb-2">Public Route Table</div>
-                            <div className="px-2 py-1 bg-green-800/30 border border-green-600/30 rounded-md text-xs text-center">
-                              Auto-assign Public IP
-                            </div>
-                          </div>
-                        </Group>
+                      {/* Load Balancer in Public Subnets */}
+                      <div className="flex justify-center mb-6">
+                        <Resource 
+                          icon={<LuLayoutGrid className="text-white" />} 
+                          label="Load Balancer (ALB)" 
+                          color="green"
+                          size="md"
+                          status="success"
+                          tooltip="Application Load Balancer on port 80"
+                          className={`transition-opacity duration-300 ${highlightStep(4) ? 'opacity-100' : 'opacity-30'}`}
+                        />
+                      </div>
+                      
+                      <div className={`flex justify-center mb-6 transition-opacity duration-300 ${highlightStep(4) ? 'opacity-100' : 'opacity-30'}`}>
+                        <div className="h-8 w-0.5 bg-green-500/70"></div>
                       </div>
                       
                       {/* Security Groups */}
@@ -516,58 +488,67 @@ export default function InfrastructureDiagramPage() {
                         </div>
                       </div>
                       
-                      {/* Container Services */}
-                      <div className="grid grid-cols-2 gap-8 mb-8">
-                        {/* Container Service 1 */}
-                        <Group title="ECS Service" color="teal">
-                          <div className="p-4 bg-teal-900/10 border border-teal-500/20 rounded-md flex justify-center items-center">
-                            <div className="flex flex-col items-center">
-                              <Resource 
-                                icon={<LuBox className="text-white" />} 
-                                label="ECS Cluster" 
-                                color="teal"
-                                size="sm"
-                                status="success"
-                                tooltip="Container orchestration"
-                                className={`transition-opacity duration-300 ${highlightStep(4) ? 'opacity-100' : 'opacity-30'}`}
-                              />
-                              
-                              <div className="mt-4">
-                                <Resource 
-                                  icon={<LuBox className="text-white" />} 
-                                  label="OakTree Container" 
-                                  color="cyan"
-                                  size="md"
-                                  status="success"
-                                  tooltip="Application container running on port 5000"
-                                  className={`transition-opacity duration-300 ${highlightStep(4) ? 'opacity-100' : 'opacity-30'}`}
-                                />
+                      {/* Public Subnets */}
+                      <div className="grid grid-cols-2 gap-4 mb-6">
+                        <Group title="Public Subnet A (10.0.1.0/24)" color="green" className="relative">
+                          <div className="absolute -top-3 -right-3 text-xs bg-blue-900/80 px-2 py-0.5 rounded-full border border-blue-500/30">
+                            us-east-1a
+                          </div>
+                          <div className="p-4 bg-green-900/10 border border-green-500/20 rounded-md">
+                            <div className="text-xs text-center text-gray-400 mb-2">Public Route Table (0.0.0.0/0 → IGW)</div>
+                            
+                            {/* Fargate in this subnet */}
+                            <Resource 
+                              icon={<LuCpu className="text-white" />} 
+                              label="Fargate Task" 
+                              color="blue"
+                              size="sm"
+                              status="success"
+                              tooltip="ECS on Fargate (running in this subnet)"
+                              className={`transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'} mx-auto mb-2`}
+                            />
+                            
+                            <div className="mt-2 px-2 py-1 bg-blue-800/30 border border-blue-600/30 rounded-md text-xs">
+                              <div className="text-center mb-1 font-medium">ECS Service</div>
+                              <div className="flex justify-between items-center text-[10px]">
+                                <span>CPU:</span>
+                                <span>256 units</span>
+                              </div>
+                              <div className="flex justify-between items-center text-[10px]">
+                                <span>Memory:</span>
+                                <span>512 MB</span>
                               </div>
                             </div>
                           </div>
                         </Group>
                         
-                        {/* Fargate/ECS Service Details */}
-                        <Group title="Fargate Compute" color="blue">
-                          <div className="p-4 bg-blue-900/10 border border-blue-500/20 rounded-md flex flex-col items-center">
+                        <Group title="Public Subnet B (10.0.2.0/24)" color="green" className="relative">
+                          <div className="absolute -top-3 -right-3 text-xs bg-blue-900/80 px-2 py-0.5 rounded-full border border-blue-500/30">
+                            us-east-1b
+                          </div>
+                          <div className="p-4 bg-green-900/10 border border-green-500/20 rounded-md">
+                            <div className="text-xs text-center text-gray-400 mb-2">Public Route Table (0.0.0.0/0 → IGW)</div>
+                            
+                            {/* Fargate in this subnet */}
                             <Resource 
                               icon={<LuCpu className="text-white" />} 
-                              label="Fargate Tasks" 
+                              label="Fargate Task" 
                               color="blue"
                               size="sm"
                               status="success"
-                              tooltip="Serverless compute for containers"
-                              className={`transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'}`}
+                              tooltip="ECS on Fargate (running in this subnet)"
+                              className={`transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'} mx-auto mb-2`}
                             />
                             
-                            <div className="mt-3 w-full text-xs text-center">
-                              <div className={`flex justify-between items-center mb-1 transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'}`}>
-                                <span className="text-gray-400">CPU:</span>
-                                <span>256 units</span>
+                            <div className="mt-2 px-2 py-1 bg-teal-800/30 border border-teal-600/30 rounded-md text-xs">
+                              <div className="text-center mb-1 font-medium">Container Details</div>
+                              <div className="flex justify-between items-center text-[10px]">
+                                <span>Image:</span>
+                                <span>draiimon/oaktree:latest</span>
                               </div>
-                              <div className={`flex justify-between items-center transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'}`}>
-                                <span className="text-gray-400">Memory:</span>
-                                <span>512 MB</span>
+                              <div className="flex justify-between items-center text-[10px]">
+                                <span>Port:</span>
+                                <span>5000</span>
                               </div>
                             </div>
                           </div>
