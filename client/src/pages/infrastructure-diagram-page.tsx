@@ -431,11 +431,11 @@ export default function InfrastructureDiagramPage() {
                       <div className="flex justify-center mb-6">
                         <Resource 
                           icon={<LuGlobe className="text-white" />} 
-                          label="API Gateway" 
+                          label="ALB" 
                           color="green"
                           size="md"
                           status="success"
-                          tooltip="Public access point"
+                          tooltip="Application Load Balancer"
                           className={`transition-opacity duration-300 ${highlightStep(4) ? 'opacity-100' : 'opacity-30'}`}
                         />
                       </div>
@@ -468,7 +468,7 @@ export default function InfrastructureDiagramPage() {
                       {/* Container Services */}
                       <div className="grid grid-cols-2 gap-8 mb-8">
                         {/* Container Service 1 */}
-                        <Group title="Container Service" color="teal">
+                        <Group title="ECS Service" color="teal">
                           <div className="p-4 bg-teal-900/10 border border-teal-500/20 rounded-md flex justify-center items-center">
                             <div className="flex flex-col items-center">
                               <Resource 
@@ -481,23 +481,14 @@ export default function InfrastructureDiagramPage() {
                                 className={`transition-opacity duration-300 ${highlightStep(4) ? 'opacity-100' : 'opacity-30'}`}
                               />
                               
-                              <div className="mt-4 grid grid-cols-2 gap-3">
+                              <div className="mt-4">
                                 <Resource 
                                   icon={<LuBox className="text-white" />} 
-                                  label="Web App" 
+                                  label="OakTree Container" 
                                   color="cyan"
-                                  size="sm"
+                                  size="md"
                                   status="success"
-                                  tooltip="Application container"
-                                  className={`transition-opacity duration-300 ${highlightStep(4) ? 'opacity-100' : 'opacity-30'}`}
-                                />
-                                <Resource 
-                                  icon={<LuBox className="text-white" />} 
-                                  label="API Service" 
-                                  color="cyan"
-                                  size="sm"
-                                  status="success"
-                                  tooltip="API container"
+                                  tooltip="Application container running on port 5000"
                                   className={`transition-opacity duration-300 ${highlightStep(4) ? 'opacity-100' : 'opacity-30'}`}
                                 />
                               </div>
@@ -505,27 +496,27 @@ export default function InfrastructureDiagramPage() {
                           </div>
                         </Group>
                         
-                        {/* EC2 Instances */}
-                        <Group title="EC2 Compute" color="blue">
+                        {/* Fargate/ECS Service Details */}
+                        <Group title="Fargate Compute" color="blue">
                           <div className="p-4 bg-blue-900/10 border border-blue-500/20 rounded-md flex flex-col items-center">
                             <Resource 
-                              icon={<LuServer className="text-white" />} 
-                              label="EC2 Instances" 
+                              icon={<LuCpu className="text-white" />} 
+                              label="Fargate Tasks" 
                               color="blue"
                               size="sm"
                               status="success"
-                              tooltip="Compute resources"
+                              tooltip="Serverless compute for containers"
                               className={`transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'}`}
                             />
                             
                             <div className="mt-3 w-full text-xs text-center">
                               <div className={`flex justify-between items-center mb-1 transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'}`}>
-                                <span className="text-gray-400">Type:</span>
-                                <span>t3.medium</span>
+                                <span className="text-gray-400">CPU:</span>
+                                <span>256 units</span>
                               </div>
                               <div className={`flex justify-between items-center transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'}`}>
-                                <span className="text-gray-400">Auto-scaling:</span>
-                                <span>Enabled (2-4)</span>
+                                <span className="text-gray-400">Memory:</span>
+                                <span>512 MB</span>
                               </div>
                             </div>
                           </div>
@@ -551,7 +542,7 @@ export default function InfrastructureDiagramPage() {
                       
                       {/* Monitoring Services */}
                       <div className="grid grid-cols-2 gap-4">
-                        <Group title="Monitoring & Storage" color="gray">
+                        <Group title="Monitoring & Registry" color="gray">
                           <div className="grid grid-cols-2 gap-3">
                             <Resource 
                               icon={<LuMonitor className="text-white" />} 
@@ -563,12 +554,12 @@ export default function InfrastructureDiagramPage() {
                               className={`transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'}`}
                             />
                             <Resource 
-                              icon={<SiAmazons3 className="text-white" />} 
-                              label="S3 Storage" 
-                              color="orange"
+                              icon={<SiDocker className="text-white" />} 
+                              label="ECR Registry" 
+                              color="cyan"
                               size="sm"
                               status="success"
-                              tooltip="Object storage"
+                              tooltip="Docker container registry"
                               className={`transition-opacity duration-300 ${highlightStep(3) ? 'opacity-100' : 'opacity-30'}`}
                             />
                           </div>
