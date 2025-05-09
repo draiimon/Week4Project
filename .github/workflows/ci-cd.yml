@@ -30,7 +30,7 @@ jobs:
         run: npm run lint || true
         
   build-docker:
-    needs: build-and-test
+    needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
@@ -57,7 +57,7 @@ jobs:
 
   deploy:
     name: Deploy with Terraform
-    needs: build
+    needs: build-docker
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
