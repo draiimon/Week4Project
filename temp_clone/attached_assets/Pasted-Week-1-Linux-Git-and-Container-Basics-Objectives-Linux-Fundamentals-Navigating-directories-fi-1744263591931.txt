@@ -1,0 +1,168 @@
+Week 1: Linux, Git, and Container Basics
+Objectives
+Linux Fundamentals
+Navigating directories, file permissions, environment variables, process management.
+Shell scripting basics (writing a simple .sh script).
+Git & Version Control
+Git workflow (clone, branch, commit, push, pull, merge).
+Working with GitHub or GitLab for repository hosting.
+Introduction to Containers
+Docker basics: images vs. containers, Dockerfiles, Docker commands.
+Building and running a simple Docker container locally.
+Hands-On Tasks / Short Project
+Set Up a Linux Environment
+Use a local VM (VirtualBox, VMware) or a cloud VM (AWS EC2, GCP Compute Engine) running a Linux distro (Ubuntu, CentOS, etc.).
+Git Practice
+Initialize a sample Git repository, create branches, merge changes.
+Push the repo to GitHub or GitLab.
+Containerizing a Simple App
+Write a basic Dockerfile for a “Hello World” or small web application (e.g., a Node.js or Python Flask app).
+Build, run, and confirm the container is functioning locally.
+Outcome
+ Interns will be comfortable with basic Linux commands, Git workflows, and Docker fundamentals—enabling them to collaborate on projects and containerize simple services.
+
+Week 2: CI/CD Pipelines
+Objectives
+Continuous Integration (CI)
+Understand the benefits of CI: automated builds, testing, and code quality checks.
+Explore a CI platform (e.g., GitHub Actions, GitLab CI, or Jenkins).
+Continuous Deployment/Delivery (CD)
+Automatic deployment triggers after successful CI builds/tests.
+Common strategies for deployments (blue-green, rolling, canary).
+Integrating Docker with CI
+Building Docker images in a pipeline.
+Storing images in a container registry (e.g., Docker Hub, GitHub Container Registry).
+Hands-On Tasks / Short Project
+Set Up a CI/CD Pipeline
+Choose a small application (could be the app containerized in Week 1).
+Configure a simple pipeline to:
+Check out code from Git.
+Build and test the application (unit tests, lint checks, etc.).
+Build a Docker image upon successful tests.
+(Optional) Push the image to a registry.
+Automated Testing
+Incorporate at least one basic test (e.g., unit test, integration test) so interns see how a failing test stops the pipeline.
+Outcome
+ Interns will understand how to automate builds, tests, and container image creation via a CI/CD tool—paving the way for fully automated deployments in the cloud.
+
+Week 3: Cloud Services & Infrastructure as Code
+Objectives
+Cloud Provider Basics
+Choose a cloud: AWS or GCP (or Azure).
+Learn core services: compute (EC2/Compute Engine), storage (S3/Cloud Storage), networking (VPC, security groups/firewalls).
+Infrastructure as Code (IaC)
+Introduction to Terraform or AWS CloudFormation / Azure Resource Manager / Google Cloud Deployment Manager.
+Defining infrastructure in code: creating VMs, networks, and other resources.
+Deploying Containerized Apps to the Cloud
+Running containers on AWS ECS/Fargate, EKS (Kubernetes), or GCP’s Cloud Run / GKE.
+Managing environment variables/secrets.
+Hands-On Tasks / Short Project
+Cloud Setup
+Create a free tier account (AWS/GCP/Azure) if possible.
+Spin up a small VM or container service (e.g., AWS ECS, GCP Cloud Run).
+Terraform / IaC Project
+Write a simple Terraform file (or equivalent) to provision a VM and a network in the chosen cloud.
+Deploy your containerized app (from Weeks 1–2) to that VM or a managed container service.
+Networking & Security Basics
+Set up security groups, firewall rules, or inbound/outbound policies for the container/VM.
+Validate that the app is reachable from a public URL or private IP (depending on design).
+Outcome
+ Interns gain hands-on cloud experience, understand how to manage infrastructure with code, and deploy containerized applications in a cloud environment.
+
+Week 4: Final Exam – End-to-End DevOps Project
+Objective
+Consolidate all skills from the first three weeks into a single, cohesive project:
+Containerizing an application.
+Setting up a CI pipeline to build and test containers.
+Provisioning infrastructure in the cloud with IaC.
+Deploying the container(s) to the cloud environment.
+Project Description: “Cloud Deployed Web Service”
+Scenario: A small web application (e.g., a simple REST API or a front-end service) that needs an automated DevOps pipeline and cloud deployment.
+Requirements
+Code & Container
+
+
+Store the application code in Git.
+Write a Dockerfile for containerization.
+The application can be a simple Node.js, Python, or any language that interns are comfortable with.
+CI Pipeline
+
+
+Upon code pushes, automatically run tests.
+If tests pass, build a Docker image and push it to a registry.
+(For the final exam, the emphasis is on building the pipeline, though actual production deployment triggers can be optional or manual if time is short.)
+Infrastructure as Code
+
+
+Provision your environment using Terraform (or an equivalent IaC tool).
+Create necessary resources:
+Compute instance, or container service (ECS, Cloud Run, etc.).
+Networking/firewalls.
+(Optional) Use variables or modules for reusability and best practices.
+Deployment
+
+
+Deploy the container to the cloud environment.
+Confirm the service is accessible (public endpoint or private if that’s the scenario).
+Document your deployment steps or embed them in the pipeline if feasible.
+Documentation & Presentation
+
+
+A README that describes how to run the pipeline, deploy the infrastructure, and access the app.
+A short presentation/demonstration showing the pipeline logs and the running app in the cloud.
+Assessment Criteria
+Completeness: Did the intern containerize the app, automate the build/test, and provision cloud resources with IaC?
+Code Quality & Organization: Dockerfile clarity, Terraform/IaC structure, pipeline readability.
+Deployment Success: Is the application actually reachable in the cloud?
+Documentation: Clear instructions on reproducing the setup.
+Outcome
+ By the end of Week 4, interns will have a portfolio-ready project demonstrating the entire DevOps lifecycle: local containerization, automated CI, IaC-driven infrastructure, and a cloud-based deployment.
+
+Additional Tips & Recommendations
+Mentorship & Guidance
+
+
+Assign a mentor or senior engineer to review code, Dockerfiles, Terraform scripts, and pipelines each week.
+Encourage interns to ask questions openly.
+Pair Programming / Peer Collaboration
+
+
+Have interns team up on tasks or code reviews. This fosters collaboration and knowledge sharing.
+Version Control Best Practices
+
+
+Mandate pull requests (PRs) with code reviews.
+Teach interns to keep commits small and descriptive.
+Security & Cost Awareness
+
+
+Remind interns to use free tiers or test accounts on cloud providers to avoid large bills.
+Encourage them to tear down resources when not in use.
+Documentation & Presentations
+
+
+Have interns maintain a simple wiki or README for each phase.
+At the end of each week, let them demonstrate their short project or show pipeline logs.
+
+Program Summary
+Week 1:
+
+
+Linux basics, Git fundamentals, and Docker intro.
+Short Project: Containerize a “Hello World” app.
+Week 2:
+
+
+CI/CD fundamentals, setting up a basic pipeline to build & test.
+Short Project: Automate Docker image building and push to a registry upon successful tests.
+Week 3:
+
+
+Cloud services (AWS/GCP/Azure) + Infrastructure as Code (Terraform or equivalent).
+Short Project: Provision a VM or container service and deploy your containerized app.
+Week 4:
+
+
+Final Exam: Integrate all steps into an end-to-end DevOps workflow.
+Deliver a fully automated pipeline, IaC provisioning, and a live cloud deployment of your containerized application.
+
