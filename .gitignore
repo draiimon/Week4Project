@@ -1,7 +1,38 @@
-node_modules
-dist
-.DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files, which might contain sensitive data
+*.tfvars
+*.tfvars.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore attached assets
+attached_assets/
+
+# Local environment files
 .env
+*.env.local
+
+# Logs
+*.log
+
+# Node modules
+node_modules/
+
+# Build directories
+dist/
+build/
+
+# Cache directories
+.cache/
