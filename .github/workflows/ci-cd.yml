@@ -95,7 +95,7 @@ jobs:
         aws_secret_access_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         EOF
         
-    - name: Import Existing S3 Backend Infrastructure
+    - name: Import Existing Infrastructure
       run: |
         cd terraform
         # Comment out the S3 backend temporarily
@@ -113,6 +113,16 @@ jobs:
         # We use || true to continue even if the resources don't exist or can't be imported
         terraform import aws_s3_bucket.terraform_state terraform-state-bucket-drei || true
         terraform import aws_dynamodb_table.terraform_locks terraform-locks-db-drei || true
+        
+        # Import existing DynamoDB users table
+        terraform import module.database.aws_dynamodb_table.oak_users_table OakTreeUsers || true
+        
+        # Import existing ECS resources
+        terraform import module.compute.aws_ecs_cluster.oak_cluster oaktree-dev-cluster || true
+        
+        # Import existing IAM roles
+        terraform import module.compute.aws_iam_role.execution_role oaktree-ecs-execution-role || true
+        terraform import module.compute.aws_iam_role.task_role oaktree-ecs-task-role || true
         
         # Re-enable the S3 backend
         sed -i 's/# backend "s3" {/backend "s3" {/' providers.tf

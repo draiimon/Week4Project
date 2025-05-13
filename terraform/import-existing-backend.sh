@@ -40,6 +40,21 @@ echo "Importing existing S3 bucket and DynamoDB table..."
 terraform import aws_s3_bucket.terraform_state terraform-state-bucket-drei || echo "Failed to import S3 bucket, but continuing..."
 terraform import aws_dynamodb_table.terraform_locks terraform-locks-db-drei || echo "Failed to import DynamoDB table, but continuing..."
 
+# Import existing application resources
+echo "Importing existing application resources..."
+
+# Import DynamoDB table
+terraform import module.database.aws_dynamodb_table.oak_users_table OakTreeUsers || echo "Failed to import DynamoDB users table, but continuing..."
+
+# Import ECS resources
+echo "Importing existing ECS resources..."
+terraform import module.compute.aws_ecs_cluster.oak_cluster oaktree-dev-cluster || echo "Failed to import ECS cluster, but continuing..."
+
+# Import IAM roles
+echo "Importing existing IAM roles..."
+terraform import module.compute.aws_iam_role.execution_role oaktree-ecs-execution-role || echo "Failed to import execution role, but continuing..."
+terraform import module.compute.aws_iam_role.task_role oaktree-ecs-task-role || echo "Failed to import task role, but continuing..."
+
 # Re-enable the backend configuration
 echo "Re-enabling S3 backend configuration..."
 sed -i 's/# backend "s3" {/backend "s3" {/' providers.tf
