@@ -43,3 +43,9 @@ variable "aws_secret_access_key" {
   description = "AWS Secret Access Key"
   type        = string  
 }
+
+variable "image_tag" {
+  description = "Docker image tag to deploy"
+  type        = string
+  default     = "latest"
+}

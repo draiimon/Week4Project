@@ -61,7 +61,7 @@ module "compute" {
   environment        = var.environment
   execution_role_arn = "arn:aws:iam::321225686735:role/ecsTaskExecutionRole"
   task_role_arn      = "arn:aws:iam::321225686735:role/ecsTaskExecutionRole"
-  container_image    = "draiimon/oaktree:latest"
+  container_image    = "draiimon/oaktree:${var.image_tag}"
   container_port     = 5000
   desired_count      = 1
   subnet_ids         = module.network.subnet_ids
