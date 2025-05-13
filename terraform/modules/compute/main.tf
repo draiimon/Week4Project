@@ -66,7 +66,7 @@ resource "aws_ecs_task_definition" "oak_task" {
       protocol      = "tcp"
     }]
 
-    environment = [
+    environment = concat([
       {
         name  = "NODE_ENV"
         value = var.environment
@@ -82,16 +82,21 @@ resource "aws_ecs_task_definition" "oak_task" {
       {
         name  = "DYNAMO_TABLE_NAME"
         value = var.dynamodb_table_name
-      },
+      }
+    ],
+    # Only add AWS credentials to environment if they are provided
+    var.aws_access_key_id != "" ? [
       {
         name  = "AWS_ACCESS_KEY_ID"
         value = var.aws_access_key_id
-      },
+      }
+    ] : [],
+    var.aws_secret_access_key != "" ? [
       {
         name  = "AWS_SECRET_ACCESS_KEY"
         value = var.aws_secret_access_key
       }
-    ]
+    ] : [])
 
     logConfiguration = {
       logDriver = "awslogs"

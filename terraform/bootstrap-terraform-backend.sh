@@ -8,14 +8,11 @@ echo "=== Bootstrapping Terraform S3 Backend ==="
 
 cd "$(dirname "$0")" || exit 1
 
-# Ensure AWS credentials are available
+# Check for AWS credentials availability
 if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
   echo "AWS credentials not found in environment variables."
-  echo "Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before running this script."
-  echo "Example:"
-  echo "  export AWS_ACCESS_KEY_ID=your_access_key"
-  echo "  export AWS_SECRET_ACCESS_KEY=your_secret_key"
-  exit 1
+  echo "Will try to use the default AWS profile or instance profile if available."
+  echo "If Terraform fails, please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
 fi
 
 # 1. Temporarily disable S3 backend configuration

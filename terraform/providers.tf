@@ -18,4 +18,8 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+  
+  # Use AWS credentials from variables if provided, otherwise use the default credentials
+  access_key = var.aws_access_key_id != "" ? var.aws_access_key_id : null
+  secret_key = var.aws_secret_access_key != "" ? var.aws_secret_access_key : null
 }
