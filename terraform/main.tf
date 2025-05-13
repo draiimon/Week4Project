@@ -193,16 +193,6 @@ resource "aws_cloudwatch_log_group" "app_logs" {
   tags = local.common_tags
 }
 
-# IAM User for deployment
-resource "aws_iam_user" "deployment_user" {
-  name = "${local.name_prefix}-deployment-user"
-  tags = local.common_tags
-}
-
-resource "aws_iam_access_key" "deployment_key" {
-  user = aws_iam_user.deployment_user.name
-}
-
 # IAM Roles
 resource "aws_iam_role" "ecs_execution_role" {
   name = "${local.name_prefix}-execution-role"
@@ -347,7 +337,7 @@ resource "aws_ecs_task_definition" "app_task" {
   container_definitions = jsonencode([
     {
       name      = local.name_prefix
-      image     = "docker.io/draiimon/oaktree:latest"
+      image     = "docker.io/draiimon/oaktree:${var.image_tag}"
       essential = true
       
       portMappings = [
@@ -385,11 +375,11 @@ resource "aws_ecs_task_definition" "app_task" {
         },
         {
           name  = "AWS_ACCESS_KEY_ID",
-          value = "${aws_iam_access_key.deployment_key.id}"
+          value = "AKIAUVSUK73H3ZAMDCH6"
         },
         {
           name  = "AWS_SECRET_ACCESS_KEY",
-          value = "${aws_iam_access_key.deployment_key.secret}"
+          value = "kZtcZuJ6FbQklxLW1RfCkgWHf4JGqVLyMaLXc1FA"
         }
       ]
 
