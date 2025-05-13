@@ -1,0 +1,29 @@
+# Node modules
+node_modules
+npm-debug.log
+
+# Git files
+.git
+.gitignore
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Build outputs
+/dist
+/build
+/coverage
+
+# Editor directories
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
