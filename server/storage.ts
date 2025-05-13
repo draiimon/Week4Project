@@ -21,23 +21,30 @@ export interface IStorage {
 
 export class DynamoStorage implements IStorage {
   async getUserByUsername(username: string): Promise<User | null> {
-    const cmd = new QueryCommand({
-      TableName: USERS_TABLE,
-      KeyConditionExpression: "username = :u",
-      ExpressionAttributeValues: { ":u": username },
-      Limit: 1
-    });
-    const res = await ddb.send(cmd);
-    return res.Items && res.Items[0] ? (res.Items[0] as User) : null;
+    try {
+      const cmd = new QueryCommand({
+        TableName: USERS_TABLE,
+        KeyConditionExpression: "username = :u",
+        ExpressionAttributeValues: { ":u": username },
+        Limit: 1
+      });
+      const res = await ddb.send(cmd);
+      return res.Items && res.Items[0] ? (res.Items[0] as User) : null;
+    } catch (err: any) {
+      console.error("Error querying DynamoDB:", err.message);
+      // Return null if table doesn't exist or other issues
+      return null;
+    }
   }
 
   async createUser(u: { username: string; password: string; email?: string }): Promise<User> {
-    const now = new Date().toISOString();
-    const item: User = { ...u, createdAt: now };
-    const cmd = new PutCommand({
-      TableName: USERS_TABLE,
-      Item: item,
-      ConditionExpression: "attribute_not_exists(username)"
+    try {
+      const now = new Date().toISOString();
+      const item: User = { ...u, createdAt: now };
+      const cmd = new PutCommand({
+        TableName: USERS_TABLE,
+        Item: item,
+        ConditionExpression: "attribute_not_exists(username)"
     });
     await ddb.send(cmd);
     return item;
