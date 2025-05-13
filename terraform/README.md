@@ -20,29 +20,35 @@ This configuration uses:
 
 ## Setting Up S3 Backend - Quick Start
 
-### For GitHub CI/CD
+### Using Existing Backend Resources (Recommended)
+
+This approach works when you have an explicit deny for s3:CreateBucket in your IAM policy.
 
 The GitHub Actions workflow automatically:
 1. Creates a terraform.tfvars file with AWS credentials from GitHub Secrets
 2. Temporarily disables the S3 backend configuration
-3. Creates the S3 bucket and DynamoDB table using local state
+3. Imports the existing S3 bucket and DynamoDB table into Terraform state
 4. Re-enables the S3 backend configuration
 5. Initializes Terraform with the S3 backend 
 
-No manual steps required - just push your code to GitHub!
-
-### For Local Development
-
-1. Set your AWS credentials as environment variables:
+For local development:
 
 ```bash
 export AWS_ACCESS_KEY_ID=your_aws_access_key
 export AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+cd terraform
+./import-existing-backend.sh
 ```
 
-2. Run the setup script:
+### Creating New Backend Resources (If Allowed)
+
+Only use this approach if your IAM policy allows creating S3 buckets and DynamoDB tables.
+
+For local development:
 
 ```bash
+export AWS_ACCESS_KEY_ID=your_aws_access_key
+export AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 cd terraform
 ./setup-s3-backend.sh
 ```

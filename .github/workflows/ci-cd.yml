@@ -95,7 +95,7 @@ jobs:
         aws_secret_access_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         EOF
         
-    - name: Create S3 Backend Infrastructure
+    - name: Import Existing S3 Backend Infrastructure
       run: |
         cd terraform
         # Comment out the S3 backend temporarily
@@ -109,8 +109,10 @@ jobs:
         # Initialize with local backend
         terraform init
         
-        # Create the S3 bucket and DynamoDB table using AWS credentials
-        terraform apply -target=aws_s3_bucket.terraform_state -target=aws_dynamodb_table.terraform_locks -auto-approve
+        # Import the existing S3 bucket and DynamoDB table into Terraform state
+        # We use || true to continue even if the resources don't exist or can't be imported
+        terraform import aws_s3_bucket.terraform_state terraform-state-bucket-drei || true
+        terraform import aws_dynamodb_table.terraform_locks terraform-locks-db-drei || true
         
         # Re-enable the S3 backend
         sed -i 's/# backend "s3" {/backend "s3" {/' providers.tf
