@@ -69,4 +69,7 @@ module "compute" {
   target_group_arn   = module.loadbalancer.target_group_arn
   lb_listener_arn    = module.loadbalancer.listener_arn
   log_group_name     = module.monitoring.log_group_name
+  dynamodb_table_name = module.database.table_name
+  aws_access_key_id  = var.aws_access_key_id
+  aws_secret_access_key = var.aws_secret_access_key
 }

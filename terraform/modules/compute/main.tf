@@ -78,6 +78,18 @@ resource "aws_ecs_task_definition" "oak_task" {
       {
         name  = "USE_AWS_DB" 
         value = "true"
+      },
+      {
+        name  = "AWS_DYNAMODB_TABLE"
+        value = var.dynamodb_table_name
+      },
+      {
+        name  = "AWS_ACCESS_KEY_ID"
+        value = var.aws_access_key_id
+      },
+      {
+        name  = "AWS_SECRET_ACCESS_KEY"
+        value = var.aws_secret_access_key
       }
     ]
 
