@@ -14,7 +14,13 @@ variable "environment" {
 variable "aws_region" {
   description = "AWS region to deploy into"
   type        = string
-  default     = "us-east-1"
+  default     = "ap-southeast-1"
+}
+
+variable "image_tag" {
+  description = "Docker image tag to deploy"
+  type        = string
+  default     = "latest"
 }
 
 locals {
@@ -185,6 +191,16 @@ resource "aws_cloudwatch_log_group" "app_logs" {
   retention_in_days = 30
 
   tags = local.common_tags
+}
+
+# IAM User for deployment
+resource "aws_iam_user" "deployment_user" {
+  name = "${local.name_prefix}-deployment-user"
+  tags = local.common_tags
+}
+
+resource "aws_iam_access_key" "deployment_key" {
+  user = aws_iam_user.deployment_user.name
 }
 
 # IAM Roles
@@ -369,11 +385,11 @@ resource "aws_ecs_task_definition" "app_task" {
         },
         {
           name  = "AWS_ACCESS_KEY_ID",
-          value = "AKIAUVSUK73H3ZAMDCH6"
+          value = "${aws_iam_access_key.deployment_key.id}"
         },
         {
           name  = "AWS_SECRET_ACCESS_KEY",
-          value = "kZtcZuJ6FbQklxLW1RfCkgWHf4JGqVLyMaLXc1FA"
+          value = "${aws_iam_access_key.deployment_key.secret}"
         }
       ]
 
