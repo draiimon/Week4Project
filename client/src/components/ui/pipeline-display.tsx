@@ -33,109 +33,165 @@ const PipelineStep: React.FC<PipelineStepProps> = ({ title, subtitle, icon, stat
 };
 
 export const PipelineDisplay: React.FC = () => {
-  const [awsStatus, setAwsStatus] = useState<'connected' | 'not_connected' | 'loading'>('loading');
-  const [isLoading, setIsLoading] = useState(true);
+  const [pipelineProgress, setPipelineProgress] = useState(60);
 
   useEffect(() => {
-    fetch('/api/aws/status')
-      .then(res => res.json())
-      .then(data => {
-        setAwsStatus(data.status);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setAwsStatus('not_connected');
-        setIsLoading(false);
-      });
-  }, []);
+    if (pipelineProgress < 80) {
+      const interval = setInterval(() => {
+        setPipelineProgress((prev) => Math.min(prev + 1, 80));
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
+  }, [pipelineProgress]);
 
   return (
-    <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden mb-8 border border-orange-500/20">
-      <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
-        <h3 className="text-lg leading-6 font-bold text-white">
-          AWS Cloud Integration Pipeline
+    <div className="bg-white shadow rounded-lg overflow-hidden mb-8">
+      <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+        <h3 className="text-lg leading-6 font-medium text-gray-900">
+          AWS DevOps Pipeline
         </h3>
-        <p className="mt-1 max-w-2xl text-sm text-gray-200">
-          Week 4 End-to-End AWS DevOps Connection Status
+        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+          Current status of your AWS integration workflow
         </p>
       </div>
 
-      <div className="p-6 text-white">
-        {isLoading ? (
-          <p className="text-sm text-gray-300">Loading AWS connection status...</p>
-        ) : (
-          <>
-            <div className="flex items-center mb-6 p-4 bg-gray-800 bg-opacity-50 rounded-md border border-gray-700">
-              <div className={`p-3 rounded-full mr-3 ${awsStatus === 'connected' ? 'bg-green-500' : 'bg-orange-500'}`}>
-                <svg 
-                  className="h-6 w-6 text-white"
-                  xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+      <div className="p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+          <h4 className="text-base font-medium text-gray-900 mb-2 sm:mb-0">
+            Pipeline Status: <span className="text-orange-500">Running</span>
+          </h4>
+          <div>
+            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-orange-400 text-white">
+              Latest Build: #142
+            </span>
+          </div>
+        </div>
+
+        {/* Pipeline Visualization */}
+        <div className="relative">
+          {/* Pipeline Steps */}
+          <div className="flex flex-col md:flex-row justify-between">
+            <PipelineStep
+              title="Source"
+              subtitle="AWS CodeCommit"
+              status="completed"
+              icon={
+                <svg
+                  className="h-8 w-8"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  {awsStatus === 'connected' ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  )}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
                 </svg>
-              </div>
-              <div>
-                <h4 className="text-lg font-medium text-white">
-                  AWS Connection Status: 
-                  <span className={awsStatus === 'connected' ? 'text-green-400 ml-2' : 'text-orange-400 ml-2'}>
-                    {awsStatus === 'connected' ? 'Connected' : 'Not Connected'}
-                  </span>
-                </h4>
-                <p className="text-sm text-gray-300 mt-1">
-                  {awsStatus === 'connected' 
-                    ? 'Your application is successfully connected to AWS Cloud with real-time metrics, fulfilling Week 4 AWS integration requirements.' 
-                    : 'Your application is having trouble connecting to AWS. Please check your credentials.'}
-                </p>
-              </div>
-            </div>
+              }
+            />
 
-            <div className="mt-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-orange-500/20 rounded-md">
-              <h4 className="text-sm font-medium text-orange-400 mb-4">AWS Real-Time Integration Status:</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center p-3 bg-gray-800 rounded border border-gray-700">
-                  <div className={`w-3 h-3 ${awsStatus === 'connected' ? 'bg-green-500' : 'bg-gray-500'} rounded-full mr-2`}></div>
-                  <span className="text-sm text-gray-300">DynamoDB: <span className="font-medium">{awsStatus === 'connected' ? 'Active' : 'Inactive'}</span></span>
-                </div>
-                <div className="flex items-center p-3 bg-gray-800 rounded border border-gray-700">
-                  <div className={`w-3 h-3 ${awsStatus === 'connected' ? 'bg-green-500' : 'bg-gray-500'} rounded-full mr-2`}></div>
-                  <span className="text-sm text-gray-300">SDK Integration: <span className="font-medium">{awsStatus === 'connected' ? 'Working' : 'Not Working'}</span></span>
-                </div>
-                <div className="flex items-center p-3 bg-gray-800 rounded border border-gray-700">
-                  <div className={`w-3 h-3 ${awsStatus === 'connected' ? 'bg-green-500' : 'bg-gray-500'} rounded-full mr-2`}></div>
-                  <span className="text-sm text-gray-300">Authentication: <span className="font-medium">{awsStatus === 'connected' ? 'Ready' : 'Unavailable'}</span></span>
-                </div>
-                <div className="flex items-center p-3 bg-gray-800 rounded border border-gray-700">
-                  <div className={`w-3 h-3 ${awsStatus === 'connected' ? 'bg-green-500' : 'bg-gray-500'} rounded-full mr-2`}></div>
-                  <span className="text-sm text-gray-300">IAM Permissions: <span className="font-medium">{awsStatus === 'connected' ? 'Configured' : 'Missing'}</span></span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-6">
-              <div className="flex justify-between items-center mb-2">
-                <h4 className="text-sm font-medium text-orange-400">AWS Service Pipeline Status</h4>
-                <div className="bg-orange-500 text-xs font-bold text-white px-2 py-1 rounded-full">
-                  LIVE
-                </div>
-              </div>
-              <div className="bg-gray-800 h-2 rounded-full overflow-hidden">
-                <div className={`h-full ${awsStatus === 'connected' ? 'bg-gradient-to-r from-green-500 to-green-400 w-full' : 'bg-orange-500 w-1/3'}`}></div>
-              </div>
-              <div className="mt-2 flex justify-between text-xs text-gray-400">
-                <span>Connection</span>
-                <span>Authentication</span>
-                <span>Data Storage</span>
-              </div>
-            </div>
-          </>
-        )}
+            <PipelineStep
+              title="Build"
+              subtitle="AWS CodeBuild"
+              status="completed"
+              icon={
+                <svg
+                  className="h-8 w-8"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                  />
+                </svg>
+              }
+            />
+
+            <PipelineStep
+              title="Test"
+              subtitle="AWS CodePipeline"
+              status="completed"
+              icon={
+                <svg
+                  className="h-8 w-8"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              }
+            />
+
+            <PipelineStep
+              title="Deploy"
+              subtitle="AWS DynamoDB"
+              status="active"
+              icon={
+                <svg
+                  className="h-8 w-8"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                  />
+                </svg>
+              }
+            />
+
+            <PipelineStep
+              title="Monitor"
+              subtitle="AWS CloudWatch"
+              status="pending"
+              icon={
+                <svg
+                  className="h-8 w-8"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+              }
+            />
+          </div>
+
+          {/* Connection Lines (Hidden on Mobile) */}
+          <div className="hidden md:block absolute top-8 left-0 w-full">
+            <div className="h-0.5 bg-gray-200 w-full"></div>
+            <div
+              className="h-0.5 bg-green-500 transition-all duration-1000"
+              style={{ width: `${pipelineProgress}%` }}
+            ></div>
+          </div>
+        </div>
       </div>
     </div>
   );

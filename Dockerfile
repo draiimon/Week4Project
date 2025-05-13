@@ -7,14 +7,11 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies using the npm version that comes with Node.js 18
+# Install dependencies
 RUN npm install
 
 # Copy the rest of the application
 COPY . .
-
-# Update vite.config.ts to use __dirname instead of import.meta.dirname
-RUN sed -i 's/import.meta.dirname/__dirname/g' vite.config.ts
 
 # Build the application (if needed)
 RUN npm run build
@@ -22,7 +19,7 @@ RUN npm run build
 # Set environment variables
 ENV NODE_ENV=production
 ENV PORT=5000
-ENV AWS_REGION=ap-southeast-1
+ENV AWS_REGION=us-east-1
 # The following environment variables will be provided at runtime:
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
