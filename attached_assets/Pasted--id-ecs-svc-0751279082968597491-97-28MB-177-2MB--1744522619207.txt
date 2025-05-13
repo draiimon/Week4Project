@@ -1,0 +1,121 @@
+               "id": "ecs-svc/0751279082968597491",                      ]  97.28MB/177.2MB
+                "status": "PRIMARY",
+                "taskDefinition": "arn:aws:ecs:ap-southeast-1:321225686735:task-definition/oaktree-dev-task:1",
+                "desiredCount": 0,
+                "pendingCount": 0,
+                "runningCount": 0,
+                "failedTasks": 0,
+                "createdAt": "2025-04-13T13:36:38.126000+08:00",
+                "updatedAt": "2025-04-13T13:36:38.126000+08:00",
+                "launchType": "FARGATE",
+                "platformVersion": "1.4.0",
+                "platformFamily": "Linux",
+                "networkConfiguration": {
+                    "awsvpcConfiguration": {
+                        "subnets": [
+                            "subnet-016cb6075b87385b8",
+                            "subnet-0a9f35d0774fda6f8"
+                        ],
+                        "securityGroups": [
+                            "sg-048446dacb12b708a"
+                        ],
+                        "assignPublicIp": "ENABLED"
+                    }
+                },
+                "rolloutState": "IN_PROGRESS",
+                "rolloutStateReason": "ECS deployment ecs-svc/0751279082968597491 in progress."
+            },
+            {
+                "id": "ecs-svc/5516996994632173729",
+                "status": "ACTIVE",
+                "taskDefinition": "arn:aws:ecs:ap-southeast-1:321225686735:task-definition/oaktree-dev-task:1",
+                "desiredCount": 1,
+                "pendingCount": 0,
+                "runningCount": 0,
+                "failedTasks": 6,
+                "createdAt": "2025-04-13T13:30:00.258000+08:00",
+                "updatedAt": "2025-04-13T13:34:34.098000+08:00",
+                "launchType": "FARGATE",
+                "platformVersion": "1.4.0",
+                "platformFamily": "Linux",
+                "networkConfiguration": {
+                    "awsvpcConfiguration": {
+                        "subnets": [
+                            "subnet-016cb6075b87385b8",
+                            "subnet-0a9f35d0774fda6f8"
+                        ],
+                        "securityGroups": [
+                            "sg-048446dacb12b708a"
+                        ],
+                        "assignPublicIp": "ENABLED"
+                    }
+                },
+                "rolloutState": "IN_PROGRESS",
+                "rolloutStateReason": "ECS deployment ecs-svc/5516996994632173729 in progress."
+            }
+        ],
+        "roleArn": "arn:aws:iam::321225686735:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
+        "events": [
+            {
+                "id": "3a3a0bd4-ff51-48f0-8fa9-faaccbf72f82",
+                "createdAt": "2025-04-13T13:36:10.415000+08:00",
+                "message": "(service oaktree-dev-service) has started 1 tasks: (task 4a0cf7f2a14e4646bf0344874e1a6cae)."
+            },
+            {
+                "id": "4b81213f-ee78-4747-ab93-7f5542973fc8",
+                "createdAt": "2025-04-13T13:35:10.639000+08:00",
+                "message": "(service oaktree-dev-service) has started 1 tasks: (task 13000c3cc4394ac28a846f0000d4e068)."
+            },
+            {
+                "id": "ab56108d-96f0-428b-afe5-98f7377a5aea",
+                "createdAt": "2025-04-13T13:34:09.485000+08:00",
+                "message": "(service oaktree-dev-service) has started 1 tasks: (task 0161488c92524d37a8c662d321c9fc41)."
+            },
+            {
+                "id": "3ddb3c5c-88a1-443e-b626-7b9435c85153",
+                "createdAt": "2025-04-13T13:33:09.147000+08:00",
+                "message": "(service oaktree-dev-service) has started 1 tasks: (task f7db1a735a93454381b1324603c1f121)."
+            },
+            {
+                "id": "0940c8a4-9e98-4b9b-b68f-99a438afc85e",
+                "createdAt": "2025-04-13T13:32:10.058000+08:00",
+                "message": "(service oaktree-dev-service) has started 1 tasks: (task 266d5fce4e434519a5a4b8900272b9e3)."
+            },
+            {
+                "id": "aee12188-e3ab-4e25-abf2-5f9e9720e141",
+                "createdAt": "2025-04-13T13:31:08.903000+08:00",
+                "message": "(service oaktree-dev-service) has started 1 tasks: (task 611832103dd84754b1c33fa9b1c84210)."
+            },
+            {
+                "id": "53c82d8d-ee80-4e33-afe9-1af61dd9fe4c",
+                "createdAt": "2025-04-13T13:30:17.966000+08:00",
+                "message": "(service oaktree-dev-service) has started 1 tasks: (task c7f7f3a689284223b4c4096c87a8ee18)."
+            }
+        ],
+        "createdAt": "2025-04-13T13:30:00.258000+08:00",
+        "placementConstraints": [],
+        "placementStrategy": [],
+        "networkConfiguration": {
+            "awsvpcConfiguration": {
+                "subnets": [
+                    "subnet-016cb6075b87385b8",
+                    "subnet-0a9f35d0774fda6f8"
+                ],
+                "securityGroups": [
+                    "sg-048446dacb12b708a"
+                ],
+                "assignPublicIp": "ENABLED"
+            }
+        },
+        "healthCheckGracePeriodSeconds": 0,
+        "schedulingStrategy": "REPLICA",
+        "deploymentController": {
+            "type": "ECS"
+        },
+        "createdBy": "arn:aws:iam::321225686735:user/draiimon",
+        "enableECSManagedTags": false,
+        "propagateTags": "NONE",
+        "enableExecuteCommand": false,
+        "availabilityZoneRebalancing": "DISABLED"
+    }
+}

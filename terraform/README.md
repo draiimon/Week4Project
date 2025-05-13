@@ -1,84 +1,83 @@
-# OakTree Infrastructure
+# OakTree Infrastructure as Code (Terraform)
 
-This repository contains Terraform configuration for the OakTree DevOps platform infrastructure on AWS.
+This directory contains Terraform configurations to provision the AWS infrastructure required for the OakTree DevOps project.
 
-## Architecture
+## Infrastructure Components
 
-The infrastructure consists of the following components:
+The Terraform configuration provisions the following AWS resources:
 
-- VPC with public subnets
-- Application Load Balancer
-- ECS Fargate for containerized application deployment
-- DynamoDB for database storage
-- CloudWatch for logging and monitoring
+1. **DynamoDB Table**: For user data storage
+2. **Cognito User Pool**: For user authentication and management
+3. **ECS Cluster and Service**: For container deployment
+4. **ECR Repository**: For storing Docker images
+5. **IAM Roles and Policies**: For proper access control
+6. **CloudWatch Log Group**: For application logging
+7. **Security Group**: For network access control
 
-## State Management
+## Prerequisites
 
-This configuration uses:
-- S3 bucket for storing Terraform state
-- DynamoDB table for state locking
+- [Terraform](https://www.terraform.io/downloads.html) (v1.0.0 or newer)
+- AWS CLI configured with appropriate credentials
+- AWS account with required permissions
 
-## First-Time Setup
+## Configuration
 
-Before you can use this Terraform configuration with remote state, you need to create the S3 bucket and DynamoDB table for state management.
-
-### Step 1: Comment out the backend configuration
-
-First, comment out the backend configuration in `backend.tf`:
+The `terraform.tfvars` file is already configured with your specific AWS account details:
 
 ```hcl
-# terraform {
-#   backend "s3" {
-#     bucket         = "oaktree-terraform-state"
-#     key            = "oaktree/terraform.tfstate"
-#     region         = "ap-southeast-1"
-#     encrypt        = true
-#     dynamodb_table = "oaktree-terraform-locks"
-#   }
-# }
+aws_region = "us-east-1"  # North Virginia region
+environment = "dev"       # Development environment
+
+# Using real VPC and subnet IDs from your AWS account
+vpc_id     = "vpc-08c05f6fe25301574"  # dev-vpc
+subnet_ids = [
+  "subnet-0e73b48f3a4fdf622",  # dev-public-subnet-1
+  "subnet-0b61cb00a422a00c0"   # dev-public-subnet-2
+]
+
+allowed_cidr_blocks = ["0.0.0.0/0"]  # Note: Restrict this in production
 ```
 
-### Step 2: Initialize and apply the state resources
+## Usage
 
-```bash
-cd terraform
-terraform init
-terraform apply -target=aws_s3_bucket.terraform_state -target=aws_dynamodb_table.terraform_locks
-```
+Follow these steps to deploy the infrastructure:
 
-### Step 3: Uncomment the backend configuration
+1. **Initialize Terraform**:
+   ```bash
+   terraform init
+   ```
 
-Now uncomment the backend configuration in `backend.tf` and reinitialize Terraform:
+2. **Plan the deployment**:
+   ```bash
+   terraform plan
+   ```
 
-```bash
-# Edit backend.tf to uncomment the backend configuration
-terraform init -reconfigure
-```
+3. **Apply the configuration**:
+   ```bash
+   terraform apply
+   ```
 
-## Regular Usage
+4. **To destroy the infrastructure**:
+   ```bash
+   terraform destroy
+   ```
 
-Once the state management resources are set up, you can use normal Terraform commands:
+## Outputs
 
-```bash
-# Initialize Terraform
-terraform init
+After successful deployment, Terraform will output important resource identifiers that you'll need to configure the application:
 
-# Plan changes
-terraform plan
+- `dynamodb_table_name`: Name of the DynamoDB table
+- `cognito_user_pool_id`: ID of the Cognito User Pool
+- `cognito_client_id`: ID of the Cognito User Pool Client
+- `ecr_repository_url`: URL of the ECR repository
+- `ecs_cluster_name`: Name of the ECS cluster
+- `ecs_service_name`: Name of the ECS service
 
-# Apply changes
-terraform apply
+These values should be used to set the appropriate environment variables in your CI/CD pipeline and application configuration.
 
-# Destroy infrastructure (when no longer needed)
-terraform destroy
-```
+## Security Notes
 
-## Modules
-
-This Terraform configuration is organized into modules:
-
-- `network`: VPC, subnets, security groups
-- `database`: DynamoDB table
-- `compute`: ECS cluster, task definition, service 
-- `loadbalancer`: Application Load Balancer
-- `monitoring`: CloudWatch logs
+- The default configuration is suitable for development but should be hardened for production use
+- Review and restrict the IAM permissions to follow the principle of least privilege
+- Consider using AWS KMS for encrypting sensitive data in DynamoDB
+- Update the security group rules to restrict access as needed

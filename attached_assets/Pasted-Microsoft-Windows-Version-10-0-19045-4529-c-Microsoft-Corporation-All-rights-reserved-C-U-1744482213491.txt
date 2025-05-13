@@ -1,0 +1,109 @@
+Microsoft Windows [Version 10.0.19045.4529]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\KHARDZ>cd desktop
+
+C:\Users\KHARDZ\Desktop>cd Week 4
+
+C:\Users\KHARDZ\Desktop\Week 4>wsl
+Welcome to Ubuntu 24.04.2 LTS (GNU/Linux 5.15.133.1-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun Apr 13 02:18:26 +08 2025
+
+  System load:  0.8                 Processes:             66
+  Usage of /:   0.8% of 1006.85GB   Users logged in:       0
+  Memory usage: 12%                 IPv4 address for eth0: 172.18.168.44
+  Swap usage:   0%
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+This message is shown once a day. To disable it please create the
+/home/rae/.hushlogin file.
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ git clone https://github.com/draiimon/Oaktree.git -b Week-4
+d OaktreeCloning into 'Oaktree'...
+remote: Enumerating objects: 3416, done.
+remote: Counting objects: 100% (518/518), done.
+remote: Compressing objects: 100% (173/173), done.
+remote: Total 3416 (delta 349), reused 468 (delta 317), pack-reused 2898 (from 1)
+Receiving objects: 100% (3416/3416), 7.37 MiB | 6.29 MiB/s, done.
+Resolving deltas: 100% (1204/1204), done.
+Updating files: 100% (137/137), done.
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4$ cd Oaktree
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ # Create and open .env file with nano
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ nano .env
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ # Build the Docker image
+er buildrae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ docker build -t oaktree:latest .
+ Run with your AWS credentials
+docker run -p 5000:5000 --env-file .env oaktree:latest
+[+] Building 115.4s (11/11) FINISHED                                                                  docker:default
+ => [internal] load build definition from Dockerfile                                                            0.1s
+ => => transferring dockerfile: 696B                                                                            0.1s
+ => [internal] load metadata for docker.io/library/node:18                                                      3.2s
+ => [internal] load .dockerignore                                                                               0.1s
+ => => transferring context: 316B                                                                               0.1s
+ => [1/6] FROM docker.io/library/node:18@sha256:df9fa4e0e39c9b97e30240b5bb1d99bdb861573a82002b2c52ac7d6b8d6d7  52.5s
+ => => resolve docker.io/library/node:18@sha256:df9fa4e0e39c9b97e30240b5bb1d99bdb861573a82002b2c52ac7d6b8d6d77  0.0s
+ => => sha256:07d1b5af933d2dfc3d0dd509d6e20534825e4a537f7b006a6cb5b8e5a1f20905 24.01MB / 24.01MB                5.6s
+ => => sha256:df9fa4e0e39c9b97e30240b5bb1d99bdb861573a82002b2c52ac7d6b8d6d773e 6.41kB / 6.41kB                  0.0s
+ => => sha256:aa6c239d30ee04dede270729f9502389b1a9546687ce656872536340ee0a9e03 2.49kB / 2.49kB                  0.0s
+ => => sha256:de20d623379fc7c7ccf845a22c3153b920d57446ba7c8e64ba25d21a60b48ad6 6.39kB / 6.39kB                  0.0s
+ => => sha256:23b7d26ef1d294256da0d70ce374277b9aab5ca683015073316005cb63d33849 48.49MB / 48.49MB                4.4s
+ => => sha256:1eb98adba0eb44a2e4facf9ca3626a4a66feedd0dd56d159cca90a35205744e7 64.40MB / 64.40MB                3.5s
+ => => sha256:b617a119f8a27982374d94ec6eb3738ae3d38d6fc2c34c865813926cf596a621 211.33MB / 211.33MB             12.8s
+ => => sha256:ee496386c5de1ce84096ca486e1aabcdf7cb8f0afd5a9b4863dbf870b340744f 3.32kB / 3.32kB                  4.9s
+ => => extracting sha256:23b7d26ef1d294256da0d70ce374277b9aab5ca683015073316005cb63d33849                       9.3s
+ => => sha256:058db40e534297246fb14bc4e107d2f6ddc140494a26793e1e90696cd6b2507a 45.68MB / 45.68MB                7.7s
+ => => sha256:04deb1529fda049f44f9be8d16ca833a53961813ce07eda3cefd50cd3fd74880 1.25MB / 1.25MB                  6.3s
+ => => sha256:3b3ca5178f3ece5f7e96b38b9c4b9c3a101a9d6777cf0f5c320f869512c80024 448B / 448B                      6.7s
+ => => extracting sha256:07d1b5af933d2dfc3d0dd509d6e20534825e4a537f7b006a6cb5b8e5a1f20905                       1.6s
+ => => extracting sha256:1eb98adba0eb44a2e4facf9ca3626a4a66feedd0dd56d159cca90a35205744e7                       7.3s
+ => => extracting sha256:b617a119f8a27982374d94ec6eb3738ae3d38d6fc2c34c865813926cf596a621                      19.7s
+ => => extracting sha256:ee496386c5de1ce84096ca486e1aabcdf7cb8f0afd5a9b4863dbf870b340744f                       0.0s
+ => => extracting sha256:058db40e534297246fb14bc4e107d2f6ddc140494a26793e1e90696cd6b2507a                       6.5s
+ => => extracting sha256:04deb1529fda049f44f9be8d16ca833a53961813ce07eda3cefd50cd3fd74880                       0.1s
+ => => extracting sha256:3b3ca5178f3ece5f7e96b38b9c4b9c3a101a9d6777cf0f5c320f869512c80024                       0.0s
+ => [internal] load build context                                                                               2.4s
+ => => transferring context: 2.22MB                                                                             2.4s
+ => [2/6] WORKDIR /app                                                                                          1.5s
+ => [3/6] COPY package*.json ./                                                                                 0.1s
+ => [4/6] RUN npm install                                                                                      34.6s
+ => [5/6] COPY . .                                                                                              0.3s
+ => [6/6] RUN npm run build                                                                                    12.5s
+ => exporting to image                                                                                         10.2s
+ => => exporting layers                                                                                        10.1s
+ => => writing image sha256:8360b87e6e82071da8ad2309e44a47102d6f1568425dc83f20d3ded763ad7f2f                    0.0s
+ => => naming to docker.io/library/oaktree:latest                                                               0.0s
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ # Run with your AWS credentials
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$ docker run -p 5000:5000 --env-file .env oaktree:latest
+
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+node:internal/errors:496
+    ErrorCaptureStackTrace(err);
+    ^
+
+TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+    at new NodeError (node:internal/errors:405:5)
+    at validateString (node:internal/validators:162:11)
+    at Object.resolve (node:path:1115:7)
+    at vite.config.ts (file:///app/dist/index.js:34:21)
+    at __init (file:///app/dist/index.js:4:56)
+    at server/vite.ts (file:///app/dist/index.js:121:11)
+    at __init (file:///app/dist/index.js:4:56)
+    at server/env.ts (file:///app/dist/index.js:149:11)
+    at __init (file:///app/dist/index.js:4:56)
+    at file:///app/dist/index.js:462:7 {
+  code: 'ERR_INVALID_ARG_TYPE'
+}
+
+Node.js v18.20.8
+rae@Rae:/mnt/c/Users/KHARDZ/Desktop/Week 4/Oaktree$

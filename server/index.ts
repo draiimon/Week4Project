@@ -1,10 +1,33 @@
+// Load environment variables first
+import './env';
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { setupAuth } from "./auth";
+import { createUsersTable, isAWSConfigured } from "./aws-db";
+import { logAwsConfig } from './env';
+
+// Initialize AWS DynamoDB
+const checkAwsConfig = async () => {
+  if (!isAWSConfigured()) {
+    console.error("AWS environment variables not configured properly");
+    console.error("Make sure AWS_REGION, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY are set");
+    return false;
+  }
+  
+  console.log("AWS credentials found, initializing DynamoDB");
+  const tableCreated = await createUsersTable();
+  console.log('DynamoDB table setup:', tableCreated ? 'success' : 'failed');
+  return tableCreated;
+};
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Setup authentication
+setupAuth(app);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -37,6 +60,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Check and initialize AWS DynamoDB
+  await checkAwsConfig();
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

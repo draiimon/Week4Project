@@ -1,21 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/ui/sidebar";
-import { ProjectStatusOverview } from "@/components/ui/dashboard-cards";
 import { PipelineDisplay } from "@/components/ui/pipeline-display";
-import { AWSInfrastructure, ContainerizedApp, ProjectDocumentation } from "@/components/ui/project-details";
-import { ContainerMetrics } from "@/components/ui/dashboard-cards";
+import { SystemStatus } from "@/components/ui/system-status";
+import { AdminPanel } from "@/components/ui/admin-panel";
 
 export default function HomePage() {
+  const [awsRegion, setAwsRegion] = useState<string>('ap-southeast-1');
+  const [activeTab, setActiveTab] = useState<number>(0);
+  
+  // Load real region data on page load
+  useEffect(() => {
+    fetch('/api/aws/status')
+      .then(res => res.json())
+      .then(data => {
+        if (data.region) {
+          setAwsRegion(data.region);
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching AWS status:", err);
+      });
+  }, []);
+
+  // Track if user is hovering over the tabs content
+  const [isHovering, setIsHovering] = useState<boolean>(false);
+  
+  // Start the automatic tab rotation, but pause it when hovering
+  useEffect(() => {
+    if (isHovering) {
+      return; // Don't set interval if hovering
+    }
+    
+    const interval = setInterval(() => {
+      setActiveTab((prevTab) => (prevTab + 1) % 4);
+    }, 8000); // Change tab every 8 seconds
+    
+    return () => clearInterval(interval);
+  }, [isHovering]); // Re-run effect when hover state changes
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
 
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        {/* Top Navigation Bar */}
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+        {/* Top Navigation Bar with Orange-Gray Gradient */}
+        <div className="relative z-10 flex-shrink-0 flex h-16 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 shadow-lg">
           <button
             type="button"
-            className="md:hidden px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
+            className="md:hidden px-4 text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
           >
             <span className="sr-only">Open sidebar</span>
             <svg
@@ -36,155 +68,416 @@ export default function HomePage() {
           </button>
           <div className="flex-1 px-4 flex justify-between">
             <div className="flex-1 flex">
-              <form className="w-full flex md:ml-0" action="#" method="GET">
-                <label htmlFor="search-field" className="sr-only">
-                  Search
-                </label>
-                <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                  <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                    <svg
-                      className="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    id="search-field"
-                    className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
-                    placeholder="Search"
-                    type="search"
-                    name="search"
-                  />
-                </div>
-              </form>
+              <p className="text-white self-center font-bold text-lg">DevOps Project Dashboard</p>
             </div>
-            <div className="ml-4 flex items-center md:ml-6">
-              <button className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-                <span className="sr-only">View notifications</span>
-                <svg
-                  className="h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-              </button>
+            {/* Sign-in button removed - handled by sidebar user panel */}
+            <div className="ml-4 flex items-center space-x-3 md:ml-6">
+              {/* Admin indicator - uses localStorage to check login state */}
+              {localStorage.getItem('currentUser') === 'msn_clx' && (
+                <div className="text-sm text-white bg-orange-700 px-3 py-1 rounded-full">
+                  Admin Access
+                </div>
+              )}
+              <div className="text-sm text-white bg-gray-800 bg-opacity-50 px-3 py-1 rounded-full">
+                Connected to AWS Region: {awsRegion}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 relative overflow-y-auto focus:outline-none">
+        <main className="flex-1 relative overflow-y-auto focus:outline-none bg-gray-100">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <h1 className="text-2xl font-semibold text-gray-900">
-                Week 4: AWS Integration Dashboard
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                End-to-End AWS DevOps Pipeline Implementation
-              </p>
+              <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 rounded-lg shadow-lg px-6 py-4">
+                <h1 className="text-2xl font-bold text-white">
+                  DevOps Final Project Dashboard
+                </h1>
+                <p className="mt-1 text-sm text-gray-200">
+                  End-to-End Cloud Deployment Pipeline
+                </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-800 text-white">
+                    Code Repository
+                  </span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-purple-800 text-white">
+                    Docker Container
+                  </span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-800 text-white">
+                    Terraform IaC
+                  </span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-800 text-white">
+                    CI/CD Pipeline
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4">
-              {/* Project Status Overview */}
-              <ProjectStatusOverview />
-
-              {/* Full DevOps Pipeline Display */}
-              <PipelineDisplay />
-
-              {/* Project Components and Infrastructure */}
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                {/* AWS Infrastructure */}
-                <AWSInfrastructure />
-
-                {/* AWS DynamoDB Authentication Integration */}
-                <div className="bg-white shadow rounded-lg overflow-hidden">
-                  <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      AWS Authentication Integration
-                    </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                      AWS DynamoDB User Management
-                    </p>
+              {/* Main Requirements Display - Single Container */}
+              <div className="mb-6 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 shadow-lg rounded-lg overflow-hidden border border-orange-500/20">
+                <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-gray-800 via-gray-700 to-orange-600 border-b border-gray-700">
+                  <h3 className="text-lg leading-6 font-bold text-white">
+                    DevOps Project Requirements
+                  </h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-200">
+                    End-to-End Implementation Status
+                  </p>
+                </div>
+                
+                {/* Single Improved Container Design */}
+                <div className="p-6 text-white"
+                  onMouseEnter={() => setIsHovering(true)}
+                  onMouseLeave={() => setIsHovering(false)}>
+                  {/* Tab content using useState */}
+                  <div className="flex space-x-2 border-b border-gray-700 mb-4 flex-wrap">
+                    <button
+                      onClick={() => setActiveTab(0)}
+                      className={`py-2 px-4 text-sm font-medium rounded-t-lg ${
+                        activeTab === 0 
+                          ? "bg-gray-800 text-orange-400 border-orange-400 border-b-2" 
+                          : "text-gray-300 hover:text-white"
+                      }`}
+                    >
+                      AWS Infrastructure
+                    </button>
+                    <button
+                      onClick={() => setActiveTab(1)}
+                      className={`py-2 px-4 text-sm font-medium rounded-t-lg ${
+                        activeTab === 1 
+                          ? "bg-gray-800 text-orange-400 border-orange-400 border-b-2" 
+                          : "text-gray-300 hover:text-white"
+                      }`}
+                    >
+                      Authentication & Data
+                    </button>
+                    <button
+                      onClick={() => setActiveTab(2)}
+                      className={`py-2 px-4 text-sm font-medium rounded-t-lg ${
+                        activeTab === 2 
+                          ? "bg-gray-800 text-orange-400 border-orange-400 border-b-2" 
+                          : "text-gray-300 hover:text-white"
+                      }`}
+                    >
+                      Cross-Environment
+                    </button>
+                    <button
+                      onClick={() => setActiveTab(3)}
+                      className={`py-2 px-4 text-sm font-medium rounded-t-lg ${
+                        activeTab === 3 
+                          ? "bg-gray-800 text-orange-400 border-orange-400 border-b-2" 
+                          : "text-gray-300 hover:text-white"
+                      }`}
+                    >
+                      Docker & WSL
+                    </button>
                   </div>
-                  <div className="p-6">
-                    <div className="bg-gray-50 p-4 rounded-md">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">
-                        AWS Configuration:
+                  
+                  {/* CSS animations sa loob na ng code */}
+                  
+                  {/* First Tab: AWS Infrastructure */}
+                  <div className={`${activeTab === 0 ? "block tab-content tab-content-active" : "hidden"}`}>
+                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg transform transition-all duration-500">
+                      <h4 className="text-orange-400 text-lg font-semibold mb-3 flex items-center">
+                        <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        AWS Infrastructure
                       </h4>
-                      <div className="bg-gray-50 p-3 rounded-md font-mono text-xs">
-                        <pre className="whitespace-pre-wrap text-gray-700">
-{`# AWS DynamoDB Configuration
-REGION: ap-southeast-1
-TABLE: OakTreeUsers
-FEATURES: User Authentication, Data Storage
-AWS_ACCESS_KEY_ID: [CREDENTIAL HIDDEN]
-AWS_SECRET_ACCESS_KEY: [CREDENTIAL HIDDEN]`}
-                        </pre>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4">
-                      <div className="p-4 bg-green-50 text-green-800 rounded-md border border-green-200">
-                        <div className="flex">
-                          <svg className="h-5 w-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                          <p>User authentication system successfully integrated with AWS DynamoDB</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <h5 className="text-white text-sm font-medium mb-2">Connection</h5>
+                          <p className="text-gray-300 text-sm mb-2">Connected to AWS Cloud in the <span className="text-orange-300 font-medium">{awsRegion}</span> region with live monitoring.</p>
+                          
+                          <h5 className="text-white text-sm font-medium mt-4 mb-2">AWS Resources</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>DynamoDB: <span className="text-orange-300">OakTreeUsers</span></span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>IAM: Roles & Permissions</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>CloudWatch: Monitoring</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>VPC: Networking</span>
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h5 className="text-white text-sm font-medium mb-2">AWS Architecture</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Database: AWS DynamoDB</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Identity: AWS IAM Roles</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Monitoring: AWS CloudWatch</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Storage: AWS S3</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Networking: AWS VPC</span>
+                            </li>
+                          </ul>
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="mt-4">
-                      <p className="text-sm text-gray-500 mb-2">
-                        This integration provides:
-                      </p>
-                      <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                        <li>Secure user registration with AWS-backed storage</li>
-                        <li>Password encryption with crypto library</li>
-                        <li>Seamless fallback to local database when offline</li>
-                        <li>Cross-environment compatibility (local and cloud)</li>
-                      </ul>
+                  </div>
+                  
+                  {/* Second Tab: Authentication and Data Management */}
+                  <div className={`${activeTab === 1 ? "block tab-content tab-content-active" : "hidden"}`}>
+                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg transform transition-all duration-500">
+                      <h4 className="text-orange-400 text-lg font-semibold mb-3 flex items-center">
+                        <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Authentication & Data Management
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <h5 className="text-white text-sm font-medium mb-2">Authentication</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>IAM Role-based Authentication</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Secure Access Keys</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>SDK Integration</span>
+                            </li>
+                          </ul>
+                          
+                          <h5 className="text-white text-sm font-medium mt-4 mb-2">Security</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Encrypted Connections</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Access Policies Defined</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Secure Environment Variables</span>
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h5 className="text-white text-sm font-medium mb-2">Data Management</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>DynamoDB Table: <span className="text-orange-300">OakTreeUsers</span></span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>User Data Schema Implemented</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>CRUD Operations Available</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>API Endpoints Created</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Data Validation Rules</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div className="mt-4">
-                      <a
-                        href="/auth"
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-                      >
-                        Try Authentication
-                      </a>
+                  </div>
+                  
+                  {/* Third Tab: Cross-Environment Deployment */}
+                  <div className={`${activeTab === 2 ? "block tab-content tab-content-active" : "hidden"}`}>
+                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg transform transition-all duration-500">
+                      <h4 className="text-orange-400 text-lg font-semibold mb-3 flex items-center">
+                        <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Cross-Environment Deployment
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <h5 className="text-white text-sm font-medium mb-2">CI/CD Pipeline</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>GitHub Actions Workflow</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Automated Testing</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Docker Image Build & Push</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Continuous Deployment</span>
+                            </li>
+                          </ul>
+                          
+                          <h5 className="text-white text-sm font-medium mt-4 mb-2">Environmental Variables</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>AWS Credentials</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Database Connection</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Region Configuration</span>
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h5 className="text-white text-sm font-medium mb-2">Deployment Environments</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Local Development</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>WSL (Windows Subsystem for Linux)</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Docker Container</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>AWS Cloud Production</span>
+                            </li>
+                          </ul>
+                          
+                          <h5 className="text-white text-sm font-medium mt-4 mb-2">Docker Configuration</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Dockerfile Created</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Container Registry Push</span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Multi-Environment Support</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Fourth Tab: Docker & WSL Configuration */}
+                  <div className={`${activeTab === 3 ? "block tab-content tab-content-active" : "hidden"}`}>
+                    <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 shadow-lg transform transition-all duration-500">
+                      <h4 className="text-orange-400 text-lg font-semibold mb-3 flex items-center">
+                        <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Local, WSL & Docker Configurations
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <h5 className="text-white text-sm font-medium mb-2">Local Development</h5>
+                          <div className="bg-gray-900 bg-opacity-50 p-3 rounded text-xs font-mono text-gray-300 mb-3">
+                            <div># Clone repository</div>
+                            <div>git clone https://github.com/draiimon/Oaktree.git</div>
+                            <div>cd Oaktree</div>
+                            <div className="mt-2"># Install dependencies</div>
+                            <div>npm install</div>
+                            <div className="mt-2"># Run the application</div>
+                            <div>npm run dev</div>
+                          </div>
+                          
+                          <h5 className="text-white text-sm font-medium mb-2">Environment Variables</h5>
+                          <div className="bg-gray-900 bg-opacity-50 p-3 rounded text-xs font-mono text-gray-300">
+                            <div>AWS_ACCESS_KEY_ID=*******</div>
+                            <div>AWS_SECRET_ACCESS_KEY=******</div>
+                            <div>AWS_REGION={awsRegion}</div>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h5 className="text-white text-sm font-medium mb-2">Docker Deployment</h5>
+                          <div className="bg-gray-900 bg-opacity-50 p-3 rounded text-xs font-mono text-gray-300 mb-3">
+                            <div># Build Docker image</div>
+                            <div>docker build -t oaktree-app:latest .</div>
+                            <div className="mt-2"># Run with AWS integration</div>
+                            <div>docker run -d \</div>
+                            <div>  -p 5000:5000 \</div>
+                            <div>  -e AWS_ACCESS_KEY_ID=*** \</div>
+                            <div>  -e AWS_SECRET_ACCESS_KEY=*** \</div>
+                            <div>  -e AWS_REGION={awsRegion} \</div>
+                            <div>  oaktree-app:latest</div>
+                          </div>
+                          
+                          <h5 className="text-white text-sm font-medium mb-2">Integration Status</h5>
+                          <ul className="space-y-1 text-sm text-gray-300">
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>Docker Container: <span className="text-green-300">Ready</span></span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>AWS Integration: <span className="text-green-300">Complete</span></span>
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                              <span>CI/CD Pipeline: <span className="text-green-300">Active</span></span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Application Details */}
-              <ContainerizedApp />
               
-              {/* Container Metrics */}
-              <div className="mt-4">
-                <ContainerMetrics />
+              {/* System Metrics and Status */}
+              <div className="mb-6">
+                <SystemStatus />
               </div>
-
-              {/* Final Project Documentation */}
-              <ProjectDocumentation />
+              
+              {/* Admin Panel - Only visible to msn_clx */}
+              <div className="mb-6">
+                <AdminPanel />
+              </div>
+              
+              {/* No footer needed here anymore as we have global footer */}
             </div>
           </div>
         </main>

@@ -1,0 +1,155 @@
+Microsoft Windows [Version 10.0.22631.4890]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Aloof>wsl -d Ubuntu
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/PanicSense/PanicSense$ cd ..
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/PanicSense$ cd ..
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop$ cd "WEEK 4"
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4$ git clone -b Week-4 https://github.com/draiimon/Oaktree.git
+cd Oaktree
+Cloning into 'Oaktree'...
+remote: Enumerating objects: 3357, done.
+remote: Counting objects: 100% (459/459), done.
+remote: Compressing objects: 100% (146/146), done.
+remote: Total 3357 (delta 305), reused 422 (delta 285), pack-reused 2898 (from 1)
+Receiving objects: 100% (3357/3357), 7.35 MiB | 9.09 MiB/s, done.
+Resolving deltas: 100% (1160/1160), done.
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree$ npm install
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+
+added 561 packages, and audited 562 packages in 1m
+
+64 packages are looking for funding
+  run `npm fund` for details
+
+8 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree$ # Check your current Node.js version
+node --version
+
+# Kung lower than v18, i-update using nvm (Node Version Manager)
+# Install nvm kung wala pa
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+# Restart your terminal then install and use Node.js v18
+nvm install 18
+nvm use 18
+v18.20.8
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 15037  100 15037    0     0  44323      0 --:--:-- --:--:-- --:--:-- 44226
+=> Downloading nvm from git to '/home/rae/.nvm'
+=> Cloning into '/home/rae/.nvm'...
+remote: Enumerating objects: 381, done.
+remote: Counting objects: 100% (381/381), done.
+remote: Compressing objects: 100% (324/324), done.
+remote: Total 381 (delta 43), reused 178 (delta 29), pack-reused 0 (from 0)
+Receiving objects: 100% (381/381), 384.34 KiB | 1.94 MiB/s, done.
+Resolving deltas: 100% (43/43), done.
+* (HEAD detached at FETCH_HEAD)
+  master
+=> Compressing and cleaning up git repository
+
+=> Appending nvm source string to /home/rae/.bashrc
+=> Appending bash_completion source string to /home/rae/.bashrc
+=> You currently have modules installed globally with `npm`. These will no
+=> longer be linked to the active version of Node when you install a new node
+=> with `nvm`; and they may (depending on how you construct your `$PATH`)
+=> override the binaries of modules installed with `nvm`:
+
+/usr/lib
+├── corepack@0.32.0
+=> If you wish to uninstall them at a later point (or re-install them under your
+=> `nvm` Nodes), you can remove them from the system Node as follows:
+
+     $ nvm use system
+     $ npm uninstall -g a_module
+
+=> Close and reopen your terminal to start using nvm or run the following to use it now:
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+Command 'nvm' not found, but there are 14 similar ones.
+Command 'nvm' not found, but there are 14 similar ones.
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree$ # Sa folder ng project
+rm -rf node_modules
+npm cache clean --force
+npm warn using --force Recommended protections disabled.
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree$ npm install
+# Setup local scripts
+npm pkg set scripts.local:dev="node local-dev.js"
+npm pkg set scripts.local:build="vite --config vite.config.local.ts build"
+npm pkg set scripts.local:start="NODE_ENV=production node local-dev.js"
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+
+added 561 packages, and audited 562 packages in 1m
+
+64 packages are looking for funding
+  run `npm fund` for details
+
+8 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree$ nano .env
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree$ # Development mode
+npm run local:dev
+
+> rest-express@1.0.0 local:dev
+> node local-dev.js
+
+Failed to load routes: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree/server/routes.js' imported from /mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree/local-dev.js
+    at new NodeError (node:internal/errors:405:5)
+    at finalizeResolution (node:internal/modules/esm/resolve:327:11)
+    at moduleResolve (node:internal/modules/esm/resolve:980:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:404:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:373:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:336:34)
+    at importModuleDynamically (node:internal/modules/esm/translators:143:35)
+    at importModuleDynamicallyCallback (node:internal/modules/esm/utils:176:14) {
+  url: 'file:///mnt/c/Users/Aloof/Desktop/WEEK%204/Oaktree/server/routes.js',
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+✅ Server is running in fallback mode on http://localhost:5000
+^C
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree$ npm run dev
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+node:internal/errors:496
+    ErrorCaptureStackTrace(err);
+    ^
+
+TypeError [ERR_INVALID_ARG_TYPE]: The "paths[0]" argument must be of type string. Received undefined
+    at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+    at new NodeError (node:internal/errors:405:5)
+    at validateString (node:internal/validators:162:11)
+    at Object.resolve (node:path:1115:7)
+    at <anonymous> (/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree/vite.config.ts:23:17)
+    at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+    at async loadESM (node:internal/process/esm_loader:34:7)
+    at async handleMainPromise (node:internal/modules/run_main:106:12) {
+  code: 'ERR_INVALID_ARG_TYPE'
+}
+
+Node.js v18.20.8
+(venv) rae@Aloof:/mnt/c/Users/Aloof/Desktop/WEEK 4/Oaktree$

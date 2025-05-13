@@ -1,0 +1,51 @@
+~/workspace$ git status
+On branch Week-4
+Your branch and 'origin/Week-4' have diverged,
+and have 9 and 36 different commits each, respectively.
+  (use "git pull" if you want to integrate the remote branch with yours)
+
+nothing to commit, working tree clean
+~/workspace$ git pull --rebase origin Week-4
+From https://github.com/draiimon/Oaktree
+ * branch            Week-4     -> FETCH_HEAD
+CONFLICT (modify/delete): README.md deleted in 1ba9150 (Clean up local development files and scripts.) and modified in HEAD.  Version HEAD of README.md left in tree.
+CONFLICT (modify/delete): run-local.js deleted in 1ba9150 (Clean up local development files and scripts.) and modified in HEAD.  Version HEAD of run-local.js left in tree.
+error: could not apply 1ba9150... Clean up local development files and scripts.
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config advice.mergeConflict false"
+Could not apply 1ba9150... Clean up local development files and scripts.
+ Environment rebuilding in the background...
+~/workspace$ git rebase --abort
+ Environment rebuilding in the background...
+ Environment updated. Reloading shell...
+~/workspace$ git push -f origin Week-4
+Enumerating objects: 21, done.
+Counting objects: 100% (21/21), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (16/16), done.
+Writing objects: 100% (17/17), 5.68 KiB | 2.84 MiB/s, done.
+Total 17 (delta 13), reused 1 (delta 1), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (13/13), completed with 2 local objects.
+To https://github.com/draiimon/Oaktree.git
+ + 260587f...7ce9e30 Week-4 -> Week-4 (forced update)
+ Environment updated. Reloading shell...
+~/workspace$ git fetch origin
+git reset --hard origin/Week-4
+remote: Enumerating objects: 2383, done.
+remote: Counting objects: 100% (30/30), done.
+remote: Compressing objects: 100% (8/8), done.
+remote: Total 2383 (delta 25), reused 22 (delta 22), pack-reused 2353 (from 1)
+Receiving objects: 100% (2383/2383), 5.79 MiB | 15.24 MiB/s, done.
+Resolving deltas: 100% (556/556), completed with 4 local objects.
+From https://github.com/draiimon/Oaktree
+ * [new branch]      Week-3           -> origin/Week-3
+ * [new branch]      containerization -> origin/containerization
+ * [new branch]      gh-pages         -> origin/gh-pages
+ * [new branch]      main             -> origin/main
+ * [new branch]      week-2           -> origin/week-2
+ * [new branch]      week2            -> origin/week2
+HEAD is now at 7ce9e30 Checkpoint
+~/workspace$ 
