@@ -17,3 +17,8 @@ output "service_name" {
   description = "Name of the ECS service"
   value       = aws_ecs_service.oak_service.name
 }
+
+output "dockerhub_image" {
+  description = "DockerHub image used for the application"
+  value       = var.container_image
+}

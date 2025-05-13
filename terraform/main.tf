@@ -55,6 +55,7 @@ module "compute" {
   source = "./modules/compute"
 
   name_prefix        = local.name_prefix
+  project_name       = var.project_name
   common_tags        = local.common_tags
   region             = var.aws_region
   environment        = var.environment

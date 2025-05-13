@@ -27,3 +27,9 @@ variable "dynamodb_table_name" {
   type        = string
   default     = "OakTreeUsers"
 }
+
+variable "project_name" {
+  description = "Project name for tagging"
+  type        = string
+  default     = "oaktree"
+}

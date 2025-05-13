@@ -20,5 +20,5 @@ output "ecs_service_name" {
 
 output "dockerhub_image" {
   description = "DockerHub image used for the application"
-  value       = "msnclx/oaktree:latest"
+  value       = module.compute.dockerhub_image
 }
