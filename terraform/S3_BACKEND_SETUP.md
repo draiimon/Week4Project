@@ -2,9 +2,17 @@
 
 This guide explains how to set up an S3 backend for Terraform state management properly.
 
-## Step 1: Create IAM Policy
+## Overview
 
-Create an IAM policy with the following permissions:
+The S3 backend setup is now handled through Terraform itself using the following approach:
+
+1. Temporarily use local state to create the S3 bucket and DynamoDB table
+2. Create these resources using Terraform
+3. Switch to using the S3 backend after the resources exist
+
+## Required IAM Permissions
+
+The IAM user/role used for Terraform operations needs these permissions:
 
 ```json
 {
@@ -48,23 +56,21 @@ Create an IAM policy with the following permissions:
 }
 ```
 
-## Step 2: Attach Policy to IAM User
+## Manual Setup Process
 
-1. Go to AWS IAM Console
-2. Find the user whose access keys are being used for Terraform
-3. Attach the policy created in Step 1 to this user
+If you're setting up the backend manually, follow these steps:
 
-## Step 3: Create S3 Bucket and DynamoDB Table
+### Step 1: Create S3 Bucket and DynamoDB Table
 
-Run the `setup-backend.sh` script to create the required infrastructure:
+First, use Terraform with local state to create the needed resources:
 
 ```bash
 cd terraform
-chmod +x setup-backend.sh
-./setup-backend.sh
+terraform init
+terraform apply -target=aws_s3_bucket.terraform_state -target=aws_dynamodb_table.terraform_locks -auto-approve
 ```
 
-## Step 4: Enable S3 Backend in Terraform
+### Step 2: Enable S3 Backend in Terraform
 
 Uncomment the S3 backend configuration in `providers.tf`:
 
@@ -78,21 +84,23 @@ backend "s3" {
 }
 ```
 
-## Step 5: Initialize Terraform with Backend
+### Step 3: Reinitialize Terraform with S3 Backend
 
-Run the following command to initialize Terraform with the S3 backend:
+Initialize Terraform with the S3 backend and migrate the state:
 
 ```bash
-terraform init -backend-config="access_key=YOUR_ACCESS_KEY" -backend-config="secret_key=YOUR_SECRET_KEY"
+terraform init -force-copy -backend-config="access_key=YOUR_ACCESS_KEY" -backend-config="secret_key=YOUR_SECRET_KEY"
 ```
 
 ## CI/CD Pipeline Integration
 
-The GitHub Actions workflow in `.github/workflows/ci-cd.yml` is configured to automate the backend setup process:
+The GitHub Actions workflow in `.github/workflows/ci-cd.yml` handles the complete process automatically:
 
-1. Before running `terraform init`, the workflow executes the `setup-backend.sh` script to create the required S3 bucket and DynamoDB table
-2. The `terraform init` command is configured with backend credentials from GitHub Secrets
-3. This ensures all CI/CD pipelines can use the same remote state without manual setup
+1. It first uses local state to create the S3 bucket and DynamoDB table
+2. It then enables the S3 backend configuration in the Terraform files
+3. Finally, it initializes Terraform with the S3 backend using credentials from GitHub Secrets
+
+This approach ensures the infrastructure for remote state is created before attempting to use it, eliminating the chicken-and-egg problem.
 
 ## Common Issues
 
@@ -100,7 +108,7 @@ The GitHub Actions workflow in `.github/workflows/ci-cd.yml` is configured to au
 
 If you receive a 403 Forbidden error when trying to access the S3 bucket:
 
-1. Verify that the IAM user has the required permissions (Step 1)
-2. Check that the bucket exists and is in the correct region
-3. Ensure that the AWS credentials being used are correct
-4. Verify that the bucket name is globally unique and matches the configuration
+1. Check that the bucket exists in the correct region
+2. Verify the IAM user has all the required permissions
+3. Ensure the AWS credentials being used are correct
+4. Verify that the bucket name matches exactly in all configurations

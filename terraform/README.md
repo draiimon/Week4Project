@@ -18,17 +18,27 @@ This configuration uses:
 - S3 bucket (`terraform-state-bucket-drei`) for storing Terraform state
 - DynamoDB table (`terraform-locks-db-drei`) for state locking
 
-## Automated Backend Setup
+## Bootstrapping S3 Backend
 
-The S3 backend for Terraform state is automatically configured in the CI/CD pipeline:
+The S3 backend infrastructure is created using Terraform itself:
 
-1. The GitHub Actions workflow runs `setup-backend.sh` before `terraform init`
-2. The script creates the S3 bucket and DynamoDB table if they don't exist
-3. Terraform is initialized with credentials from GitHub Secrets
+1. First, we use local state to create the S3 bucket and DynamoDB table
+2. Then we switch to using the S3 backend for all subsequent operations
+
+This solves the chicken-and-egg problem of needing the S3 bucket to exist before using it as a backend.
+
+## CI/CD Automation
+
+The GitHub Actions workflow automates the entire process:
+
+1. It initializes Terraform with local state
+2. Creates the S3 bucket and DynamoDB table using Terraform
+3. Modifies the Terraform configuration to enable the S3 backend
+4. Reinitializes Terraform to use the S3 backend with credentials from GitHub Secrets
 
 ## Manual Setup Instructions
 
-For manual setup, please refer to the detailed instructions in [S3_BACKEND_SETUP.md](S3_BACKEND_SETUP.md).
+For detailed manual setup instructions, please refer to [S3_BACKEND_SETUP.md](S3_BACKEND_SETUP.md).
 
 ## Regular Usage
 
