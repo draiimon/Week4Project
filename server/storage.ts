@@ -1,47 +1,47 @@
-import { users, type User, type InsertUser } from "@shared/schema";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
-import * as expressSession from "express-session";
-import memorystore from "memorystore";
+// src/server/storage.ts
+import {
+  GetCommand,
+  PutCommand,
+  QueryCommand
+} from "@aws-sdk/lib-dynamodb";
+import { ddb, USERS_TABLE } from "./db";
 
-const MemoryStore = memorystore(expressSession.default);
-
-// modify the interface with any CRUD methods
-// you might need
+export interface User {
+  username: string;
+  email?: string;
+  password: string;
+  createdAt: string;
+}
 
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-  sessionStore: expressSession.Store;
+  getUserByUsername(username: string): Promise<User | null>;
+  createUser(u: { username: string; password: string; email?: string }): Promise<User>;
+  // you can add getUserById() if you need, but DynamoDB uses username as the PK
 }
 
-export class DatabaseStorage implements IStorage {
-  sessionStore: expressSession.Store;
-
-  constructor() {
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
+export class DynamoStorage implements IStorage {
+  async getUserByUsername(username: string): Promise<User | null> {
+    const cmd = new QueryCommand({
+      TableName: USERS_TABLE,
+      KeyConditionExpression: "username = :u",
+      ExpressionAttributeValues: { ":u": username },
+      Limit: 1
     });
+    const res = await ddb.send(cmd);
+    return res.Items && res.Items[0] ? (res.Items[0] as User) : null;
   }
 
-  async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
-    return user;
+  async createUser(u: { username: string; password: string; email?: string }): Promise<User> {
+    const now = new Date().toISOString();
+    const item: User = { ...u, createdAt: now };
+    const cmd = new PutCommand({
+      TableName: USERS_TABLE,
+      Item: item,
+      ConditionExpression: "attribute_not_exists(username)"
+    });
+    await ddb.send(cmd);
+    return item;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new DynamoStorage();

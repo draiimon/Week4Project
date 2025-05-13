@@ -80,7 +80,7 @@ resource "aws_ecs_task_definition" "oak_task" {
         value = "true"
       },
       {
-        name  = "AWS_DYNAMODB_TABLE"
+        name  = "DYNAMO_TABLE_NAME"
         value = var.dynamodb_table_name
       },
       {
