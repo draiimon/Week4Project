@@ -2,9 +2,9 @@ name: OakTree CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, branch1 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, branch1 ]
 
 jobs:
   test:
@@ -32,7 +32,7 @@ jobs:
   build-docker:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/branch1')
     outputs:
       IMAGE_TAG: ${{ steps.image_tag.outputs.IMAGE_TAG }}
     
@@ -67,7 +67,7 @@ jobs:
     name: Deploy with Terraform
     needs: build-docker
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/branch1')
     env:
       IMAGE_TAG: ${{ needs.build-docker.outputs.IMAGE_TAG }}
     
