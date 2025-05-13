@@ -51,15 +51,15 @@ jobs:
     - name: Set up image tag
       id: image_tag
       run: |
-        echo "IMAGE_TAG=$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA::8}" >> $GITHUB_ENV
-        echo "IMAGE_TAG=$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+        echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+        echo "IMAGE_TAG=latest" >> $GITHUB_OUTPUT
       
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
         context: .
         push: true
-        tags: draiimon/oaktree:${{ env.IMAGE_TAG }},draiimon/oaktree:latest
+        tags: draiimon/oaktree:latest
         cache-from: type=registry,ref=draiimon/oaktree:latest
         cache-to: type=inline
 
@@ -98,7 +98,6 @@ jobs:
          terraform plan -out=tfplan \
         -var="aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" \
         -var="aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-        -var="image_tag=${{ env.IMAGE_TAG }}" \
                 
     - name: Terraform Apply
       run: |
