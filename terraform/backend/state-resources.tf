@@ -1,4 +1,5 @@
-# S3 bucket for storing Terraform state
+# S3 bucket for storing Terraform state files
+
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "oaktree-terraform-state"
 
@@ -6,8 +7,6 @@ resource "aws_s3_bucket" "terraform_state" {
   lifecycle {
     prevent_destroy = true
   }
-
-  tags = local.common_tags
 }
 
 # Enable versioning for the S3 bucket
@@ -49,6 +48,4 @@ resource "aws_dynamodb_table" "terraform_locks" {
     name = "LockID"
     type = "S"
   }
-
-  tags = local.common_tags
 }
