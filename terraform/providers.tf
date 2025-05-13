@@ -8,11 +8,10 @@ terraform {
   }
   backend "s3" {
     bucket         = "terraform-state-bucket-drei"
-    key            = "terraform.tfstate"
+    key            = "oaktree/terraform.tfstate"
     region         = "ap-southeast-1"
     dynamodb_table = "terraform-locks-db-drei"
     encrypt        = true
-
   }
 }
 
