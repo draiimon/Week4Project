@@ -1,4 +1,4 @@
-# ALB
+# ALB - Using existing load balancer
 resource "aws_lb" "oak_alb" {
   name               = "${var.name_prefix}-alb"
   internal           = false
@@ -7,9 +7,14 @@ resource "aws_lb" "oak_alb" {
   subnets            = var.subnet_ids
 
   tags = var.common_tags
+  
+  # Ignore changes since we're importing an existing ALB
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
-# ALB Target Group
+# ALB Target Group - Using existing target group
 resource "aws_lb_target_group" "oak_tg" {
   name        = "${var.name_prefix}-tg"
   port        = var.target_port
@@ -28,9 +33,14 @@ resource "aws_lb_target_group" "oak_tg" {
   }
 
   tags = var.common_tags
+  
+  # Ignore changes since we're importing an existing target group
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
-# ALB Listener
+# ALB Listener - Using existing listener
 resource "aws_lb_listener" "oak_listener" {
   load_balancer_arn = aws_lb.oak_alb.arn
   port              = 80
@@ -42,4 +52,9 @@ resource "aws_lb_listener" "oak_listener" {
   }
 
   tags = var.common_tags
+  
+  # Ignore changes since we're importing an existing listener
+  lifecycle {
+    ignore_changes = all
+  }
 }

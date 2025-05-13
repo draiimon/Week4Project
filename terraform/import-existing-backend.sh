@@ -55,6 +55,15 @@ echo "Importing existing IAM roles..."
 terraform import module.compute.aws_iam_role.execution_role oaktree-ecs-execution-role || echo "Failed to import execution role, but continuing..."
 terraform import module.compute.aws_iam_role.task_role oaktree-ecs-task-role || echo "Failed to import task role, but continuing..."
 
+# Import load balancer resources
+echo "Importing existing load balancer resources..."
+terraform import module.loadbalancer.aws_lb.oak_alb oaktree-dev-alb || echo "Failed to import ALB, but continuing..."
+terraform import module.loadbalancer.aws_lb_target_group.oak_tg "arn:aws:elasticloadbalancing:ap-southeast-1:***:targetgroup/oaktree-dev-tg/*" || echo "Failed to import target group, but continuing..."
+
+# Import CloudWatch log group
+echo "Importing existing CloudWatch resources..."
+terraform import module.monitoring.aws_cloudwatch_log_group.oak_logs /ecs/oaktree-dev || echo "Failed to import CloudWatch log group, but continuing..."
+
 # Re-enable the backend configuration
 echo "Re-enabling S3 backend configuration..."
 sed -i 's/# backend "s3" {/backend "s3" {/' providers.tf

@@ -124,6 +124,13 @@ jobs:
         terraform import module.compute.aws_iam_role.execution_role oaktree-ecs-execution-role || true
         terraform import module.compute.aws_iam_role.task_role oaktree-ecs-task-role || true
         
+        # Import existing load balancer resources
+        terraform import module.loadbalancer.aws_lb.oak_alb oaktree-dev-alb || true
+        terraform import module.loadbalancer.aws_lb_target_group.oak_tg arn:aws:elasticloadbalancing:ap-southeast-1:***:targetgroup/oaktree-dev-tg/* || true
+        
+        # Import existing CloudWatch log group
+        terraform import module.monitoring.aws_cloudwatch_log_group.oak_logs /ecs/oaktree-dev || true
+        
         # Re-enable the S3 backend
         sed -i 's/# backend "s3" {/backend "s3" {/' providers.tf
         sed -i 's/  # bucket/  bucket/' providers.tf
