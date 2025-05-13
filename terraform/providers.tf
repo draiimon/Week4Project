@@ -6,13 +6,14 @@ terraform {
       version = "~> 5.0"
     }
   }
-  backend "s3" {
-    bucket         = "terraform-state-bucket-drei"
-    key            = "oaktree/terraform.tfstate"
-    region         = "ap-southeast-1"
-    dynamodb_table = "terraform-locks-db-drei"
-    encrypt        = true
-  }
+  # Using local state for immediate testing
+  # backend "s3" {
+  #   bucket         = "terraform-state-bucket-drei"
+  #   key            = "oaktree/terraform.tfstate"
+  #   region         = "ap-southeast-1"
+  #   dynamodb_table = "terraform-locks-db-drei"
+  #   encrypt        = true
+  # }
 }
 
 provider "aws" {
