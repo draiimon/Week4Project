@@ -18,36 +18,61 @@ This configuration uses:
 - S3 bucket (`terraform-state-bucket-drei`) for storing Terraform state
 - DynamoDB table (`terraform-locks-db-drei`) for state locking
 
-## Bootstrapping S3 Backend
+## Setting Up S3 Backend - Quick Start
 
-The S3 backend infrastructure is created using Terraform itself:
+### For GitHub CI/CD
 
-1. First, we use local state to create the S3 bucket and DynamoDB table
-2. Then we switch to using the S3 backend for all subsequent operations
+The GitHub Actions workflow automatically:
+1. Creates a terraform.tfvars file with AWS credentials from GitHub Secrets
+2. Temporarily disables the S3 backend configuration
+3. Creates the S3 bucket and DynamoDB table using local state
+4. Re-enables the S3 backend configuration
+5. Initializes Terraform with the S3 backend 
 
-This solves the chicken-and-egg problem of needing the S3 bucket to exist before using it as a backend.
+No manual steps required - just push your code to GitHub!
 
-## CI/CD Automation
+### For Local Development
 
-The GitHub Actions workflow automates the entire process:
+1. Set your AWS credentials as environment variables:
 
-1. It initializes Terraform with local state
-2. Creates the S3 bucket and DynamoDB table using Terraform
-3. Modifies the Terraform configuration to enable the S3 backend
-4. Reinitializes Terraform to use the S3 backend with credentials from GitHub Secrets
+```bash
+export AWS_ACCESS_KEY_ID=your_aws_access_key
+export AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+```
 
-## Manual Setup Instructions
+2. Run the setup script:
 
-For detailed manual setup instructions, please refer to [S3_BACKEND_SETUP.md](S3_BACKEND_SETUP.md).
+```bash
+cd terraform
+./setup-s3-backend.sh
+```
+
+This script:
+- Creates a terraform.tfvars file with your credentials
+- Creates the S3 bucket and DynamoDB table if they don't exist
+- Configures Terraform to use the S3 backend
+
+## Terraform Variables
+
+AWS credentials are provided to Terraform using a terraform.tfvars file. For local development, you can create this file:
+
+```bash
+cd terraform
+./create-terraform-variables.sh
+```
+
+## Required Permissions
+
+The AWS user needs these permissions:
+- S3 bucket creation and management
+- DynamoDB table creation and management
+- All permissions for resources defined in the Terraform configuration
 
 ## Regular Usage
 
-Once the state management resources are set up, you can use normal Terraform commands:
+Once the backend is set up, use normal Terraform commands:
 
 ```bash
-# Initialize Terraform with S3 backend
-terraform init -backend-config="access_key=YOUR_ACCESS_KEY" -backend-config="secret_key=YOUR_SECRET_KEY"
-
 # Plan changes
 terraform plan
 
