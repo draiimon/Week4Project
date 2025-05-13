@@ -48,7 +48,7 @@ export const AWSInfrastructure: React.FC = () => {
             </div>
             <p className={`mt-1 text-sm ${isAWSConfigured ? 'text-green-700' : 'text-yellow-700'}`}>
               {isAWSConfigured 
-                ? `Connected to AWS Region: ${process.env.AWS_REGION}` 
+                ? `Connected to AWS Region: ap-southeast-1` 
                 : 'Application will use local database for authentication and storage.'}
             </p>
           </div>
