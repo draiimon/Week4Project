@@ -19,7 +19,7 @@ variable "aws_region" {
 variable "aws_profile" {
   description = "AWS CLI profile to use"
   type        = string
-  default     = "drei"
+  default     = "default"
 }
 
 variable "dynamodb_table_name" {

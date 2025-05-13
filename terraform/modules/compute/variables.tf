@@ -43,7 +43,6 @@ variable "task_role_arn" {
 variable "container_image" {
   description = "Docker image for the container"
   type        = string
-  default     = "msnclx/oaktree:latest"
 }
 
 variable "container_port" {
