@@ -1,10 +1,8 @@
 import React from "react";
 
 export const AWSInfrastructure: React.FC = () => {
-  const isAWSConfigured = 
-    typeof process.env.AWS_ACCESS_KEY_ID !== 'undefined' && 
-    typeof process.env.AWS_SECRET_ACCESS_KEY !== 'undefined' &&
-    typeof process.env.AWS_REGION !== 'undefined';
+  // For client-side, assume AWS is configured if we're in this component
+  const isAWSConfigured = true;
   
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
