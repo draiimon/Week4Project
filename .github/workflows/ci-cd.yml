@@ -87,10 +87,16 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-southeast-1
     
+    - name: Setup S3 Backend for Terraform
+      run: |
+        cd terraform
+        chmod +x setup-backend.sh
+        ./setup-backend.sh
+        
     - name: Terraform Init
       run: |
         cd terraform
-        terraform init
+        terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
       
     - name: Terraform Plan
       run: |

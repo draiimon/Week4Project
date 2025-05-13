@@ -86,6 +86,14 @@ Run the following command to initialize Terraform with the S3 backend:
 terraform init -backend-config="access_key=YOUR_ACCESS_KEY" -backend-config="secret_key=YOUR_SECRET_KEY"
 ```
 
+## CI/CD Pipeline Integration
+
+The GitHub Actions workflow in `.github/workflows/ci-cd.yml` is configured to automate the backend setup process:
+
+1. Before running `terraform init`, the workflow executes the `setup-backend.sh` script to create the required S3 bucket and DynamoDB table
+2. The `terraform init` command is configured with backend credentials from GitHub Secrets
+3. This ensures all CI/CD pipelines can use the same remote state without manual setup
+
 ## Common Issues
 
 ### 403 Forbidden Error
