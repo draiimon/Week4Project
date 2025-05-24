@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, branch1 ]
   pull_request:
-    branches: [ main, branch1 ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -32,9 +32,7 @@ jobs:
   build-docker:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/branch1')
-    outputs:
-      IMAGE_TAG: ${{ steps.image_tag.outputs.IMAGE_TAG }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
     - uses: actions/checkout@v3
@@ -48,12 +46,6 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     
-    - name: Set up image tag
-      id: image_tag
-      run: |
-        echo "IMAGE_TAG=latest" >> $GITHUB_ENV
-        echo "IMAGE_TAG=latest" >> $GITHUB_OUTPUT
-      
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
@@ -67,9 +59,7 @@ jobs:
     name: Deploy with Terraform
     needs: build-docker
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/branch1')
-    env:
-      IMAGE_TAG: ${{ needs.build-docker.outputs.IMAGE_TAG }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
     - uses: actions/checkout@v3
@@ -87,62 +77,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-southeast-1
     
-    - name: Create Terraform Variables File
+    - name: Terraform Init
       run: |
         cd terraform
-        cat > terraform.tfvars <<EOF
-        aws_access_key_id = "${{ secrets.AWS_ACCESS_KEY_ID }}"
-        aws_secret_access_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-        EOF
-        
-    - name: Import Existing Infrastructure
-      run: |
-        cd terraform
-        # Comment out the S3 backend temporarily
-        sed -i 's/backend "s3" {/# backend "s3" {/' providers.tf
-        sed -i 's/  bucket/  # bucket/' providers.tf
-        sed -i 's/  key/  # key/' providers.tf
-        sed -i 's/  region/  # region/' providers.tf
-        sed -i 's/  dynamodb_table/  # dynamodb_table/' providers.tf
-        sed -i 's/  encrypt/  # encrypt/' providers.tf
-        
-        # Initialize with local backend
         terraform init
-        
-        # Import the existing S3 bucket and DynamoDB table into Terraform state
-        # We use || true to continue even if the resources don't exist or can't be imported
-        terraform import aws_s3_bucket.terraform_state terraform-state-bucket-drei || true
-        terraform import aws_dynamodb_table.terraform_locks terraform-locks-db-drei || true
-        
-        # Import existing DynamoDB users table
-        terraform import module.database.aws_dynamodb_table.oak_users_table OakTreeUsers || true
-        
-        # Import existing ECS resources
-        terraform import module.compute.aws_ecs_cluster.oak_cluster oaktree-dev-cluster || true
-        
-        # Import existing IAM roles
-        terraform import module.compute.aws_iam_role.execution_role oaktree-ecs-execution-role || true
-        terraform import module.compute.aws_iam_role.task_role oaktree-ecs-task-role || true
-        
-        # Import existing load balancer resources
-        terraform import module.loadbalancer.aws_lb.oak_alb oaktree-dev-alb || true
-        terraform import module.loadbalancer.aws_lb_target_group.oak_tg arn:aws:elasticloadbalancing:ap-southeast-1:***:targetgroup/oaktree-dev-tg/* || true
-        
-        # Import existing CloudWatch log group
-        terraform import module.monitoring.aws_cloudwatch_log_group.oak_logs /ecs/oaktree-dev || true
-        
-        # Re-enable the S3 backend
-        sed -i 's/# backend "s3" {/backend "s3" {/' providers.tf
-        sed -i 's/  # bucket/  bucket/' providers.tf
-        sed -i 's/  # key/  key/' providers.tf
-        sed -i 's/  # region/  region/' providers.tf
-        sed -i 's/  # dynamodb_table/  dynamodb_table/' providers.tf
-        sed -i 's/  # encrypt/  encrypt/' providers.tf
-        
-    - name: Terraform Init with S3 Backend
-      run: |
-        cd terraform
-        terraform init -force-copy -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
       
     - name: Terraform Plan
       run: |

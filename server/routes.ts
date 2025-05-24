@@ -58,7 +58,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userPoolId: null
         }
       },
-      environment: process.env.NODE_ENV || "development",
+      environment: "development",
       timestamp: timestamp,
       awsCallsDisabled: envVars.DISABLE_AWS_CALLS
     });
@@ -306,7 +306,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       outputs: {
         dynamodbTable: "OakTreeUsers",
         region: envVars.AWS_REGION,
-        environmentName: process.env.NODE_ENV || "development"
+        environmentName: "development"
       },
       timestamp: new Date().toISOString()
     });

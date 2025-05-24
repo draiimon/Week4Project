@@ -1,4 +1,4 @@
-# ECS Cluster - Using existing cluster
+# ECS Cluster
 resource "aws_ecs_cluster" "oak_cluster" {
   name = "${var.name_prefix}-cluster"
 
@@ -8,14 +8,9 @@ resource "aws_ecs_cluster" "oak_cluster" {
   }
 
   tags = var.common_tags
-  
-  # Ignore changes since we're importing an existing cluster
-  lifecycle {
-    ignore_changes = all
-  }
 }
 
-# IAM Execution Role - Using existing role
+
 resource "aws_iam_role" "execution_role" {
   name = "${var.project_name}-ecs-execution-role"
 
@@ -29,19 +24,12 @@ resource "aws_iam_role" "execution_role" {
       Action = "sts:AssumeRole"
     }]
   })
-  
-  # Ignore changes since we're importing an existing role
-  lifecycle {
-    ignore_changes = all
-  }
 }
-
 resource "aws_iam_role_policy_attachment" "execution_attach" {
   role       = aws_iam_role.execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
-
-# IAM Task Role - Using existing role
+# --- IAM Task Role ---
 resource "aws_iam_role" "task_role" {
   name = "${var.project_name}-ecs-task-role"
 
@@ -55,11 +43,6 @@ resource "aws_iam_role" "task_role" {
       Action = "sts:AssumeRole"
     }]
   })
-  
-  # Ignore changes since we're importing an existing role
-  lifecycle {
-    ignore_changes = all
-  }
 }
 
 # ECS Task Definition

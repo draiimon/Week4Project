@@ -36,18 +36,10 @@ variable "project_name" {
 
 variable "aws_access_key_id" {
   description = "AWS Access Key ID"
-  type        = string  
-  sensitive   = true
+  type        = string
 }
 
 variable "aws_secret_access_key" {
   description = "AWS Secret Access Key"
   type        = string  
-  sensitive   = true
-}
-
-variable "image_tag" {
-  description = "Docker image tag to deploy"
-  type        = string
-  default     = "latest"
 }
