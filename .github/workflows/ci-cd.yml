@@ -2,9 +2,9 @@ name: OakTree CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, branch1 ]
+    branches: [ branch1 ]
   pull_request:
-    branches: [ main ]
+    branches: [ branch1 ]
 
 jobs:
   test:
