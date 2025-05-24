@@ -10,7 +10,7 @@ terraform {
     bucket         = "terraform-state-bucket-8"
     key            = "terraform.tfstate"
     region         = "ap-southeast-1"
-    dynamodb_table = "oaktree-terraform-locks-8"
+    dynamodb_table = "oaktree-terraform-locks-9"
     encrypt        = true
 
   }

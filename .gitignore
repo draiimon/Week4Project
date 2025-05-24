@@ -36,3 +36,5 @@ build/
 
 # Cache directories
 .cache/
+terraform/tfplan
+terraform/tfplan-dest

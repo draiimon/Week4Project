@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { DashboardLayout } from "@/components/ui/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import DiagramSvg from "./images/diagram.svg";
 import {
   LuCloud,
   LuDatabase,
@@ -421,31 +422,21 @@ export default function InfrastructureDiagramPage() {
 
                     <div className="mt-4 w-40 bg-cyan-900/30 border border-cyan-500/20 rounded-md p-2">
                       <div
-                        className={`text-center text-xs font-medium mb-2 transition-opacity duration-300 ${highlightStep(2) ? "opacity-100" : "opacity-30"}`}
+                        className={`text-center text-xs font-medium mb-2 transition-opacity duration-300 ${
+                          highlightStep(2) ? "opacity-100" : "opacity-30"
+                        }`}
                       >
                         Container Images
                       </div>
                       <div
-                        className={`flex flex-col space-y-1 transition-opacity duration-300 ${highlightStep(2) ? "opacity-100" : "opacity-30"}`}
+                        className={`flex items-center justify-between text-xs transition-opacity duration-300 ${
+                          highlightStep(2) ? "opacity-100" : "opacity-30"
+                        }`}
                       >
-                        <div className="flex items-center justify-between text-xs">
-                          <span>web-app:latest</span>
-                          <Badge className="bg-green-900/80 text-green-400 text-[10px]">
-                            Ready
-                          </Badge>
-                        </div>
-                        <div className="flex items-center justify-between text-xs">
-                          <span>web-app:v1.2</span>
-                          <Badge className="bg-green-900/80 text-green-400 text-[10px]">
-                            Ready
-                          </Badge>
-                        </div>
-                        <div className="flex items-center justify-between text-xs">
-                          <span>web-app:v1.1</span>
-                          <Badge className="bg-blue-900/80 text-blue-400 text-[10px]">
-                            Archived
-                          </Badge>
-                        </div>
+                        <span>draiimon/oaktree</span>
+                        <Badge className="bg-green-900/80 text-green-400 text-[10px]">
+                          Ready
+                        </Badge>
                       </div>
                     </div>
                   </div>
@@ -474,259 +465,10 @@ export default function InfrastructureDiagramPage() {
                   </div>
 
                   {/* AWS Cloud Container */}
-                  <Group
-                    title="AWS Cloud Infrastructure"
-                    color="orange"
-                    className={`transition-opacity duration-300 ${highlightStep(3) || highlightStep(4) ? "opacity-100" : "opacity-30"}`}
-                  >
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center">
-                        <SiAmazon className="text-orange-500 h-6 w-6 mr-2" />
-                        <span className="text-sm font-medium">
-                          Region: {awsRegion}
-                        </span>
+                  <div className="svg-container">
+                        <img src={DiagramSvg} alt="Infrastructure Diagram"
+                        style={{ width: '100%', height: 'auto' }} />
                       </div>
-                      <div className="flex items-center">
-                        <Badge
-                          className={
-                            awsConnected
-                              ? "bg-green-100 text-green-800"
-                              : "bg-amber-100 text-amber-800"
-                          }
-                        >
-                          {awsConnected ? "Connected" : "Demo Mode"}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    {/* VPC Container */}
-                    <Group
-                      title="Virtual Private Cloud (VPC) - CIDR: 10.0.0.0/16"
-                      color="blue"
-                    >
-                      {/* Internet Gateway */}
-                      <div className="flex justify-center mb-6">
-                        <Resource
-                          icon={<LuGlobe className="text-white" />}
-                          label="Internet Gateway"
-                          color="green"
-                          size="md"
-                          status="success"
-                          tooltip="Internet Gateway for public access"
-                          className={`transition-opacity duration-300 ${highlightStep(3) ? "opacity-100" : "opacity-30"}`}
-                        />
-                      </div>
-
-                      <div
-                        className={`flex justify-center mb-6 transition-opacity duration-300 ${highlightStep(3) ? "opacity-100" : "opacity-30"}`}
-                      >
-                        <div className="h-8 w-0.5 bg-green-500/70"></div>
-                      </div>
-
-                      {/* Load Balancer in Public Subnets */}
-                      <div className="flex justify-center mb-6">
-                        <Resource
-                          icon={<LuLayoutGrid className="text-white" />}
-                          label="Load Balancer (ALB)"
-                          color="green"
-                          size="md"
-                          status="success"
-                          tooltip="Application Load Balancer on port 80"
-                          className={`transition-opacity duration-300 ${highlightStep(4) ? "opacity-100" : "opacity-30"}`}
-                        />
-                      </div>
-
-                      <div
-                        className={`flex justify-center mb-6 transition-opacity duration-300 ${highlightStep(4) ? "opacity-100" : "opacity-30"}`}
-                      >
-                        <div className="h-8 w-0.5 bg-green-500/70"></div>
-                      </div>
-
-                      {/* Security Groups */}
-                      <div className="flex flex-wrap gap-4 justify-center mb-6">
-                        <div className="px-3 py-2 bg-red-800/30 border border-red-600/30 rounded-md">
-                          <div className="flex items-center mb-1">
-                            <LuShield className="text-red-400 h-4 w-4 mr-2" />
-                            <span className="text-xs font-medium text-white">
-                              ALB Security Group
-                            </span>
-                          </div>
-                          <div className="text-[10px] text-gray-300">
-                            <div>Ingress: Port 80 from 0.0.0.0/0</div>
-                            <div>Egress: All traffic</div>
-                          </div>
-                        </div>
-
-                        <div className="px-3 py-2 bg-red-800/30 border border-red-600/30 rounded-md">
-                          <div className="flex items-center mb-1">
-                            <LuShield className="text-red-400 h-4 w-4 mr-2" />
-                            <span className="text-xs font-medium text-white">
-                              App Security Group
-                            </span>
-                          </div>
-                          <div className="text-[10px] text-gray-300">
-                            <div>Ingress: Port 5000 from ALB SG</div>
-                            <div>Egress: All traffic</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Public Subnets */}
-                      <div className="grid grid-cols-2 gap-4 mb-6">
-                        <Group
-                          title="Public Subnet A (10.0.1.0/24)"
-                          color="green"
-                          className="relative"
-                        >
-                          <div className="absolute -top-3 -right-3 text-xs bg-blue-900/80 px-2 py-0.5 rounded-full border border-blue-500/30">
-                            var region-1a
-                          </div>
-                          <div className="p-4 bg-green-900/10 border border-green-500/20 rounded-md">
-                            <div className="text-xs text-center text-gray-400 mb-2">
-                              Public Route Table (0.0.0.0/0 → IGW)
-                            </div>
-
-                            {/* Fargate in this subnet */}
-                            <Resource
-                              icon={<LuCpu className="text-white" />}
-                              label="Fargate Task"
-                              color="blue"
-                              size="sm"
-                              status="success"
-                              tooltip="ECS on Fargate (running in this subnet)"
-                              className={`transition-opacity duration-300 ${highlightStep(3) ? "opacity-100" : "opacity-30"} mx-auto mb-2`}
-                            />
-
-                            <div className="mt-2 px-2 py-1 bg-blue-800/30 border border-blue-600/30 rounded-md text-xs">
-                              <div className="text-center mb-1 font-medium">
-                                ECS Service
-                              </div>
-                              <div className="flex justify-between items-center text-[10px]">
-                                <span>CPU:</span>
-                                <span>256 units</span>
-                              </div>
-                              <div className="flex justify-between items-center text-[10px]">
-                                <span>Memory:</span>
-                                <span>512 MB</span>
-                              </div>
-                            </div>
-                          </div>
-                        </Group>
-
-                        <Group
-                          title="Public Subnet B (10.0.2.0/24)"
-                          color="green"
-                          className="relative"
-                        >
-                          <div className="absolute -top-3 -right-3 text-xs bg-blue-900/80 px-2 py-0.5 rounded-full border border-blue-500/30">
-                            var region-1b
-                          </div>
-                          <div className="p-4 bg-green-900/10 border border-green-500/20 rounded-md">
-                            <div className="text-xs text-center text-gray-400 mb-2">
-                              Public Route Table (0.0.0.0/0 → IGW)
-                            </div>
-
-                            {/* Fargate in this subnet */}
-                            <Resource
-                              icon={<LuCpu className="text-white" />}
-                              label="Fargate Task"
-                              color="blue"
-                              size="sm"
-                              status="success"
-                              tooltip="ECS on Fargate (running in this subnet)"
-                              className={`transition-opacity duration-300 ${highlightStep(3) ? "opacity-100" : "opacity-30"} mx-auto mb-2`}
-                            />
-
-                            <div className="mt-2 px-2 py-1 bg-teal-800/30 border border-teal-600/30 rounded-md text-xs">
-                              <div className="text-center mb-1 font-medium">
-                                Container Details
-                              </div>
-                              <div className="flex justify-between items-center text-[10px]">
-                                <span>Image:</span>
-                                <span>draiimon/oaktree:latest</span>
-                              </div>
-                              <div className="flex justify-between items-center text-[10px]">
-                                <span>Port:</span>
-                                <span>5000</span>
-                              </div>
-                            </div>
-                          </div>
-                        </Group>
-                      </div>
-
-                      {/* Database Layer */}
-                      <div className="flex justify-center mb-6">
-                        <Group
-                          title="Database Layer"
-                          color="orange"
-                          className="w-2/3"
-                        >
-                          <div className="p-4 bg-orange-900/10 border border-orange-500/20 rounded-md flex justify-center">
-                            <Resource
-                              icon={<LuDatabase className="text-white" />}
-                              label="DynamoDB"
-                              color="orange"
-                              size="sm"
-                              status="success"
-                              tooltip="NoSQL Database"
-                              className={`transition-opacity duration-300 ${highlightStep(3) ? "opacity-100" : "opacity-30"}`}
-                            />
-                          </div>
-                        </Group>
-                      </div>
-
-                      {/* Monitoring Services */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <Group title="Monitoring & Registry" color="gray">
-                          <div className="grid grid-cols-2 gap-3">
-                            <Resource
-                              icon={<LuMonitor className="text-white" />}
-                              label="CloudWatch"
-                              color="blue"
-                              size="sm"
-                              status="success"
-                              tooltip="Monitoring & logs"
-                              className={`transition-opacity duration-300 ${highlightStep(3) ? "opacity-100" : "opacity-30"}`}
-                            />
-                            <Resource
-                              icon={<SiDocker className="text-white" />}
-                              label="Docker Hub"
-                              color="cyan"
-                              size="sm"
-                              status="success"
-                              tooltip="Docker container registry"
-                              className={`transition-opacity duration-300 ${highlightStep(3) ? "opacity-100" : "opacity-30"}`}
-                            />
-                          </div>
-                        </Group>
-
-                        <Group title="External Access" color="green">
-                          <div className="flex items-center justify-center">
-                            <Resource
-                              icon={<LuUsers className="text-white" />}
-                              label="End Users"
-                              color="green"
-                              size="sm"
-                              tooltip="Application users"
-                              className={`transition-opacity duration-300 ${highlightStep(4) ? "opacity-100" : "opacity-30"}`}
-                            />
-
-                            <div className="w-8 h-0.5 bg-green-500/70 mx-2"></div>
-
-                            <Resource
-                              icon={<LuGlobe className="text-white" />}
-                              label="Public URL"
-                              color="teal"
-                              size="sm"
-                              status="success"
-                              tooltip="Public endpoint"
-                              className={`transition-opacity duration-300 ${highlightStep(4) ? "opacity-100" : "opacity-30"}`}
-                            />
-                          </div>
-                        </Group>
-                      </div>
-                    </Group>
-                  </Group>
                 </div>
               )}
             </div>
